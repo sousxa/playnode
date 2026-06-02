@@ -9,10 +9,11 @@ interface GameOverProps {
   scores?: Record<string, number>;
   onPlayAgain: () => void;
   onExit: () => void;
+  onRanking?: () => void;
 }
 
 /** Tela final reutilizável: ranking opcional por pontos + jogar de novo. */
-const GameOver: React.FC<GameOverProps> = ({ title = 'Fim de jogo!', players, scores, onPlayAgain, onExit }) => {
+const GameOver: React.FC<GameOverProps> = ({ title = 'Fim de jogo!', players, scores, onPlayAgain, onExit, onRanking }) => {
   const ranked = scores
     ? [...players].sort((a, b) => (scores[b.id] ?? 0) - (scores[a.id] ?? 0))
     : players;
@@ -39,6 +40,7 @@ const GameOver: React.FC<GameOverProps> = ({ title = 'Fim de jogo!', players, sc
 
       <div className="space-y-3">
         <Button variant="success" onClick={onPlayAgain}>🔄 Jogar de novo</Button>
+        {onRanking && <Button variant="secondary" onClick={onRanking}>🏆 Ranking da sala</Button>}
         <Button variant="ghost" onClick={onExit}>Voltar ao menu</Button>
       </div>
     </motion.div>

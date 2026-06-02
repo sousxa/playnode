@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { VenetianMask, Drama, Flame, Link2, Check, ChevronRight, Wifi, Skull, HeartCrack } from 'lucide-react';
+import { VenetianMask, Drama, Flame, Link2, Check, ChevronRight, Wifi, Skull, HeartCrack, Trophy, Layers } from 'lucide-react';
 import SingleDeviceMode from '../components/SingleDeviceMode';
 import ThemeToggle from '../components/ThemeToggle';
 import { GameMode } from '../types';
@@ -10,7 +10,9 @@ interface LobbyProps {
   isHost: boolean;
   players: { id: string; name: string }[];
   onlineMode?: boolean;
+  hasRanking?: boolean;
   onSelectGame: (mode: GameMode) => void;
+  onShowRanking?: () => void;
 }
 
 const GAMES = [
@@ -19,9 +21,10 @@ const GAMES = [
   { mode: GameMode.DILEMAS, title: 'Dilemas', desc: 'Votação polêmica', Icon: Flame, color: 'text-accent', bg: 'bg-accent/15' },
   { mode: GameMode.AMIGOS_DE_MERDA, title: 'Amigos de Merda', desc: 'Quem é mais provável…', Icon: Skull, color: 'text-danger', bg: 'bg-danger/15' },
   { mode: GameMode.VERDADE_OU_DESAFIO, title: 'Verdade ou Desafio', desc: 'Clássico ousado', Icon: HeartCrack, color: 'text-warning', bg: 'bg-warning/15' },
+  { mode: GameMode.CARTAS_PODRES, title: 'Cartas Podres', desc: 'Complete a frase mais podre', Icon: Layers, color: 'text-accent', bg: 'bg-accent/15' },
 ];
 
-const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, onlineMode, onSelectGame }) => {
+const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, onlineMode, hasRanking, onSelectGame, onShowRanking }) => {
   const [copied, setCopied] = useState(false);
 
   const inviteUrl = `${window.location.origin}${window.location.pathname}?room=${roomCode}`;
@@ -83,6 +86,22 @@ const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, onlineMode, on
           })}
         </div>
       </section>
+
+      {hasRanking && (
+        <button
+          onClick={onShowRanking}
+          className="w-full flex items-center gap-3 p-4 rounded-3xl bg-accent/10 border border-accent/30 text-left active:scale-[0.98] transition-transform"
+        >
+          <div className="w-10 h-10 rounded-2xl bg-accent/15 text-accent flex items-center justify-center">
+            <Trophy size={20} />
+          </div>
+          <div className="flex-1">
+            <p className="font-display font-bold text-text-primary">Ranking da sala</p>
+            <p className="font-sans text-xs text-text-muted">Pontos somados de todos os jogos</p>
+          </div>
+          <ChevronRight className="text-text-muted" size={20} />
+        </button>
+      )}
 
       {isHost && <SingleDeviceMode roomCode={roomCode} isHost={isHost} players={players} />}
 

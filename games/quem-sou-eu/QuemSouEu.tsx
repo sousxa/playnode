@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { EyeOff } from 'lucide-react';
 import Button from '../../components/Button';
 import GameHeader from '../shared/GameHeader';
@@ -9,12 +9,19 @@ import { initGame, reducer, type WhoAmIState } from './engine';
 interface Props {
   config: GameConfig;
   onExit: () => void;
+  onReportScores?: (scores: Record<string, number>) => void;
+  onRanking?: () => void;
 }
 
-const QuemSouEu: React.FC<Props> = ({ config, onExit }) => {
+const QuemSouEu: React.FC<Props> = ({ config, onExit, onReportScores, onRanking }) => {
   const [state, setState] = useState<WhoAmIState>(() => initGame(config));
   const dispatch = (a: Parameters<typeof reducer>[1]) => setState((s) => reducer(s, a));
   const playAgain = () => setState(initGame(config));
+
+  useEffect(() => {
+    if (state.phase === 'gameOver') onReportScores?.(state.scores);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.phase]);
 
   const wrap = (children: React.ReactNode) => (
     <div className="page-wrapper flex flex-col p-5">
@@ -25,7 +32,7 @@ const QuemSouEu: React.FC<Props> = ({ config, onExit }) => {
 
   if (state.phase === 'gameOver') {
     return wrap(
-      <GameOver title="Acabou!" players={state.players} scores={state.scores} onPlayAgain={playAgain} onExit={onExit} />
+      <GameOver title="Acabou!" players={state.players} scores={state.scores} onPlayAgain={playAgain} onExit={onExit} onRanking={onRanking} />
     );
   }
 

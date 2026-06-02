@@ -5,6 +5,7 @@ import Lobby from './views/Lobby';
 import GameRoom from './views/GameRoom';
 import GameConfig, { type ConfigExtras } from './views/GameConfig';
 import AgeGate from './components/AgeGate';
+import Ranking from './components/Ranking';
 import { GameMode } from './types';
 import type { GameConfig as EngineConfig } from './engine/types';
 import { localStorageSyncService } from './services/localStorageSync';
@@ -33,6 +34,17 @@ const App: React.FC = () => {
   const [configuringGame, setConfiguringGame] = useState<GameMode | null>(null);
   // Jogo em andamento (single-device). null = ainda no lobby.
   const [activeGame, setActiveGame] = useState<{ mode: GameMode; config: EngineConfig } | null>(null);
+  // Ranking acumulado da sala (entre jogos) + se a tela de ranking está aberta.
+  const [sessionScores, setSessionScores] = useState<Record<string, number>>({});
+  const [showRanking, setShowRanking] = useState(false);
+
+  const reportScores = (scores: Record<string, number>) => {
+    setSessionScores((prev) => {
+      const next = { ...prev };
+      for (const [id, v] of Object.entries(scores)) next[id] = (next[id] ?? 0) + (v ?? 0);
+      return next;
+    });
+  };
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -53,6 +65,7 @@ const App: React.FC = () => {
   const handleStartSession = async (name: string, code?: string, mode?: 'online' | 'local') => {
     setUserName(name);
     setRoomMode(mode ?? 'online');
+    setSessionScores({}); // nova sessão de sala → zera o ranking
     if ((mode ?? 'online') === 'online' && !code) {
       toast('🚧 Multiplayer online chega em breve — jogando no mesmo aparelho por enquanto');
     }
@@ -81,8 +94,9 @@ const App: React.FC = () => {
 
   // Lobby: escolheu um jogo → vai para a tela de configuração.
   const selectGame = (mode: GameMode) => {
-    if (players.length < 2 && mode !== GameMode.DILEMAS) {
-      toast.error('Adicione pelo menos 2 jogadores!');
+    const min = mode === GameMode.CARTAS_PODRES ? 3 : mode === GameMode.DILEMAS ? 1 : 2;
+    if (players.length < min) {
+      toast.error(`Esse jogo precisa de pelo menos ${min} jogadores!`);
       return;
     }
     setConfiguringGame(mode);
@@ -116,8 +130,24 @@ const App: React.FC = () => {
     screen = <AgeGate onConfirm={confirmAge} />;
   } else if (!userName || !hasRoomState) {
     screen = <Home onJoin={handleStartSession} initialCode={initialRoomFromUrl || undefined} />;
+  } else if (showRanking) {
+    screen = (
+      <Ranking
+        players={players}
+        scores={sessionScores}
+        onClose={() => setShowRanking(false)}
+      />
+    );
   } else if (activeGame) {
-    screen = <GameRoom mode={activeGame.mode} config={activeGame.config} onExit={exitGame} />;
+    screen = (
+      <GameRoom
+        mode={activeGame.mode}
+        config={activeGame.config}
+        onExit={exitGame}
+        onReportScores={reportScores}
+        onRanking={() => { setActiveGame(null); setShowRanking(true); }}
+      />
+    );
   } else if (configuringGame) {
     screen = (
       <GameConfig
@@ -135,6 +165,8 @@ const App: React.FC = () => {
         players={players}
         onlineMode={roomMode === 'online'}
         onSelectGame={selectGame}
+        hasRanking={Object.values(sessionScores).some((v) => v > 0)}
+        onShowRanking={() => setShowRanking(true)}
       />
     );
   }

@@ -3,6 +3,7 @@ import whoAmIJson from './quemsoueu.json';
 import dilemmasJson from './dilemmas.json';
 import amigosJson from './amigosdemerda.json';
 import truthDareJson from './verdadeoudesafio.json';
+import cartasJson from './cartascontrahumanidade.json';
 
 // ── Impostor ──
 export interface ImpostorItem {
@@ -80,8 +81,27 @@ export interface TruthDareContent {
   dares: TruthDareItem[];
 }
 
+// ── Cartas Podres (Cards Against Humanity) ──
+export interface BlackCard {
+  id: string;
+  text: string;
+  pick: number;
+  penalty?: { shots: number; description: string } | null;
+}
+export interface WhiteCard {
+  id: string;
+  text: string;
+}
+export interface CartasContent {
+  game: string;
+  version: string;
+  blackCards: BlackCard[];
+  whiteCards: WhiteCard[];
+}
+
 export const impostorContent = impostorJson as ImpostorContent;
 export const whoAmIContent = whoAmIJson as WhoAmIContent;
 export const dilemmasContent = dilemmasJson as DilemmasContent;
 export const amigosContent = amigosJson as MostLikelyContent;
 export const truthDareContent = truthDareJson as TruthDareContent;
+export const cartasContent = cartasJson as CartasContent;

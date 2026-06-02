@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { EyeOff, Skull } from 'lucide-react';
 import Button from '../../components/Button';
@@ -10,12 +10,19 @@ import { initGame, reducer, tally, type AmigosState } from './engine';
 interface Props {
   config: GameConfig;
   onExit: () => void;
+  onReportScores?: (scores: Record<string, number>) => void;
+  onRanking?: () => void;
 }
 
-const AmigosDeMerda: React.FC<Props> = ({ config, onExit }) => {
+const AmigosDeMerda: React.FC<Props> = ({ config, onExit, onReportScores, onRanking }) => {
   const [state, setState] = useState<AmigosState>(() => initGame(config));
   const dispatch = (a: Parameters<typeof reducer>[1]) => setState((s) => reducer(s, a));
   const playAgain = () => setState(initGame(config));
+
+  useEffect(() => {
+    if (state.phase === 'gameOver') onReportScores?.(state.scores);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.phase]);
 
   const question = state.questions[state.currentIdx];
 
@@ -27,7 +34,7 @@ const AmigosDeMerda: React.FC<Props> = ({ config, onExit }) => {
   );
 
   if (state.phase === 'gameOver') {
-    return wrap(<GameOver title="O pior do grupo 😈" players={state.players} scores={state.scores} onPlayAgain={playAgain} onExit={onExit} />);
+    return wrap(<GameOver title="O pior do grupo 😈" players={state.players} scores={state.scores} onPlayAgain={playAgain} onExit={onExit} onRanking={onRanking} />);
   }
 
   if (state.phase === 'results') {

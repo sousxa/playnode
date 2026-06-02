@@ -63,6 +63,9 @@ export const GAME_CONFIG_SCHEMA: Record<string, GameConfigSchema> = {
     intensity: true,
     alcoholic: true,
   },
+  [GameMode.CARTAS_PODRES]: {
+    rounds: { min: 3, max: 15, default: 8, label: 'Rodadas' },
+  },
 };
 
 export const GAME_TITLES: Record<string, string> = {
@@ -71,4 +74,5 @@ export const GAME_TITLES: Record<string, string> = {
   [GameMode.DILEMAS]: 'Dilemas',
   [GameMode.AMIGOS_DE_MERDA]: 'Amigos de Merda',
   [GameMode.VERDADE_OU_DESAFIO]: 'Verdade ou Desafio',
+  [GameMode.CARTAS_PODRES]: 'Cartas Podres',
 };

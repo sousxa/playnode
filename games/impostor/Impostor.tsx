@@ -11,9 +11,11 @@ import { initGame, reducer, getVoteTally, type ImpostorState } from './engine';
 interface Props {
   config: GameConfig;
   onExit: () => void;
+  onReportScores?: (scores: Record<string, number>) => void;
+  onRanking?: () => void;
 }
 
-const Impostor: React.FC<Props> = ({ config, onExit }) => {
+const Impostor: React.FC<Props> = ({ config, onExit, onReportScores, onRanking }) => {
   const [state, setState] = useState<ImpostorState>(() => initGame(config));
   const dispatch = (a: Parameters<typeof reducer>[1]) => setState((s) => reducer(s, a));
   const playAgain = () => setState(initGame(config));
@@ -23,6 +25,11 @@ const Impostor: React.FC<Props> = ({ config, onExit }) => {
       confetti({ particleCount: 120, spread: 75, origin: { y: 0.6 } });
     }
   }, [state.phase, state.caught, state.stolen]);
+
+  useEffect(() => {
+    if (state.phase === 'gameOver') onReportScores?.(state.scores);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.phase]);
 
   const wrap = (children: React.ReactNode) => (
     <div className="page-wrapper flex flex-col p-5">
@@ -150,7 +157,7 @@ const Impostor: React.FC<Props> = ({ config, onExit }) => {
   }
 
   // ── gameOver ──
-  return wrap(<GameOver title="Fim de jogo!" players={state.players} scores={state.scores} onPlayAgain={playAgain} onExit={onExit} />);
+  return wrap(<GameOver title="Fim de jogo!" players={state.players} scores={state.scores} onPlayAgain={playAgain} onExit={onExit} onRanking={onRanking} />);
 };
 
 const VotingTurn: React.FC<{
