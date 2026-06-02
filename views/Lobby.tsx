@@ -13,6 +13,7 @@ interface LobbyProps {
   hasRanking?: boolean;
   onSelectGame: (mode: GameMode) => void;
   onShowRanking?: () => void;
+  onAddPlayer: (name: string) => void;
 }
 
 const GAMES = [
@@ -26,7 +27,7 @@ const GAMES = [
   { mode: GameMode.CIDADE_DORME, title: 'A Cidade Dorme', desc: 'Dedução: ache o assassino', Icon: Moon, color: 'text-accent', bg: 'bg-accent/15' },
 ];
 
-const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, onlineMode, hasRanking, onSelectGame, onShowRanking }) => {
+const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, onlineMode, hasRanking, onSelectGame, onShowRanking, onAddPlayer }) => {
   const [copied, setCopied] = useState(false);
 
   const inviteUrl = `${window.location.origin}${window.location.pathname}?room=${roomCode}`;
@@ -51,10 +52,10 @@ const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, onlineMode, ha
       </div>
 
       {onlineMode && (
-        <div className="flex items-start gap-3 p-3 rounded-2xl bg-accent/10 border border-accent/30">
-          <Wifi className="text-accent shrink-0 mt-0.5" size={18} />
+        <div className="flex items-start gap-3 p-3 rounded-2xl bg-success/10 border border-success/30">
+          <Wifi className="text-success shrink-0 mt-0.5" size={18} />
           <p className="font-sans text-sm text-text-secondary">
-            <b className="text-text-primary">Online em breve 🚧</b> — a sincronização entre celulares chega na próxima fase. Por enquanto, adicione os jogadores deste aparelho.
+            <b className="text-text-primary">Sala online 🟢</b> — seus amigos entram escaneando o QR ou com o código <b className="text-text-primary">{roomCode}</b>. Os nomes aparecem aqui na hora.
           </p>
         </div>
       )}
@@ -105,7 +106,7 @@ const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, onlineMode, ha
         </button>
       )}
 
-      {isHost && <SingleDeviceMode roomCode={roomCode} isHost={isHost} players={players} />}
+      {isHost && <SingleDeviceMode isHost={isHost} onAddPlayer={onAddPlayer} online={onlineMode} />}
 
       {isHost ? (
           <section className="space-y-3">

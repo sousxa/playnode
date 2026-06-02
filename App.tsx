@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Toaster, toast } from 'sonner';
 import Home from './views/Home';
 import Lobby from './views/Lobby';
@@ -9,8 +9,13 @@ import Ranking from './components/Ranking';
 import { GameMode } from './types';
 import type { GameConfig as EngineConfig } from './engine/types';
 import { localStorageSyncService } from './services/localStorageSync';
+import { firebaseSyncService } from './services/firebaseSync';
+import { firebaseEnabled } from './services/firebase';
 
 const AGE_KEY = 'catdecks-age-ok';
+
+// Serviços de sincronização com a mesma API (escolhidos por modo).
+type SyncService = typeof localStorageSyncService | typeof firebaseSyncService;
 
 const App: React.FC = () => {
   const [playerId] = useState(() => {
@@ -30,13 +35,13 @@ const App: React.FC = () => {
   const [players, setPlayers] = useState<{ id: string; name: string }[]>([]);
   const [roomMode, setRoomMode] = useState<'online' | 'local'>('online');
 
-  // Jogo sendo configurado (tela GameConfig). null = não está configurando.
   const [configuringGame, setConfiguringGame] = useState<GameMode | null>(null);
-  // Jogo em andamento (single-device). null = ainda no lobby.
   const [activeGame, setActiveGame] = useState<{ mode: GameMode; config: EngineConfig } | null>(null);
-  // Ranking acumulado da sala (entre jogos) + se a tela de ranking está aberta.
   const [sessionScores, setSessionScores] = useState<Record<string, number>>({});
   const [showRanking, setShowRanking] = useState(false);
+
+  // Serviço de sync ativo na sessão (localStorage = mesmo aparelho, firebase = online).
+  const syncRef = useRef<SyncService>(localStorageSyncService);
 
   const reportScores = (scores: Record<string, number>) => {
     setSessionScores((prev) => {
@@ -51,37 +56,53 @@ const App: React.FC = () => {
     const roomFromUrl = params.get('room');
     if (roomFromUrl) setInitialRoomFromUrl(roomFromUrl.toUpperCase());
 
-    localStorageSyncService.onRoomUpdated((room) => {
+    const onRoom = (room: any) => {
       setRoomCode(room.code);
       setIsHost(room.hostId === playerId);
-      setPlayers(room.players.map((p: any) => ({ id: p.id, name: p.name })));
+      setPlayers((room.players || []).map((p: any) => ({ id: p.id, name: p.name })));
       setHasRoomState(true);
-    });
-    localStorageSyncService.onError((msg) => toast.error(msg));
+    };
+    const onErr = (msg: string) => toast.error(msg);
 
-    return () => localStorageSyncService.destroy();
+    // Registra nos dois serviços; só o ativo terá sala corrente.
+    localStorageSyncService.onRoomUpdated(onRoom);
+    localStorageSyncService.onError(onErr);
+    if (firebaseEnabled) {
+      firebaseSyncService.onRoomUpdated(onRoom);
+      firebaseSyncService.onError(onErr);
+    }
+
+    return () => {
+      localStorageSyncService.destroy();
+      firebaseSyncService.destroy();
+    };
   }, [playerId]);
 
   const handleStartSession = async (name: string, code?: string, mode?: 'online' | 'local') => {
+    const useOnline = (mode ?? 'online') === 'online' && firebaseEnabled;
+    const sync = useOnline ? firebaseSyncService : localStorageSyncService;
+    syncRef.current = sync;
     setUserName(name);
-    setRoomMode(mode ?? 'online');
-    setSessionScores({}); // nova sessão de sala → zera o ranking
-    if ((mode ?? 'online') === 'online' && !code) {
-      toast('🚧 Multiplayer online chega em breve — jogando no mesmo aparelho por enquanto');
+    setRoomMode(useOnline ? 'online' : 'local');
+    setSessionScores({});
+
+    if ((mode ?? 'online') === 'online' && !firebaseEnabled) {
+      toast('Online indisponível (config Firebase faltando) — jogando no mesmo aparelho.');
     }
+
     try {
       if (code) {
-        const result = await localStorageSyncService.joinRoom(code.toUpperCase().trim(), name, playerId);
+        const result: any = await sync.joinRoom(code.toUpperCase().trim(), name, playerId);
         setRoomCode(result.code);
         setIsHost(result.hostId === playerId);
-        setPlayers(result.players.map((p: any) => ({ id: p.id, name: p.name })));
+        setPlayers((result.players || []).map((p: any) => ({ id: p.id, name: p.name })));
         setHasRoomState(true);
         toast.success(`Entrou na sala ${result.code}!`);
       } else {
-        const result = localStorageSyncService.createRoom(name, playerId);
+        const result: any = await sync.createRoom(name, playerId);
         setRoomCode(result.code);
         setIsHost(true);
-        setPlayers(result.players.map((p: any) => ({ id: p.id, name: p.name })));
+        setPlayers((result.players || []).map((p: any) => ({ id: p.id, name: p.name })));
         setHasRoomState(true);
         toast.success(`Sala ${result.code} criada!`);
       }
@@ -92,7 +113,11 @@ const App: React.FC = () => {
     }
   };
 
-  // Lobby: escolheu um jogo → vai para a tela de configuração.
+  const handleAddPlayer = (name: string) => {
+    const id = `local_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+    syncRef.current.addLocalPlayer(roomCode, id, name);
+  };
+
   const selectGame = (mode: GameMode) => {
     const min = mode === GameMode.CIDADE_DORME ? 4 : mode === GameMode.CARTAS_PODRES ? 3 : mode === GameMode.DILEMAS ? 1 : 2;
     if (players.length < min) {
@@ -102,7 +127,6 @@ const App: React.FC = () => {
     setConfiguringGame(mode);
   };
 
-  // GameConfig: confirmou → monta a config e inicia o jogo.
   const confirmConfig = (extras: ConfigExtras) => {
     if (!configuringGame) return;
     const config: EngineConfig = {
@@ -131,13 +155,7 @@ const App: React.FC = () => {
   } else if (!userName || !hasRoomState) {
     screen = <Home onJoin={handleStartSession} initialCode={initialRoomFromUrl || undefined} />;
   } else if (showRanking) {
-    screen = (
-      <Ranking
-        players={players}
-        scores={sessionScores}
-        onClose={() => setShowRanking(false)}
-      />
-    );
+    screen = <Ranking players={players} scores={sessionScores} onClose={() => setShowRanking(false)} />;
   } else if (activeGame) {
     screen = (
       <GameRoom
@@ -165,6 +183,7 @@ const App: React.FC = () => {
         players={players}
         onlineMode={roomMode === 'online'}
         onSelectGame={selectGame}
+        onAddPlayer={handleAddPlayer}
         hasRanking={Object.values(sessionScores).some((v) => v > 0)}
         onShowRanking={() => setShowRanking(true)}
       />
