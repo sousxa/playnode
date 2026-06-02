@@ -30,7 +30,13 @@ const App: React.FC = () => {
   const [userName, setUserName] = useState('');
   const [roomCode, setRoomCode] = useState('');
   const [isHost, setIsHost] = useState(false);
-  const [initialRoomFromUrl, setInitialRoomFromUrl] = useState<string | null>(null);
+  // Lê o ?room=CODE da URL JÁ no primeiro render (QR/link de convite).
+  // Tem que ser síncrono: se for via useEffect, a Home monta antes e não prefche o código.
+  const [initialRoomFromUrl] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null;
+    const r = new URLSearchParams(window.location.search).get('room');
+    return r ? r.toUpperCase() : null;
+  });
   const [hasRoomState, setHasRoomState] = useState(false);
   const [players, setPlayers] = useState<{ id: string; name: string }[]>([]);
   const [roomMode, setRoomMode] = useState<'online' | 'local'>('online');
@@ -52,10 +58,6 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const roomFromUrl = params.get('room');
-    if (roomFromUrl) setInitialRoomFromUrl(roomFromUrl.toUpperCase());
-
     const onRoom = (room: any) => {
       setRoomCode(room.code);
       setIsHost(room.hostId === playerId);
