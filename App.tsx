@@ -14,6 +14,9 @@ import { firebaseEnabled } from './services/firebase';
 
 const AGE_KEY = 'catdecks-age-ok';
 
+// Jogos que já têm partida ONLINE sincronizada (os demais: só "mesmo aparelho" por enquanto).
+const ONLINE_GAMES = new Set<GameMode>([GameMode.DILEMAS]);
+
 // Serviços de sincronização com a mesma API (escolhidos por modo).
 type SyncService = typeof localStorageSyncService | typeof firebaseSyncService;
 
@@ -68,6 +71,15 @@ const App: React.FC = () => {
       setIsHost(room.hostId === playerId);
       setPlayers(ps.map((p: any) => ({ id: p.id, name: p.name })));
       setHasRoomState(true);
+
+      // Online: seguir o host quando uma partida começa/termina.
+      if (syncRef.current === firebaseSyncService) {
+        if (room.status === 'PLAYING' && room.gameMode) {
+          setActiveGame((prev) => prev || { mode: room.gameMode, config: room.config });
+        } else if (room.status === 'LOBBY') {
+          setActiveGame((prev) => (prev ? null : prev));
+        }
+      }
     };
     const onErr = (msg: string) => toast.error(msg);
 
@@ -143,6 +155,10 @@ const App: React.FC = () => {
       toast.error(`Esse jogo precisa de pelo menos ${min} jogadores!`);
       return;
     }
+    if (roomMode === 'online' && !ONLINE_GAMES.has(mode)) {
+      toast('🚧 Esse jogo ainda não tem versão online — jogue no modo "Mesmo aparelho". Em breve! 🚀');
+      return;
+    }
     setConfiguringGame(mode);
   };
 
@@ -156,11 +172,18 @@ const App: React.FC = () => {
       impostorCount: extras.impostorCount,
       intensityLevel: extras.intensityLevel,
     };
+    if (roomMode === 'online') {
+      // host transmite o início; os outros entram via onRoom (status PLAYING).
+      syncRef.current.startGame(roomCode, configuringGame, config);
+    }
     setActiveGame({ mode: configuringGame, config });
     setConfiguringGame(null);
   };
 
-  const exitGame = () => setActiveGame(null);
+  const exitGame = () => {
+    if (roomMode === 'online') syncRef.current.endGame(roomCode);
+    setActiveGame(null);
+  };
 
   const confirmAge = () => {
     localStorage.setItem(AGE_KEY, '1');
@@ -183,6 +206,10 @@ const App: React.FC = () => {
         onExit={exitGame}
         onReportScores={reportScores}
         onRanking={() => { setActiveGame(null); setShowRanking(true); }}
+        online={roomMode === 'online'}
+        roomCode={roomCode}
+        playerId={playerId}
+        isHost={isHost}
       />
     );
   } else if (configuringGame) {

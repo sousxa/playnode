@@ -302,6 +302,11 @@ class LocalStorageSyncService {
     /* no-op */
   }
 
+  /** Paridade com o firebaseSync (mesmo aparelho não sincroniza fim de jogo). */
+  endGame(_code: string): void {
+    /* no-op */
+  }
+
   /**
    * Salva a sala no localStorage
    */

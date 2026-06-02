@@ -4,26 +4,33 @@ import { Flame } from 'lucide-react';
 import Button from '../../components/Button';
 import GameHeader from '../shared/GameHeader';
 import type { GameConfig } from '../../engine/types';
+import { useSyncedReducer } from '../../hooks/useSyncedReducer';
 import { initGame, reducer, tallyVotes, type DilemasState } from './engine';
 
 interface Props {
   config: GameConfig;
   onExit: () => void;
+  online?: boolean;
+  roomCode?: string;
+  playerId?: string;
+  isHost?: boolean;
 }
 
-const Dilemas: React.FC<Props> = ({ config, onExit }) => {
-  const [state, setState] = useState<DilemasState>(() => initGame(config));
-  const dispatch = (a: Parameters<typeof reducer>[1]) => setState((s) => reducer(s, a));
-  const playAgain = () => setState(initGame(config));
+const Dilemas: React.FC<Props> = ({ config, onExit, online, roomCode, playerId, isHost }) => {
+  const { state, dispatch, reset } = useSyncedReducer(reducer, () => initGame(config), { online, roomCode, isHost });
 
-  const dilemma = state.dilemmas[state.currentIdx];
-
-  const wrap = (children: React.ReactNode) => (
+  const wrap = (children: React.ReactNode, header = true) => (
     <div className="page-wrapper flex flex-col p-5">
-      <GameHeader title="Dilemas" round={state.currentIdx + 1} totalRounds={state.dilemmas.length} onExit={onExit} />
+      {header && state && <GameHeader title="Dilemas" round={state.currentIdx + 1} totalRounds={state.dilemmas.length} onExit={onExit} />}
       <div className="flex-1 flex flex-col justify-center w-full max-w-md mx-auto">{children}</div>
     </div>
   );
+
+  if (!state) {
+    return wrap(<p className="text-center font-sans text-text-secondary">Conectando à partida…</p>, false);
+  }
+
+  const dilemma = state.dilemmas[state.currentIdx];
 
   if (state.phase === 'gameOver') {
     return wrap(
@@ -32,7 +39,7 @@ const Dilemas: React.FC<Props> = ({ config, onExit }) => {
         <h2 className="font-display font-extrabold text-3xl text-text-primary">Fim dos dilemas!</h2>
         <p className="font-sans text-text-secondary">A galera se revelou 😏</p>
         <div className="space-y-3">
-          <Button variant="success" onClick={playAgain}>🔄 Jogar de novo</Button>
+          {(!online || isHost) && <Button variant="success" onClick={reset}>🔄 Jogar de novo</Button>}
           <Button variant="ghost" onClick={onExit}>Voltar ao menu</Button>
         </div>
       </div>
@@ -45,24 +52,44 @@ const Dilemas: React.FC<Props> = ({ config, onExit }) => {
     const pa = Math.round((a / total) * 100);
     const pb = Math.round((b / total) * 100);
     const isLast = state.currentIdx + 1 >= state.dilemmas.length;
+    const canAdvance = !online || isHost;
     return wrap(
       <div className="space-y-6">
         <h2 className="font-display font-extrabold text-xl text-text-primary text-center overflow-wrap-anywhere">{dilemma.scenario}</h2>
         <ResultBar label={`A: ${dilemma.optionA}`} pct={pa} count={a} variant="accent" />
         <ResultBar label={`B: ${dilemma.optionB}`} pct={pb} count={b} variant="warning" />
-        <Button onClick={() => dispatch({ type: 'NEXT' })}>{isLast ? 'Finalizar 🏁' : 'Próximo dilema 👉'}</Button>
+        {canAdvance ? (
+          <Button onClick={() => dispatch({ type: 'NEXT' })}>{isLast ? 'Finalizar 🏁' : 'Próximo dilema 👉'}</Button>
+        ) : (
+          <p className="text-center font-sans text-sm text-text-muted">Aguardando o host continuar…</p>
+        )}
       </div>
     );
   }
 
-  // voting (sequencial, secreto)
+  // voting
   const voter = state.players[state.voterIdx];
+  const myTurn = !online || voter.id === playerId;
+
+  if (!myTurn) {
+    return wrap(
+      <div className="flex-1 flex flex-col justify-center text-center space-y-4">
+        <div className="w-14 h-14 rounded-full bg-accent/10 flex items-center justify-center mx-auto">
+          <div className="w-3 h-3 bg-accent rounded-full animate-ping" />
+        </div>
+        <p className="font-display font-bold text-lg text-text-primary">Vez de {voter.name}</p>
+        <p className="font-sans text-text-muted text-sm">{state.voterIdx + 1}/{state.players.length} votando…</p>
+      </div>
+    );
+  }
+
   return wrap(
     <VoteTurn
       key={voter.id}
       voterName={voter.name}
       dilemma={dilemma}
       progress={`${state.voterIdx + 1}/${state.players.length}`}
+      online={!!online}
       onVote={(choice) => dispatch({ type: 'CAST_VOTE', choice })}
     />
   );
@@ -75,11 +102,7 @@ const ResultBar: React.FC<{ label: string; pct: number; count: number; variant: 
       <span className={`font-display font-bold ${variant === 'accent' ? 'text-accent' : 'text-warning'}`}>{pct}%</span>
     </div>
     <div className="w-full h-3 rounded-full bg-surface-2 overflow-hidden">
-      <motion.div
-        initial={{ width: 0 }}
-        animate={{ width: `${pct}%` }}
-        className={`h-full rounded-full ${variant === 'accent' ? 'bg-accent' : 'bg-warning'}`}
-      />
+      <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} className={`h-full rounded-full ${variant === 'accent' ? 'bg-accent' : 'bg-warning'}`} />
     </div>
     <p className="font-sans text-xs text-text-muted mt-1">{count} voto(s)</p>
   </div>
@@ -89,9 +112,11 @@ const VoteTurn: React.FC<{
   voterName: string;
   dilemma: { scenario: string; optionA: string; optionB: string };
   progress: string;
+  online: boolean;
   onVote: (c: 'A' | 'B') => void;
-}> = ({ voterName, dilemma, progress, onVote }) => {
-  const [revealed, setRevealed] = useState(false);
+}> = ({ voterName, dilemma, progress, online, onVote }) => {
+  // No online o voto é no seu próprio celular → mostra direto. No mesmo aparelho, cobre primeiro.
+  const [revealed, setRevealed] = useState(online);
 
   if (!revealed) {
     return (

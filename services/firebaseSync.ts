@@ -136,19 +136,36 @@ class FirebaseSyncService {
     set(ref(db, `rooms/${code}/players/${playerId}`), null);
   }
 
-  startGame(code: string, mode: GameMode, initialGameState?: any): void {
+  /** Host inicia uma partida online: marca PLAYING + jogo + config (estado é criado pelo host depois). */
+  startGame(code: string, mode: GameMode, config?: any): void {
     if (!db) return;
     update(ref(db, `rooms/${code}`), {
       gameMode: mode,
       status: 'PLAYING',
-      gameState: initialGameState ?? null,
+      config: config ? JSON.parse(JSON.stringify(config)) : null,
+      gameState: null,
       updatedAt: Date.now(),
     });
   }
 
+  /** Volta a sala pro lobby (fim de jogo / sair do jogo). */
+  endGame(code: string): void {
+    if (!db) return;
+    update(ref(db, `rooms/${code}`), { status: 'LOBBY', gameMode: null, gameState: null, config: null, updatedAt: Date.now() });
+  }
+
   updateGameState(code: string, gameState: any): void {
     if (!db) return;
-    update(ref(db, `rooms/${code}`), { gameState, updatedAt: Date.now() });
+    // set substitui o estado inteiro; sanitiza undefined (Firebase rejeita).
+    set(ref(db, `rooms/${code}/gameState`), JSON.parse(JSON.stringify(gameState)));
+  }
+
+  /** Assina o estado do jogo (engine) em tempo real. Retorna unsubscribe. */
+  onGameState(code: string, cb: (gameState: any) => void): () => void {
+    if (!db) return () => {};
+    const gsRef = ref(db, `rooms/${code}/gameState`);
+    const handler = onValue(gsRef, (snap) => cb(snap.val()));
+    return () => off(gsRef, 'value', handler);
   }
 
   getCurrentRoom(): Room | null {

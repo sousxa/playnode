@@ -18,18 +18,24 @@ interface GameRoomProps {
   onReportScores?: (scores: Record<string, number>) => void;
   /** Abre o ranking da sala. */
   onRanking?: () => void;
+  // Contexto online (partida sincronizada via Firebase).
+  online?: boolean;
+  roomCode?: string;
+  playerId?: string;
+  isHost?: boolean;
 }
 
 /** Renderiza o jogo escolhido, cada um com sua própria engine. */
-const GameRoom: React.FC<GameRoomProps> = ({ mode, config, onExit, onReportScores, onRanking }) => {
+const GameRoom: React.FC<GameRoomProps> = ({ mode, config, onExit, onReportScores, onRanking, online, roomCode, playerId, isHost }) => {
   const scoreProps = { onReportScores, onRanking };
+  const onlineProps = { online, roomCode, playerId, isHost };
   switch (mode) {
     case GameMode.IMPOSTOR:
       return <Impostor config={config} onExit={onExit} {...scoreProps} />;
     case GameMode.QUEM_SOU_EU:
       return <QuemSouEu config={config} onExit={onExit} {...scoreProps} />;
     case GameMode.DILEMAS:
-      return <Dilemas config={config} onExit={onExit} />;
+      return <Dilemas config={config} onExit={onExit} {...onlineProps} />;
     case GameMode.AMIGOS_DE_MERDA:
       return <AmigosDeMerda config={config} onExit={onExit} {...scoreProps} />;
     case GameMode.VERDADE_OU_DESAFIO:
