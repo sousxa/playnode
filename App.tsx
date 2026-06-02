@@ -6,6 +6,7 @@ import GameRoom from './views/GameRoom';
 import GameConfig, { type ConfigExtras } from './views/GameConfig';
 import AgeGate from './components/AgeGate';
 import Ranking from './components/Ranking';
+import Reactions from './components/Reactions';
 import { GameMode } from './types';
 import type { GameConfig as EngineConfig } from './engine/types';
 import { localStorageSyncService } from './services/localStorageSync';
@@ -239,6 +240,9 @@ const App: React.FC = () => {
   return (
     <>
       {screen}
+      {roomMode === 'online' && hasRoomState && roomCode && (
+        <Reactions roomCode={roomCode} playerId={playerId} playerName={userName} />
+      )}
       <Toaster position="top-center" richColors theme="system" />
     </>
   );

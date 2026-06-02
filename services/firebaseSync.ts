@@ -6,7 +6,7 @@
  * Jogadores ficam num MAPA (/rooms/<CODE>/players/<playerId>) para evitar
  * corrida quando vários entram ao mesmo tempo; o listener converte em array.
  */
-import { ref, set, get, update, onValue, off, onDisconnect } from 'firebase/database';
+import { ref, set, get, update, onValue, off, onDisconnect, push, onChildAdded } from 'firebase/database';
 import { db } from './firebase';
 import type { GameMode } from '../types';
 
@@ -160,6 +160,24 @@ class FirebaseSyncService {
     if (!db) return;
     // set substitui o estado inteiro; sanitiza undefined (Firebase rejeita).
     set(ref(db, `rooms/${code}/gameState`), JSON.parse(JSON.stringify(gameState)));
+  }
+
+  /** Envia uma reação/zoeira para a sala (tomate, cutucada, etc.). */
+  sendReaction(code: string, type: string, fromId: string, fromName: string): void {
+    if (!db) return;
+    push(ref(db, `rooms/${code}/reactions`), { type, fromId, fromName, ts: Date.now() });
+  }
+
+  /** Escuta reações novas da sala (ignora as antigas anteriores à inscrição). */
+  onReaction(code: string, cb: (r: { type: string; fromId: string; fromName: string; ts: number }) => void): () => void {
+    if (!db) return () => {};
+    const r = ref(db, `rooms/${code}/reactions`);
+    const since = Date.now() - 1500;
+    const handler = onChildAdded(r, (snap) => {
+      const v = snap.val();
+      if (v && v.ts >= since) cb(v);
+    });
+    return () => off(r, 'child_added', handler);
   }
 
   /** Assina o estado do jogo (engine) em tempo real. Retorna unsubscribe. */
