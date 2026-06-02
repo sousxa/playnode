@@ -1,0 +1,18 @@
+{
+  "game": "dilemas",
+  "version": "1.0",
+  "items": [
+    { "id": "d1", "scenario": "Você acha uma carteira cheia de dinheiro com a identidade do dono.", "optionA": "Devolve tudo", "optionB": "Fica com o dinheiro", "alcoholic": false },
+    { "id": "d2", "scenario": "Superpoderes, mas você perde todas as memórias da infância.", "optionA": "Aceita os poderes", "optionB": "Mantém as memórias", "alcoholic": false },
+    { "id": "d3", "scenario": "Seu melhor amigo conta um segredo que magoaria alguém que você ama.", "optionA": "Guarda o segredo", "optionB": "Conta para a pessoa", "alcoholic": false },
+    { "id": "d4", "scenario": "Você pode saber a data exata da sua morte.", "optionA": "Quero saber", "optionB": "Prefiro não saber", "alcoholic": false },
+    { "id": "d5", "scenario": "Ganha 10 milhões, mas uma pessoa aleatória no mundo morre.", "optionA": "Pego o dinheiro", "optionB": "Recuso", "alcoholic": false },
+    { "id": "d6", "scenario": "Poderia apagar uma lembrança ruim para sempre.", "optionA": "Apago", "optionB": "Mantenho", "alcoholic": false },
+    { "id": "d7", "scenario": "Ser invisível por um dia ou voar por um dia?", "optionA": "Invisível", "optionB": "Voar", "alcoholic": false },
+    { "id": "d8", "scenario": "Viver 200 anos sozinho ou 50 anos rodeado de amigos?", "optionA": "200 anos sozinho", "optionB": "50 com amigos", "alcoholic": false },
+    { "id": "d9", "scenario": "Descobrir que toda a sua vida foi um reality show.", "optionA": "Continuo na boa", "optionB": "Surto total", "alcoholic": false },
+    { "id": "d10", "scenario": "Trocar de vida com a última pessoa que você conversou?", "optionA": "Troco", "optionB": "Fico na minha", "alcoholic": false },
+    { "id": "d11", "scenario": "Contar pro grupo o último arrependimento da sua vida amorosa.", "optionA": "Conto tudo", "optionB": "Pago uma dose", "alcoholic": true },
+    { "id": "d12", "scenario": "Mostrar pra roda a última conversa do seu WhatsApp.", "optionA": "Mostro", "optionB": "Recuso e bebo", "alcoholic": true }
+  ]
+}

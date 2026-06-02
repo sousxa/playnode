@@ -4,7 +4,7 @@ import { localStorageSyncService } from '../services/localStorageSync';
 interface SingleDeviceModeProps {
   roomCode: string;
   isHost: boolean;
-  players: Array<{ id: string; name: string; isActive: boolean }>;
+  players: Array<{ id: string; name: string }>;
   onPlayerAdded?: () => void;
 }
 
@@ -45,12 +45,10 @@ const SingleDeviceMode: React.FC<SingleDeviceModeProps> = ({
   }
 
   return (
-    <div className="space-y-3 p-4 rounded-4xl bg-fun-purple/5 border-2 border-dashed border-fun-purple2/40">
+    <div className="space-y-3 p-4 rounded-3xl bg-surface-2 border-2 border-dashed border-line">
       <div>
-        <h3 className="font-fun font-semibold text-fun-ink">
-          📱 Mesmo aparelho
-        </h3>
-        <p className="font-fun text-sm text-fun-muted leading-snug">
+        <h3 className="font-display font-bold text-text-primary">📱 Mesmo aparelho</h3>
+        <p className="font-sans text-sm text-text-secondary leading-snug">
           adicione amigos que vão jogar neste celular
         </p>
       </div>
@@ -67,12 +65,13 @@ const SingleDeviceMode: React.FC<SingleDeviceModeProps> = ({
             }
           }}
           disabled={isAdding}
-          className="flex-1 min-w-0 px-4 py-2.5 rounded-2xl bg-white border-2 border-fun-purple2/30 text-fun-ink font-fun placeholder:text-fun-muted/60 outline-none focus:border-fun-purple focus:ring-4 focus:ring-fun-purple/15 transition-all"
+          className="flex-1 min-w-0 px-4 py-2.5 rounded-2xl bg-bg border-2 border-line text-text-primary font-sans placeholder:text-text-muted outline-none focus:border-accent transition-colors"
         />
         <button
           onClick={handleAddPlayer}
           disabled={!newPlayerName.trim() || isAdding}
-          className="shrink-0 font-fun font-semibold px-5 rounded-2xl bg-gradient-to-r from-fun-green to-fun-sky text-white shadow-soft-sky active:scale-95 transition-all disabled:opacity-40"
+          className="shrink-0 font-display font-bold px-5 rounded-2xl bg-success text-white active:scale-95 transition-transform disabled:opacity-40"
+          style={{ boxShadow: '0 4px 0 rgb(var(--color-success-dark))' }}
         >
           + Add
         </button>

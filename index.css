@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Tokens de tema (formato canal RGB para suportar modificadores de opacidade do Tailwind) ── */
+/* PADRÃO: tema escuro */
+:root {
+  --color-bg:              13 10 25;       /* #0D0A19 — roxo-noite */
+  --color-surface:         26 22 46;       /* #1A162E */
+  --color-surface-2:       36 30 62;       /* #241E3E */
+  --color-surface-alt:     36 30 62;       /* #241E3E */
+  --color-border:          52 44 82;       /* #342C52 */
+  --color-text-primary:    240 240 248;    /* #F0F0F8 */
+  --color-text-secondary:  166 160 196;    /* #A6A0C4 */
+  --color-text-muted:      110 104 140;    /* #6E688C */
+  --color-accent:          124 58 237;     /* #7C3AED roxo */
+  --color-accent-dark:     91 33 182;      /* #5B21B6 */
+  --color-success:         34 197 94;      /* #22C55E verde */
+  --color-success-dark:    22 163 74;      /* #16A34A */
+  --color-warning:         245 158 11;     /* #F59E0B âmbar */
+  --color-warning-dark:    180 83 9;       /* #B45309 */
+  --color-danger:          244 63 94;      /* #F43F5E rosa-vermelho */
+  --color-danger-dark:     190 24 60;      /* #BE123C */
+}
+
+/* Tema claro */
+html.light {
+  --color-bg:              247 247 251;    /* #F7F7FB */
+  --color-surface:         255 255 255;    /* #FFFFFF */
+  --color-surface-2:       245 243 252;    /* #F5F3FC */
+  --color-surface-alt:     240 239 247;    /* #F0EFF7 */
+  --color-border:          228 226 240;    /* #E4E2F0 */
+  --color-text-primary:    33 28 54;       /* #211C36 */
+  --color-text-secondary:  107 102 134;    /* #6B6686 */
+  --color-text-muted:      163 158 186;    /* #A39EBA */
+  --color-accent:          124 58 237;     /* #7C3AED */
+  --color-accent-dark:     91 33 182;      /* #5B21B6 */
+  --color-success:         34 197 94;
+  --color-success-dark:    22 163 74;
+  --color-warning:         245 158 11;
+  --color-warning-dark:    180 83 9;
+  --color-danger:          244 63 94;
+  --color-danger-dark:     190 24 60;
+}
+
+@layer base {
+  * { box-sizing: border-box; }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body, #root {
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  body {
+    background-color: rgb(var(--color-bg));
+    color: rgb(var(--color-text-primary));
+    font-family: 'DM Sans', system-ui, sans-serif;
+    overflow: hidden; /* scroll é gerenciado por tela */
+    user-select: none;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--color-accent) / 0.4);
+    border-radius: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(135deg, #7C3AED, #EC4899);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .dot-pattern {
+    background-image: radial-gradient(circle, rgb(var(--color-text-primary) / 0.05) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* Container de scroll por tela (isola o scroll por rota) */
+  .page-wrapper {
+    height: 100dvh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: none;
+  }
+
+  .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 1.5rem); }
+
+  .overflow-wrap-anywhere {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+}

@@ -1,0 +1,1297 @@
+{
+  "game": "quem_sou_eu",
+  "version": "1.0",
+  "name": "Quem Sou Eu?",
+  "description": "Adivinhe quem ou o que você é fazendo perguntas!",
+  "categories": [
+    {
+      "id": "celebridades_br",
+      "label": "Celebridades Brasileiras",
+      "icon": "🇧🇷",
+      "items": [
+        {
+          "name": "Xuxa",
+          "tags": ["apresentadora", "feminino", "loira"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Pelé",
+          "tags": ["esportista", "masculino", "futebol"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Anitta",
+          "tags": ["cantora", "feminino", "pop"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Neymar",
+          "tags": ["esportista", "masculino", "futebol"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Silvio Santos",
+          "tags": ["apresentador", "masculino", "empresário"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Gal Gadot... ops, Gal Costa",
+          "tags": ["cantora", "feminino", "MPB"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Ayrton Senna",
+          "tags": ["esportista", "masculino", "automobilismo"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Ivete Sangalo",
+          "tags": ["cantora", "feminino", "axé"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Cazuza",
+          "tags": ["cantor", "masculino", "rock"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Paolla Oliveira",
+          "tags": ["atriz", "feminino", "novela"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Faustão",
+          "tags": ["apresentador", "masculino", "TV"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Bruna Marquezine",
+          "tags": ["atriz", "feminino", "novela"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Renato Aragão (Didi)",
+          "tags": ["ator", "masculino", "humorista"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Carla Perez",
+          "tags": ["dançarina", "feminino", "axé"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Galvão Bueno",
+          "tags": ["narrador", "masculino", "esporte"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Marta (futebol)",
+          "tags": ["esportista", "feminino", "futebol"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Zeca Pagodinho",
+          "tags": ["cantor", "masculino", "pagode"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Ana Maria Braga",
+          "tags": ["apresentadora", "feminino", "culinária"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Roberto Carlos",
+          "tags": ["cantor", "masculino", "rei"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Gisele Bündchen",
+          "tags": ["modelo", "feminino", "internacional"],
+          "difficulty": "easy"
+        }
+      ]
+    },
+    {
+      "id": "celebridades_internacional",
+      "label": "Celebridades Internacionais",
+      "icon": "🌎",
+      "items": [
+        {
+          "name": "Beyoncé",
+          "tags": ["cantora", "feminino", "pop"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Michael Jackson",
+          "tags": ["cantor", "masculino", "rei do pop"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Madonna",
+          "tags": ["cantora", "feminino", "pop"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Elvis Presley",
+          "tags": ["cantor", "masculino", "rock"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Lady Gaga",
+          "tags": ["cantora", "feminino", "excêntrica"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Cristiano Ronaldo",
+          "tags": ["esportista", "masculino", "futebol"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Messi",
+          "tags": ["esportista", "masculino", "futebol"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Oprah Winfrey",
+          "tags": ["apresentadora", "feminino", "talk show"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Will Smith",
+          "tags": ["ator", "masculino", "comedia"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Rihanna",
+          "tags": ["cantora", "feminino", "empresária"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Elon Musk",
+          "tags": ["empresário", "masculino", "tecnologia"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Taylor Swift",
+          "tags": ["cantora", "feminino", "country"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Brad Pitt",
+          "tags": ["ator", "masculino", "galã"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Angelina Jolie",
+          "tags": ["atriz", "feminino", "humanitária"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Drake",
+          "tags": ["cantor", "masculino", "rap"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Shakira",
+          "tags": ["cantora", "feminino", "latina"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Dwayne Johnson (The Rock)",
+          "tags": ["ator", "masculino", "lutador"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Kim Kardashian",
+          "tags": ["influencer", "feminino", "reality"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Justin Bieber",
+          "tags": ["cantor", "masculino", "pop"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Ariana Grande",
+          "tags": ["cantora", "feminino", "pop"],
+          "difficulty": "easy"
+        }
+      ]
+    },
+    {
+      "id": "personagens_ficcionais",
+      "label": "Personagens Ficcionais",
+      "icon": "🦸",
+      "items": [
+        {
+          "name": "Harry Potter",
+          "tags": ["bruxo", "masculino", "protagonista"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Batman",
+          "tags": ["herói", "masculino", "morcego"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Homem-Aranha",
+          "tags": ["herói", "masculino", "aranha"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Mulher Maravilha",
+          "tags": ["heroína", "feminino", "amazona"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Superman",
+          "tags": ["herói", "masculino", "alienígena"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Darth Vader",
+          "tags": ["vilão", "masculino", "Star Wars"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Elsa (Frozen)",
+          "tags": ["princesa", "feminino", "gelo"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Shrek",
+          "tags": ["ogro", "masculino", "verde"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Gandalf",
+          "tags": ["mago", "masculino", "senhor dos anéis"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Hermione Granger",
+          "tags": ["bruxa", "feminino", "inteligente"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Jon Snow",
+          "tags": ["guerreiro", "masculino", "Game of Thrones"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Daenerys Targaryen",
+          "tags": ["rainha", "feminino", "dragões"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Coringa",
+          "tags": ["vilão", "masculino", "palhaço"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Capitão América",
+          "tags": ["herói", "masculino", "escudo"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Viúva Negra",
+          "tags": ["heroína", "feminino", "espiã"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Goku",
+          "tags": ["guerreiro", "masculino", "saiyajin"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Naruto",
+          "tags": ["ninja", "masculino", "raposa"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Sonic",
+          "tags": ["ouriço", "masculino", "azul"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Mario Bros",
+          "tags": ["encanador", "masculino", "bigode"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Princesa Leia",
+          "tags": ["princesa", "feminino", "Star Wars"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Wolverine",
+          "tags": ["mutante", "masculino", "garras"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Thor",
+          "tags": ["deus", "masculino", "martelo"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Loki",
+          "tags": ["deus", "masculino", "trapaceiro"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Homem de Ferro",
+          "tags": ["herói", "masculino", "armadura"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Chaves",
+          "tags": ["criança", "masculino", "vila"],
+          "difficulty": "easy"
+        }
+      ]
+    },
+    {
+      "id": "personagens_historicos",
+      "label": "Personagens Históricos",
+      "icon": "📜",
+      "items": [
+        {
+          "name": "Cleópatra",
+          "tags": ["rainha", "feminino", "egito"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Albert Einstein",
+          "tags": ["cientista", "masculino", "física"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Adolf Hitler",
+          "tags": ["ditador", "masculino", "nazismo"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Jesus Cristo",
+          "tags": ["religioso", "masculino", "cristianismo"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Napoleão Bonaparte",
+          "tags": ["imperador", "masculino", "frança"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Mahatma Gandhi",
+          "tags": ["líder", "masculino", "pacifista"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Princesa Diana",
+          "tags": ["realeza", "feminino", "Inglaterra"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Martin Luther King",
+          "tags": ["ativista", "masculino", "direitos civis"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Joana d'Arc",
+          "tags": ["guerreira", "feminino", "santa"],
+          "difficulty": "hard"
+        },
+        {
+          "name": "Leonardo da Vinci",
+          "tags": ["artista", "masculino", "renascença"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Abraham Lincoln",
+          "tags": ["presidente", "masculino", "EUA"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Frida Kahlo",
+          "tags": ["artista", "feminino", "mexicana"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Nelson Mandela",
+          "tags": ["líder", "masculino", "África do Sul"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Pablo Picasso",
+          "tags": ["artista", "masculino", "cubismo"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "William Shakespeare",
+          "tags": ["escritor", "masculino", "teatro"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Marie Curie",
+          "tags": ["cientista", "feminino", "radioatividade"],
+          "difficulty": "hard"
+        },
+        {
+          "name": "Che Guevara",
+          "tags": ["revolucionário", "masculino", "Cuba"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Getúlio Vargas",
+          "tags": ["presidente", "masculino", "Brasil"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Santos Dumont",
+          "tags": ["inventor", "masculino", "aviação"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Dom Pedro II",
+          "tags": ["imperador", "masculino", "Brasil"],
+          "difficulty": "medium"
+        }
+      ]
+    },
+    {
+      "id": "animais",
+      "label": "Animais",
+      "icon": "🦁",
+      "items": [
+        {
+          "name": "Leão",
+          "tags": ["felino", "carnívoro", "savana"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Elefante",
+          "tags": ["mamífero", "grande", "tromba"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Pinguim",
+          "tags": ["ave", "Antártida", "não voa"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Tubarão",
+          "tags": ["peixe", "predador", "oceano"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Girafa",
+          "tags": ["mamífero", "pescoço longo", "savana"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Preguiça",
+          "tags": ["mamífero", "lento", "árvore"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Coruja",
+          "tags": ["ave", "noturno", "caça"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Ornitorrinco",
+          "tags": ["mamífero", "bico", "veneno"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Capivara",
+          "tags": ["roedor", "Brasil", "aquático"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Polvo",
+          "tags": ["molusco", "tentáculos", "inteligente"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Camaleão",
+          "tags": ["réptil", "muda de cor", "língua longa"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Axolote",
+          "tags": ["anfíbio", "regeneração", "aquático"],
+          "difficulty": "hard"
+        },
+        {
+          "name": "Flamingo",
+          "tags": ["ave", "rosa", "pernalta"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Urso Panda",
+          "tags": ["mamífero", "bambu", "China"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Canguru",
+          "tags": ["marsupial", "pula", "Austrália"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Beija-flor",
+          "tags": ["ave", "pequeno", "voa parado"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Orca",
+          "tags": ["mamífero", "predador", "oceano"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Morcego",
+          "tags": ["mamífero", "voa", "noturno"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Dragão de Komodo",
+          "tags": ["réptil", "venenoso", "grande"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Tamanduá",
+          "tags": ["mamífero", "língua longa", "formigas"],
+          "difficulty": "easy"
+        }
+      ]
+    },
+    {
+      "id": "profissoes",
+      "label": "Profissões",
+      "icon": "👔",
+      "items": [
+        {
+          "name": "Médico",
+          "tags": ["saúde", "hospital", "jaleco"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Bombeiro",
+          "tags": ["emergência", "fogo", "uniforme vermelho"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Professor",
+          "tags": ["educação", "escola", "ensina"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Chef de Cozinha",
+          "tags": ["comida", "restaurante", "chapéu"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Astronauta",
+          "tags": ["espaço", "NASA", "traje"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Policial",
+          "tags": ["segurança", "lei", "farda"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Advogado",
+          "tags": ["justiça", "tribunal", "terno"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Enfermeiro",
+          "tags": ["saúde", "hospital", "cuidados"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Youtuber",
+          "tags": ["internet", "vídeos", "moderno"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "DJ",
+          "tags": ["música", "festa", "mixagem"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Stripper",
+          "tags": ["adulto", "dança", "noturno"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Tatuador",
+          "tags": ["arte", "pele", "agulha"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Hacker",
+          "tags": ["tecnologia", "computador", "invasão"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Mágico",
+          "tags": ["entretenimento", "truques", "ilusão"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Barman",
+          "tags": ["bebidas", "bar", "drinks"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Piloto de Avião",
+          "tags": ["viagem", "céu", "comando"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Cientista",
+          "tags": ["pesquisa", "laboratório", "jaleco"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Motorista de Uber",
+          "tags": ["transporte", "aplicativo", "carro"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Influencer",
+          "tags": ["redes sociais", "publicidade", "moderno"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Assassino de Aluguel",
+          "tags": ["crime", "secreto", "perigoso"],
+          "difficulty": "hard"
+        }
+      ]
+    },
+    {
+      "id": "objetos",
+      "label": "Objetos do Cotidiano",
+      "icon": "🔧",
+      "items": [
+        {
+          "name": "Celular",
+          "tags": ["tecnologia", "comunicação", "tela"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Geladeira",
+          "tags": ["eletrodoméstico", "frio", "cozinha"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Escova de Dentes",
+          "tags": ["higiene", "banheiro", "cerdas"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Guarda-chuva",
+          "tags": ["chuva", "proteção", "dobrável"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Óculos",
+          "tags": ["visão", "lentes", "rosto"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Ventilador",
+          "tags": ["vento", "calor", "hélices"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Fone de Ouvido",
+          "tags": ["áudio", "música", "ouvidos"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Chinelo",
+          "tags": ["calçado", "casual", "pés"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Vibrador",
+          "tags": ["adulto", "prazer", "bateria"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Papel Higiênico",
+          "tags": ["banheiro", "higiene", "rolo"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Preservativo",
+          "tags": ["proteção", "sexual", "látex"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Controle Remoto",
+          "tags": ["TV", "botões", "distância"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Carregador de Celular",
+          "tags": ["tecnologia", "energia", "cabo"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Absorvente",
+          "tags": ["higiene", "feminino", "menstruação"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Isqueiro",
+          "tags": ["fogo", "bolso", "descartável"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Cortador de Unha",
+          "tags": ["higiene", "afiado", "pequeno"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Espelho",
+          "tags": ["reflexo", "vidro", "imagem"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Panela",
+          "tags": ["cozinha", "comida", "fogo"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Travesseiro",
+          "tags": ["cama", "macio", "dormir"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Sabonete",
+          "tags": ["higiene", "espuma", "cheiro"],
+          "difficulty": "easy"
+        }
+      ]
+    },
+    {
+      "id": "comidas_bebidas",
+      "label": "Comidas e Bebidas",
+      "icon": "🍕",
+      "items": [
+        {
+          "name": "Pizza",
+          "tags": ["comida", "italiana", "queijo"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Feijoada",
+          "tags": ["comida", "brasileira", "feijão"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Sushi",
+          "tags": ["comida", "japonesa", "peixe cru"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Cerveja",
+          "tags": ["bebida", "alcoólica", "gelada"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Caipirinha",
+          "tags": ["bebida", "brasileira", "limão"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Açaí",
+          "tags": ["fruta", "brasileira", "roxo"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Coxinha",
+          "tags": ["salgado", "brasileira", "frango"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Brigadeiro",
+          "tags": ["doce", "brasileira", "chocolate"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Hambúrguer",
+          "tags": ["comida", "fast food", "carne"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Tacos",
+          "tags": ["comida", "mexicana", "tortilla"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Pastel de Feira",
+          "tags": ["salgado", "brasileira", "frito"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Café",
+          "tags": ["bebida", "quente", "cafeína"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Mate Leão",
+          "tags": ["bebida", "gelada", "chá"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Pipoca",
+          "tags": ["lanche", "cinema", "milho"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Pão de Queijo",
+          "tags": ["comida", "brasileira", "Minas"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Guaraná Antarctica",
+          "tags": ["refrigerante", "brasileira", "verde"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Picanha",
+          "tags": ["carne", "churrasco", "brasileira"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Pudim",
+          "tags": ["sobremesa", "doce", "caramelo"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Skol Beats",
+          "tags": ["bebida", "alcoólica", "balada"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Miojo",
+          "tags": ["comida", "instantânea", "macarrão"],
+          "difficulty": "easy"
+        }
+      ]
+    },
+    {
+      "id": "memes_internet",
+      "label": "Memes e Internet",
+      "icon": "😂",
+      "items": [
+        {
+          "name": "Ednaldo Pereira",
+          "tags": ["meme", "brasileiro", "deus"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Gato da Padaria",
+          "tags": ["meme", "brasileiro", "gato"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Nazaré Confusa",
+          "tags": ["meme", "brasileiro", "novela"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Stonks",
+          "tags": ["meme", "internacional", "dinheiro"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Pepe the Frog",
+          "tags": ["meme", "internacional", "sapo"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Distracted Boyfriend",
+          "tags": ["meme", "internacional", "traição"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Woman Yelling at Cat",
+          "tags": ["meme", "internacional", "gato"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Drake Sim e Não",
+          "tags": ["meme", "rapper", "escolha"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Kiko (Chaves)",
+          "tags": ["meme", "brasileiro", "televisão"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Doge",
+          "tags": ["meme", "cachorro", "shiba"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Hide the Pain Harold",
+          "tags": ["meme", "internacional", "sorriso"],
+          "difficulty": "hard"
+        },
+        {
+          "name": "Hide the Pain Harold",
+          "tags": ["meme", "internacional", "sorriso"],
+          "difficulty": "hard"
+        },
+        {
+          "name": "É o Poder (Shrek)",
+          "tags": ["meme", "brasileiro", "música"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Ai que Delícia Cara",
+          "tags": ["meme", "brasileiro", "frase"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Barões da Pisadinha",
+          "tags": ["meme", "brasileiro", "música"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Grumpy Cat",
+          "tags": ["meme", "internacional", "gato bravo"],
+          "difficulty": "medium"
+        }
+      ]
+    },
+    {
+      "id": "marcas_produtos",
+      "label": "Marcas e Produtos",
+      "icon": "🏷️",
+      "items": [
+        {
+          "name": "Havaianas",
+          "tags": ["marca", "brasileira", "chinelo"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Nike",
+          "tags": ["marca", "esporte", "internacional"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Coca-Cola",
+          "tags": ["refrigerante", "internacional", "vermelho"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "iPhone",
+          "tags": ["tecnologia", "Apple", "celular"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "McDonald's",
+          "tags": ["fast food", "internacional", "M"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Netflix",
+          "tags": ["streaming", "filmes", "N"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Uber",
+          "tags": ["transporte", "app", "carro"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "WhatsApp",
+          "tags": ["app", "mensagem", "verde"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Playstation",
+          "tags": ["videogame", "Sony", "console"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Nubank",
+          "tags": ["banco", "roxo", "cartão"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Spotify",
+          "tags": ["música", "streaming", "verde"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "YouTube",
+          "tags": ["vídeo", "Google", "vermelho"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Instagram",
+          "tags": ["rede social", "foto", "Meta"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "TikTok",
+          "tags": ["rede social", "vídeo curto", "dança"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Tesla",
+          "tags": ["carro", "elétrico", "Elon Musk"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "OnlyFans",
+          "tags": ["plataforma", "adulto", "assinatura"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Tinder",
+          "tags": ["app", "relacionamento", "swipe"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "iFood",
+          "tags": ["delivery", "comida", "brasileiro"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Amazon",
+          "tags": ["e-commerce", "Jeff Bezos", "sorriso"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Magalu",
+          "tags": ["loja", "brasileira", "Lu"],
+          "difficulty": "easy"
+        }
+      ]
+    },
+    {
+      "id": "filmes_series",
+      "label": "Filmes e Séries",
+      "icon": "🎬",
+      "items": [
+        {
+          "name": "Titanic",
+          "tags": ["filme", "romance", "navio"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Breaking Bad",
+          "tags": ["série", "drama", "metanfetamina"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Game of Thrones",
+          "tags": ["série", "fantasia", "dragões"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Harry Potter",
+          "tags": ["filme", "magia", "bruxos"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Stranger Things",
+          "tags": ["série", "terror", "anos 80"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "La Casa de Papel",
+          "tags": ["série", "assalto", "espanhola"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "The Office",
+          "tags": ["série", "comédia", "escritório"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Friends",
+          "tags": ["série", "comédia", "amigos"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Star Wars",
+          "tags": ["filme", "ficção científica", "espaço"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Vingadores",
+          "tags": ["filme", "super-heróis", "Marvel"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Cidade de Deus",
+          "tags": ["filme", "brasileiro", "favela"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Tropa de Elite",
+          "tags": ["filme", "brasileiro", "BOPE"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Big Brother Brasil",
+          "tags": ["reality", "brasileiro", "confinamento"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Senhor dos Anéis",
+          "tags": ["filme", "fantasia", "anel"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Piratas do Caribe",
+          "tags": ["filme", "aventura", "Jack Sparrow"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Matrix",
+          "tags": ["filme", "ficção científica", "pílula"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Narcos",
+          "tags": ["série", "tráfico", "Pablo Escobar"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Avenida Brasil",
+          "tags": ["novela", "brasileira", "vingança"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Chaves",
+          "tags": ["série", "comédia", "mexicana"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Pantera Negra",
+          "tags": ["filme", "super-herói", "Wakanda"],
+          "difficulty": "easy"
+        }
+      ]
+    },
+    {
+      "id": "lugares",
+      "label": "Lugares e Monumentos",
+      "icon": "🗺️",
+      "items": [
+        {
+          "name": "Cristo Redentor",
+          "tags": ["monumento", "Rio de Janeiro", "brasileiro"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Torre Eiffel",
+          "tags": ["monumento", "Paris", "França"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Estátua da Liberdade",
+          "tags": ["monumento", "Nova York", "EUA"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Machu Picchu",
+          "tags": ["ruínas", "Peru", "incas"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Muralha da China",
+          "tags": ["construção", "China", "antiga"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Pirâmides do Egito",
+          "tags": ["monumento", "Egito", "faraós"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Big Ben",
+          "tags": ["relógio", "Londres", "Inglaterra"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Coliseu",
+          "tags": ["arena", "Roma", "Itália"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Taj Mahal",
+          "tags": ["mausoléu", "Índia", "amor"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Copacabana",
+          "tags": ["praia", "Rio de Janeiro", "calçadão"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Amazônia",
+          "tags": ["floresta", "Brasil", "pulmão"],
+          "difficulty": "easy"
+        },
+        {
+          "name": "Cataratas do Iguaçu",
+          "tags": ["cachoeira", "Brasil", "Argentina"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Times Square",
+          "tags": ["praça", "Nova York", "luminosos"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Monte Everest",
+          "tags": ["montanha", "Nepal", "mais alta"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Pão de Açúcar",
+          "tags": ["morro", "Rio de Janeiro", "bondinho"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Pelourinho",
+          "tags": ["bairro", "Salvador", "histórico"],
+          "difficulty": "hard"
+        },
+        {
+          "name": "Bonito",
+          "tags": ["cidade", "Mato Grosso do Sul", "águas claras"],
+          "difficulty": "hard"
+        },
+        {
+          "name": "Fernando de Noronha",
+          "tags": ["ilha", "Pernambuco", "paraíso"],
+          "difficulty": "medium"
+        },
+        {
+          "name": "Lençóis Maranhenses",
+          "tags": ["parque", "Maranhão", "dunas"],
+          "difficulty": "hard"
+        },
+        {
+          "name": "Favela da Rocinha",
+          "tags": ["comunidade", "Rio de Janeiro", "maior"],
+          "difficulty": "medium"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1710 @@
+{
+  "game": "impostor",
+  "version": "1.3",
+  "categories": [
+    {
+      "id": "objetos",
+      "label": "Objetos",
+      "items": [
+        {
+          "word": "Cadeira",
+          "difficulty": "easy",
+          "hints": [
+            "Normalmente fica parada",
+            "Serve para alguém descansar",
+            "Tem mais de uma versão",
+            "Nem sempre é confortável",
+            "Comum em qualquer lugar",
+            "Usada por uma pessoa de cada vez"
+          ]
+        },
+        {
+          "word": "Geladeira",
+          "difficulty": "easy",
+          "hints": [
+            "Relacionada a comida",
+            "Faz barulho às vezes",
+            "Abre e fecha",
+            "Normalmente fica na cozinha",
+            "Não funciona sem energia",
+            "Usada várias vezes ao dia"
+          ]
+        },
+        {
+          "word": "Controle remoto",
+          "difficulty": "easy",
+          "hints": [
+            "Tem muitos botões",
+            "Sempre some",
+            "Usado à distância",
+            "Relaciona-se a entretenimento",
+            "Funciona com pilha",
+            "Quase sempre cai no chão"
+          ]
+        },
+        {
+          "word": "Espelho",
+          "difficulty": "easy",
+          "hints": [
+            "Mostra algo conhecido",
+            "Não guarda informações",
+            "Não fala nada",
+            "Usado para conferir aparência",
+            "Não muda com o tempo",
+            "Pode enganar dependendo da luz"
+          ]
+        },
+        {
+          "word": "Travesseiro",
+          "difficulty": "easy",
+          "hints": [
+            "Usado em momentos de descanso",
+            "Pode deformar com o tempo",
+            "Normalmente fica na cama",
+            "Relacionado ao sono",
+            "Cada pessoa tem o seu",
+            "Nem sempre é confortável"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lugares",
+      "label": "Lugares",
+      "items": [
+        {
+          "word": "Bar",
+          "difficulty": "easy",
+          "hints": [
+            "Lugar social",
+            "Nem todo mundo sai sóbrio",
+            "Pode ser barulhento",
+            "Comum à noite",
+            "Envolve bebida",
+            "Nem sempre é planejado"
+          ]
+        },
+        {
+          "word": "Motel",
+          "difficulty": "medium",
+          "hints": [
+            "Lugar privado",
+            "Normalmente usado por pouco tempo",
+            "Tem horários curiosos",
+            "Pouca interação com funcionários",
+            "Discrição é comum",
+            "Nem todo mundo admite ir"
+          ]
+        },
+        {
+          "word": "Banheiro público",
+          "difficulty": "medium",
+          "hints": [
+            "Ninguém gosta muito",
+            "Usado por necessidade",
+            "Nem sempre é limpo",
+            "Evita-se ficar muito tempo",
+            "Tem regras implícitas",
+            "Pode gerar histórias traumáticas"
+          ]
+        },
+        {
+          "word": "Festa universitária",
+          "difficulty": "medium",
+          "hints": [
+            "Ambiente caótico",
+            "Música alta",
+            "Muita gente desconhecida",
+            "Difícil lembrar tudo depois",
+            "Exageros são comuns",
+            "Sempre tem alguém passando vergonha"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "acoes",
+      "label": "Ações",
+      "items": [
+        {
+          "word": "Mentir",
+          "difficulty": "easy",
+          "hints": [
+            "Nem sempre é proposital",
+            "Pode ser pequeno ou grande",
+            "Às vezes é descoberto",
+            "Muita gente faz",
+            "Pode gerar conflito",
+            "Nem sempre é maldade"
+          ]
+        },
+        {
+          "word": "Flertar",
+          "difficulty": "medium",
+          "hints": [
+            "Tem intenção",
+            "Pode ser discreto",
+            "Nem sempre funciona",
+            "Depende de contexto",
+            "Às vezes é mal interpretado",
+            "Pode gerar vergonha"
+          ]
+        },
+        {
+          "word": "Stalkear",
+          "difficulty": "medium",
+          "hints": [
+            "Geralmente online",
+            "Envolve curiosidade",
+            "Pode virar hábito",
+            "Nem sempre é assumido",
+            "Começa inocente",
+            "Pode ir longe demais"
+          ]
+        },
+        {
+          "word": "Ignorar",
+          "difficulty": "easy",
+          "hints": [
+            "É uma ação passiva",
+            "Pode ser proposital",
+            "Gera desconforto",
+            "Nem sempre é percebido",
+            "Às vezes é proteção",
+            "Pode parecer grosseria"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pessoas",
+      "label": "Tipos de pessoas",
+      "items": [
+        {
+          "word": "Ex tóxico",
+          "difficulty": "medium",
+          "hints": [
+            "Já fez parte da vida",
+            "Costuma reaparecer",
+            "Gera sentimentos mistos",
+            "Nem sempre aprende",
+            "Promete mudança",
+            "Normalmente dá problema"
+          ]
+        },
+        {
+          "word": "Fofoqueiro",
+          "difficulty": "easy",
+          "hints": [
+            "Sempre sabe algo",
+            "Gosta de novidade",
+            "Nem sempre confirma fatos",
+            "Espalha rápido",
+            "Costuma ouvir mais do que falar",
+            "Sempre aparece na história"
+          ]
+        },
+        {
+          "word": "Bêbado animado",
+          "difficulty": "easy",
+          "hints": [
+            "Fala alto",
+            "Abraça todo mundo",
+            "Ri fácil",
+            "Acha tudo incrível",
+            "Não percebe limites",
+            "No dia seguinte não lembra tudo"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "comida_bebida",
+      "label": "Comida e Bebida",
+      "items": [
+        {
+          "word": "Pizza",
+          "difficulty": "easy",
+          "hints": [
+            "Vem em uma caixa quadrada",
+            "É redonda",
+            "Dividida em fatias",
+            "Comum em reuniões de amigos",
+            "Tem vários sabores",
+            "Pode ser comida com a mão"
+          ]
+        },
+        {
+          "word": "Café",
+          "difficulty": "easy",
+          "hints": [
+            "Ajuda a acordar",
+            "Pode ser amargo",
+            "Tem um cheiro forte",
+            "Muitos tomam de manhã",
+            "Pode ser quente ou gelado",
+            "Vicia algumas pessoas"
+          ]
+        },
+        {
+          "word": "Sushi",
+          "difficulty": "medium",
+          "hints": [
+            "Vem do Japão",
+            "Envolve peixe",
+            "Usa-se palitinhos",
+            "Pode ter alga",
+            "Muitas vezes é cru",
+            "Arroz é a base"
+          ]
+        },
+        {
+          "word": "Cerveja",
+          "difficulty": "easy",
+          "hints": [
+            "Tem espuma",
+            "Servida gelada",
+            "Pode ser artesanal",
+            "Comum em churrascos",
+            "Vem em lata ou garrafa",
+            "Contém álcool"
+          ]
+        },
+        {
+          "word": "Chocolate",
+          "difficulty": "easy",
+          "hints": [
+            "É doce",
+            "Pode derreter",
+            "Vem do cacau",
+            "Comum na Páscoa",
+            "Tem versões brancas e amargas",
+            "Dá prazer ao comer"
+          ]
+        },
+        {
+          "word": "Hambúrguer",
+          "difficulty": "easy",
+          "hints": [
+            "Vem no pão",
+            "Comum em fast food",
+            "Pode ter queijo",
+            "Geralmente acompanha batata frita",
+            "Pode ser artesanal",
+            "É uma refeição rápida"
+          ]
+        },
+        {
+          "word": "Vinho",
+          "difficulty": "medium",
+          "hints": [
+            "Vem da uva",
+            "Fica melhor com o tempo",
+            "Servido em taças",
+            "Pode ser tinto ou branco",
+            "Acompanha jantares",
+            "Tem graduação alcoólica"
+          ]
+        },
+        {
+          "word": "Açaí",
+          "difficulty": "easy",
+          "hints": [
+            "É roxo",
+            "Vem do Norte do Brasil",
+            "Servido gelado",
+            "Pode ter granola",
+            "Dá muita energia",
+            "Comum em lanches saudáveis"
+          ]
+        },
+        {
+          "word": "Coxinha",
+          "difficulty": "easy",
+          "hints": [
+            "É um salgado",
+            "Tem formato de gota",
+            "Recheio de frango",
+            "Frita e crocante",
+            "Clássico de festas infantis",
+            "Pode ter catupiry"
+          ]
+        },
+        {
+          "word": "Pipoca",
+          "difficulty": "easy",
+          "hints": [
+            "Faz barulho ao preparar",
+            "Comum no cinema",
+            "Pode ser salgada ou doce",
+            "Vem do milho",
+            "É leve e crocante",
+            "Fácil de fazer"
+          ]
+        },
+        {
+          "word": "Brigadeiro",
+          "difficulty": "easy",
+          "hints": [
+            "Doce brasileiro",
+            "Leva granulado",
+            "Feito com leite condensado",
+            "Redondo e pequeno",
+            "Indispensável em aniversários",
+            "Pode ser comido de colher"
+          ]
+        },
+        {
+          "word": "Pão de queijo",
+          "difficulty": "easy",
+          "hints": [
+            "Típico de Minas Gerais",
+            "Feito com polvilho",
+            "Melhor quando está quente",
+            "Pequeno e redondo",
+            "Ótimo com café",
+            "Tem cheiro característico"
+          ]
+        },
+        {
+          "word": "Macarrão",
+          "difficulty": "easy",
+          "hints": [
+            "Massa italiana",
+            "Tem vários formatos",
+            "Pode ter molho vermelho",
+            "Cozinha na água",
+            "Prato rápido de domingo",
+            "Pode ser espaguete"
+          ]
+        },
+        {
+          "word": "Sorvete",
+          "difficulty": "easy",
+          "hints": [
+            "É muito gelado",
+            "Vem no cone ou pote",
+            "Pode derreter rápido",
+            "Ótimo no verão",
+            "Tem muitos sabores",
+            "Pode ter cobertura"
+          ]
+        },
+        {
+          "word": "Feijoada",
+          "difficulty": "medium",
+          "hints": [
+            "Prato pesado",
+            "Leva feijão preto",
+            "Tem várias carnes",
+            "Acompanha couve e farofa",
+            "Tradicional de quarta e sábado",
+            "Origem brasileira"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tecnologia",
+      "label": "Tecnologia",
+      "items": [
+        {
+          "word": "Smartphone",
+          "difficulty": "easy",
+          "hints": [
+            "Está sempre na mão",
+            "Tem tela de toque",
+            "Acessa a internet",
+            "Substituiu a câmera",
+            "Precisa carregar a bateria",
+            "Tem muitos aplicativos"
+          ]
+        },
+        {
+          "word": "Wi-Fi",
+          "difficulty": "easy",
+          "hints": [
+            "É invisível",
+            "Todo mundo pede a senha",
+            "Conecta aparelhos",
+            "Pode cair às vezes",
+            "Fica lento com muita gente",
+            "Funciona via rádio"
+          ]
+        },
+        {
+          "word": "Instagram",
+          "difficulty": "easy",
+          "hints": [
+            "Focado em fotos",
+            "Tem stories",
+            "Usa hashtags",
+            "As pessoas mostram a vida",
+            "Tem muitos filtros",
+            "Pertence à Meta"
+          ]
+        },
+        {
+          "word": "Netflix",
+          "difficulty": "easy",
+          "hints": [
+            "Serviço de streaming",
+            "Tem séries e filmes",
+            "Paga mensalidade",
+            "Dá para maratonar",
+            "Tem um som característico no início",
+            "Substituiu as locadoras"
+          ]
+        },
+        {
+          "word": "WhatsApp",
+          "difficulty": "easy",
+          "hints": [
+            "Troca de mensagens",
+            "Tem grupos de família",
+            "Usa o número do celular",
+            "Dá para mandar áudio",
+            "Tem o 'visto por último'",
+            "É o mais usado no Brasil"
+          ]
+        },
+        {
+          "word": "Notebook",
+          "difficulty": "easy",
+          "hints": [
+            "Computador portátil",
+            "Tem teclado e tela",
+            "Dá para levar na mochila",
+            "Usado para trabalho",
+            "Tem bateria própria",
+            "Pode ser fechado"
+          ]
+        },
+        {
+          "word": "Bluetooth",
+          "difficulty": "medium",
+          "hints": [
+            "Conexão sem fio",
+            "Curto alcance",
+            "Usado em fones",
+            "Nome de um rei viking",
+            "Símbolo azul",
+            "Pareia dispositivos"
+          ]
+        },
+        {
+          "word": "Inteligência Artificial",
+          "difficulty": "medium",
+          "hints": [
+            "Aprende com dados",
+            "Pode criar textos",
+            "Parece humano às vezes",
+            "Tema de ficção científica",
+            "Está em todo lugar agora",
+            "Pode automatizar tarefas"
+          ]
+        },
+        {
+          "word": "Carregador",
+          "difficulty": "easy",
+          "hints": [
+            "Sempre faz falta",
+            "Tem um cabo",
+            "Vai na tomada",
+            "Esquenta às vezes",
+            "Dá vida ao celular",
+            "As pessoas pedem emprestado"
+          ]
+        },
+        {
+          "word": "Fone de ouvido",
+          "difficulty": "easy",
+          "hints": [
+            "Usado nas orelhas",
+            "Para ouvir música",
+            "Pode ter fio ou não",
+            "Isola o som externo",
+            "Privacidade sonora",
+            "Comum em transportes"
+          ]
+        },
+        {
+          "word": "Google",
+          "difficulty": "easy",
+          "hints": [
+            "Sabe de tudo",
+            "É um buscador",
+            "Página inicial de muitos",
+            "Virou verbo",
+            "Tem cores vibrantes",
+            "Dono do Android"
+          ]
+        },
+        {
+          "word": "Mouse",
+          "difficulty": "easy",
+          "hints": [
+            "Nome de animal",
+            "Tem dois botões",
+            "Controla a seta",
+            "Usado com o computador",
+            "Pode ter um sensor embaixo",
+            "Tem a versão 'gamer'"
+          ]
+        },
+        {
+          "word": "Televisão",
+          "difficulty": "easy",
+          "hints": [
+            "Fica na sala",
+            "Tem controle remoto",
+            "Mostra canais",
+            "Cada vez mais fina",
+            "Central de entretenimento",
+            "Pode ser Smart"
+          ]
+        },
+        {
+          "word": "Videogame",
+          "difficulty": "easy",
+          "hints": [
+            "Para jogar",
+            "Conecta na TV",
+            "Tem controles",
+            "Muitos jovens gostam",
+            "Tem gráficos modernos",
+            "Pode ser online"
+          ]
+        },
+        {
+          "word": "Drone",
+          "difficulty": "medium",
+          "hints": [
+            "Voa sozinho",
+            "Tem câmera",
+            "Controlado remotamente",
+            "Parece um inseto",
+            "Usado para filmagens",
+            "Faz barulho de hélice"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "profissoes",
+      "label": "Profissões",
+      "items": [
+        {
+          "word": "Médico",
+          "difficulty": "easy",
+          "hints": [
+            "Usa jaleco",
+            "Trabalha no hospital",
+            "Cuida da saúde",
+            "Tem letra difícil",
+            "Salva vidas",
+            "Estuda por muitos anos"
+          ]
+        },
+        {
+          "word": "Professor",
+          "difficulty": "easy",
+          "hints": [
+            "Trabalha na escola",
+            "Ensina alunos",
+            "Usa quadro",
+            "Corrige provas",
+            "Tem muita paciência",
+            "Transmite conhecimento"
+          ]
+        },
+        {
+          "word": "Policial",
+          "difficulty": "easy",
+          "hints": [
+            "Usa farda",
+            "Anda armado",
+            "Mantém a ordem",
+            "Tem uma viatura",
+            "Prende bandidos",
+            "Usa distintivo"
+          ]
+        },
+        {
+          "word": "Cozinheiro",
+          "difficulty": "easy",
+          "hints": [
+            "Trabalha no restaurante",
+            "Usa chapéu alto",
+            "Faz comida",
+            "Lida com fogo",
+            "Usa facas afiadas",
+            "Tem bom paladar"
+          ]
+        },
+        {
+          "word": "Advogado",
+          "difficulty": "medium",
+          "hints": [
+            "Usa terno",
+            "Trabalha no fórum",
+            "Defende clientes",
+            "Conhece as leis",
+            "Gosta de argumentar",
+            "Usa a OAB"
+          ]
+        },
+        {
+          "word": "Bombeiro",
+          "difficulty": "easy",
+          "hints": [
+            "Apaga fogo",
+            "Usa caminhão vermelho",
+            "Salva pessoas",
+            "Usa mangueira",
+            "É muito corajoso",
+            "Atende emergências"
+          ]
+        },
+        {
+          "word": "Motorista de App",
+          "difficulty": "easy",
+          "hints": [
+            "Usa o GPS",
+            "Dirige o dia todo",
+            "Avaliado por estrelas",
+            "Trabalha com o próprio carro",
+            "Conversa com estranhos",
+            "Sempre olha o celular"
+          ]
+        },
+        {
+          "word": "Influenciador",
+          "difficulty": "easy",
+          "hints": [
+            "Trabalha na internet",
+            "Faz publis",
+            "Tem muitos seguidores",
+            "Posta a rotina",
+            "Usa o celular",
+            "Gera engajamento"
+          ]
+        },
+        {
+          "word": "Engenheiro",
+          "difficulty": "medium",
+          "hints": [
+            "Faz cálculos",
+            "Usa capacete em obras",
+            "Projeta estruturas",
+            "Gosta de exatas",
+            "Resolve problemas",
+            "Usa o CREA"
+          ]
+        },
+        {
+          "word": "Vendedor",
+          "difficulty": "easy",
+          "hints": [
+            "Trabalha no comércio",
+            "Tenta convencer",
+            "Bate metas",
+            "Lida com público",
+            "Oferece produtos",
+            "Pode ganhar comissão"
+          ]
+        },
+        {
+          "word": "Dentista",
+          "difficulty": "easy",
+          "hints": [
+            "Cuida dos dentes",
+            "Usa motorzinho",
+            "As pessoas têm medo",
+            "Usa máscara",
+            "Trabalha na boca",
+            "Recomenda fio dental"
+          ]
+        },
+        {
+          "word": "Ator",
+          "difficulty": "medium",
+          "hints": [
+            "Trabalha no teatro",
+            "Decora falas",
+            "Interpreta personagens",
+            "Pode ser famoso",
+            "Aparece na TV",
+            "Usa figurino"
+          ]
+        },
+        {
+          "word": "Garçom",
+          "difficulty": "easy",
+          "hints": [
+            "Anota pedidos",
+            "Leva a bandeja",
+            "Trabalha em pé",
+            "Recebe gorjeta",
+            "Equilibra pratos",
+            "Chama pelo nome"
+          ]
+        },
+        {
+          "word": "Pintor",
+          "difficulty": "easy",
+          "hints": [
+            "Usa pincéis",
+            "Lida com cores",
+            "Pode sujar a roupa",
+            "Trabalha em telas ou paredes",
+            "Tem visão artística",
+            "Usa tinta"
+          ]
+        },
+        {
+          "word": "Veterinário",
+          "difficulty": "easy",
+          "hints": [
+            "Cuida de animais",
+            "Trabalha na clínica",
+            "Dá vacinas em pets",
+            "Gosta de bichos",
+            "Não recebe reclamação do paciente",
+            "Usa estetoscópio"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "entretenimento",
+      "label": "Entretenimento",
+      "items": [
+        {
+          "word": "Cinema",
+          "difficulty": "easy",
+          "hints": [
+            "Tem tela gigante",
+            "Lugar escuro",
+            "Vende pipoca",
+            "Passa lançamentos",
+            "Tem poltronas confortáveis",
+            "Precisa de ingresso"
+          ]
+        },
+        {
+          "word": "Show",
+          "difficulty": "easy",
+          "hints": [
+            "Tem música ao vivo",
+            "Muita gente junta",
+            "Pode ser em estádio",
+            "Tem luzes e som alto",
+            "As pessoas cantam junto",
+            "Pode ter palco"
+          ]
+        },
+        {
+          "word": "Carnaval",
+          "difficulty": "easy",
+          "hints": [
+            "Festa popular",
+            "Tem fantasias",
+            "Acontece na rua",
+            "Muita música e dança",
+            "Feriado prolongado",
+            "Tem blocos"
+          ]
+        },
+        {
+          "word": "Futebol",
+          "difficulty": "easy",
+          "hints": [
+            "Esporte de massa",
+            "Tem 22 jogadores",
+            "Usa uma bola",
+            "Dura 90 minutos",
+            "Tem torcida",
+            "O objetivo é o gol"
+          ]
+        },
+        {
+          "word": "Big Brother",
+          "difficulty": "easy",
+          "hints": [
+            "Reality show",
+            "Pessoas confinadas",
+            "Tem eliminação",
+            "Câmeras 24 horas",
+            "Tem o líder",
+            "Gera muita fofoca"
+          ]
+        },
+        {
+          "word": "Karaokê",
+          "difficulty": "easy",
+          "hints": [
+            "Para cantar",
+            "Aparece a letra",
+            "Pode ser desafinado",
+            "Comum em festas",
+            "Usa microfone",
+            "Dá nota no final"
+          ]
+        },
+        {
+          "word": "Circo",
+          "difficulty": "easy",
+          "hints": [
+            "Tem palhaços",
+            "Tem malabaristas",
+            "Fica em uma lona",
+            "É itinerante",
+            "Tem pipoca e algodão doce",
+            "Apresentações acrobáticas"
+          ]
+        },
+        {
+          "word": "Museu",
+          "difficulty": "medium",
+          "hints": [
+            "Guarda história",
+            "Tem obras de arte",
+            "Lugar silencioso",
+            "Pode ter ossos de dinossauro",
+            "Exposições temporárias",
+            "Educativo"
+          ]
+        },
+        {
+          "word": "Parque de diversões",
+          "difficulty": "easy",
+          "hints": [
+            "Tem montanha-russa",
+            "Tem roda-gigante",
+            "Lugar barulhento",
+            "Muita adrenalina",
+            "Tem jogos de sorte",
+            "Fila para os brinquedos"
+          ]
+        },
+        {
+          "word": "Teatro",
+          "difficulty": "medium",
+          "hints": [
+            "Atores ao vivo",
+            "Tem cortinas",
+            "Público assiste sentado",
+            "Pode ser comédia ou drama",
+            "Tem aplausos no final",
+            "Cenários mudam"
+          ]
+        },
+        {
+          "word": "Podcast",
+          "difficulty": "easy",
+          "hints": [
+            "Apenas áudio (ou vídeo)",
+            "Pode ouvir no carro",
+            "Entrevistas longas",
+            "Tem vários temas",
+            "Disponível no Spotify",
+            "Pode ser baixado"
+          ]
+        },
+        {
+          "word": "Baralho",
+          "difficulty": "easy",
+          "hints": [
+            "Tem 52 cartas",
+            "Usado para jogos",
+            "Tem quatro naipes",
+            "Tem o curinga",
+            "Dá para fazer mágica",
+            "Pode ser de plástico"
+          ]
+        },
+        {
+          "word": "Dança",
+          "difficulty": "easy",
+          "hints": [
+            "Movimento do corpo",
+            "Segue o ritmo",
+            "Pode ser em par",
+            "Expressão artística",
+            "Gasta energia",
+            "Tem vários estilos"
+          ]
+        },
+        {
+          "word": "Livro",
+          "difficulty": "easy",
+          "hints": [
+            "Tem páginas",
+            "Conta uma história",
+            "Pode ser digital",
+            "Tem capa e autor",
+            "Estimula a imaginação",
+            "Lido em silêncio"
+          ]
+        },
+        {
+          "word": "Praia",
+          "difficulty": "easy",
+          "hints": [
+            "Tem areia",
+            "Tem mar",
+            "Lugar de sol",
+            "Usa-se biquíni ou sunga",
+            "Pode ter ondas",
+            "Bom para relaxar"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cotidiano",
+      "label": "Cotidiano",
+      "items": [
+        {
+          "word": "Acordar cedo",
+          "difficulty": "easy",
+          "hints": [
+            "Muitos odeiam",
+            "Precisa de despertador",
+            "O sol está nascendo",
+            "Início da rotina",
+            "Dá sono depois",
+            "Bom para produtividade"
+          ]
+        },
+        {
+          "word": "Tomar banho",
+          "difficulty": "easy",
+          "hints": [
+            "Usa água e sabão",
+            "Momento de higiene",
+            "Pode ser relaxante",
+            "Usa toalha depois",
+            "Canta-se às vezes",
+            "Diário para a maioria"
+          ]
+        },
+        {
+          "word": "Trânsito",
+          "difficulty": "easy",
+          "hints": [
+            "Muitos carros parados",
+            "Gera estresse",
+            "Atrasos comuns",
+            "Barulho de buzina",
+            "Horário de pico",
+            "Lentidão nas vias"
+          ]
+        },
+        {
+          "word": "Fazer compras",
+          "difficulty": "easy",
+          "hints": [
+            "Vai ao mercado",
+            "Usa carrinho",
+            "Gasta dinheiro",
+            "Precisa de lista",
+            "Olha os preços",
+            "Enche a despensa"
+          ]
+        },
+        {
+          "word": "Pagar boletos",
+          "difficulty": "easy",
+          "hints": [
+            "Vida de adulto",
+            "Tem data de vencimento",
+            "Gera tristeza",
+            "Usa o app do banco",
+            "Código de barras",
+            "Obrigação mensal"
+          ]
+        },
+        {
+          "word": "Faxina",
+          "difficulty": "easy",
+          "hints": [
+            "Limpar a casa",
+            "Usa vassoura e balde",
+            "Cansa bastante",
+            "Tira o pó",
+            "Deixa tudo cheiroso",
+            "Geralmente no fim de semana"
+          ]
+        },
+        {
+          "word": "Dormir",
+          "difficulty": "easy",
+          "hints": [
+            "Momento de apagar",
+            "Recupera as energias",
+            "Pode ter sonhos",
+            "Usa coberta",
+            "Dura algumas horas",
+            "Necessidade biológica"
+          ]
+        },
+        {
+          "word": "Cozinhar",
+          "difficulty": "easy",
+          "hints": [
+            "Preparar alimento",
+            "Segue receita",
+            "Usa o fogão",
+            "Pode dar errado",
+            "Suja louça",
+            "Habilidade útil"
+          ]
+        },
+        {
+          "word": "Lavar louça",
+          "difficulty": "easy",
+          "hints": [
+            "Usa esponja e detergente",
+            "Tarefa infinita",
+            "Pia cheia",
+            "Molha a roupa às vezes",
+            "Depois de comer",
+            "Ninguém gosta muito"
+          ]
+        },
+        {
+          "word": "Estudar",
+          "difficulty": "easy",
+          "hints": [
+            "Adquirir conhecimento",
+            "Leva tempo",
+            "Pode ter prova",
+            "Usa caderno e caneta",
+            "Exige concentração",
+            "Futuro depende disso"
+          ]
+        },
+        {
+          "word": "Academia",
+          "difficulty": "easy",
+          "hints": [
+            "Lugar de suar",
+            "Tem pesos",
+            "Música agitada",
+            "Projeto verão",
+            "Fica dolorido depois",
+            "Saúde e estética"
+          ]
+        },
+        {
+          "word": "Esperar ônibus",
+          "difficulty": "easy",
+          "hints": [
+            "Fica no ponto",
+            "Olha o relógio",
+            "Pode demorar",
+            "Lugar público",
+            "Às vezes vem cheio",
+            "Rotina de muitos"
+          ]
+        },
+        {
+          "word": "Fazer café",
+          "difficulty": "easy",
+          "hints": [
+            "Cheiro bom na casa",
+            "Usa filtro",
+            "Água quente",
+            "Ritual matinal",
+            "Pode ser na cafeteira",
+            "Dá ânimo"
+          ]
+        },
+        {
+          "word": "Passear com cachorro",
+          "difficulty": "easy",
+          "hints": [
+            "Usa coleira",
+            "Vai na rua",
+            "Precisa de saquinho",
+            "O bicho fica feliz",
+            "Exercício leve",
+            "Momento pet"
+          ]
+        },
+        {
+          "word": "Carregar o celular",
+          "difficulty": "easy",
+          "hints": [
+            "Procura tomada",
+            "Cabo USB",
+            "Bateria fraca",
+            "Desespero moderno",
+            "Espera chegar em 100%",
+            "Acontece todo dia"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sentimentos",
+      "label": "Sentimentos e Estados",
+      "items": [
+        {
+          "word": "Amor",
+          "difficulty": "easy",
+          "hints": [
+            "Sentimento forte",
+            "Borboletas no estômago",
+            "Pode ser romântico",
+            "Cuidado e carinho",
+            "Tema de músicas",
+            "Deseja o bem"
+          ]
+        },
+        {
+          "word": "Raiva",
+          "difficulty": "easy",
+          "hints": [
+            "Vontade de gritar",
+            "Rosto fica vermelho",
+            "Coração acelera",
+            "Gera conflitos",
+            "Pode ser passageira",
+            "Reação a injustiça"
+          ]
+        },
+        {
+          "word": "Tristeza",
+          "difficulty": "easy",
+          "hints": [
+            "Vontade de chorar",
+            "Desânimo",
+            "Coração apertado",
+            "Pode precisar de abraço",
+            "Sentimento baixo",
+            "Faz parte da vida"
+          ]
+        },
+        {
+          "word": "Felicidade",
+          "difficulty": "easy",
+          "hints": [
+            "Sorriso no rosto",
+            "Energia alta",
+            "Momento bom",
+            "Sensação de leveza",
+            "Contagiante",
+            "O que todos buscam"
+          ]
+        },
+        {
+          "word": "Ansiedade",
+          "difficulty": "medium",
+          "hints": [
+            "Preocupação com futuro",
+            "Mãos suando",
+            "Pensamento acelerado",
+            "Medo do que virá",
+            "Mal do século",
+            "Dificuldade de relaxar"
+          ]
+        },
+        {
+          "word": "Vergonha",
+          "difficulty": "easy",
+          "hints": [
+            "Rosto esquenta",
+            "Vontade de sumir",
+            "Situação embaraçosa",
+            "Timidez",
+            "Gera silêncio",
+            "Lembrança desconfortável"
+          ]
+        },
+        {
+          "word": "Saudade",
+          "difficulty": "easy",
+          "hints": [
+            "Falta de alguém",
+            "Lembrança do passado",
+            "Dói um pouco",
+            "Palavra só do português",
+            "Vontade de voltar",
+            "Distância dói"
+          ]
+        },
+        {
+          "word": "Medo",
+          "difficulty": "easy",
+          "hints": [
+            "Instinto de defesa",
+            "Pode paralisar",
+            "Causa arrepios",
+            "Relacionado ao escuro",
+            "Gera insegurança",
+            "Reação ao perigo"
+          ]
+        },
+        {
+          "word": "Inveja",
+          "difficulty": "medium",
+          "hints": [
+            "Querer o do outro",
+            "Sentimento negativo",
+            "Pode ser destrutivo",
+            "Dificuldade em celebrar",
+            "Olho gordo",
+            "Escondido por muitos"
+          ]
+        },
+        {
+          "word": "Orgulho",
+          "difficulty": "medium",
+          "hints": [
+            "Satisfação própria",
+            "Pode ser excessivo",
+            "Dificuldade em pedir desculpas",
+            "Sentir-se superior",
+            "Pode ser bom ou ruim",
+            "Cabeça erguida"
+          ]
+        },
+        {
+          "word": "Fome",
+          "difficulty": "easy",
+          "hints": [
+            "Barriga roncando",
+            "Irritação fácil",
+            "Pensar em comida",
+            "Necessidade física",
+            "Passa depois de comer",
+            "Desejo de lanche"
+          ]
+        },
+        {
+          "word": "Sono",
+          "difficulty": "easy",
+          "hints": [
+            "Olhos pesados",
+            "Bocejos constantes",
+            "Vontade de deitar",
+            "Falta de energia",
+            "Melhor à noite",
+            "Precisa descansar"
+          ]
+        },
+        {
+          "word": "Tédio",
+          "difficulty": "easy",
+          "hints": [
+            "Nada para fazer",
+            "Tempo não passa",
+            "Falta de interesse",
+            "Sensação de vazio",
+            "Olha o teto",
+            "Preguiça mental"
+          ]
+        },
+        {
+          "word": "Surpresa",
+          "difficulty": "easy",
+          "hints": [
+            "Inesperado",
+            "Susto positivo ou negativo",
+            "Olhos arregalados",
+            "Reação rápida",
+            "Pode ter festa",
+            "Muda o estado"
+          ]
+        },
+        {
+          "word": "Gratidão",
+          "difficulty": "easy",
+          "hints": [
+            "Dizer obrigado",
+            "Reconhecer o bem",
+            "Sentimento nobre",
+            "Faz bem para quem sente",
+            "Valorizar o que tem",
+            "Retribuição"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "viagem",
+      "label": "Viagem e Turismo",
+      "items": [
+        {
+          "word": "Avião",
+          "difficulty": "easy",
+          "hints": [
+            "Voa alto",
+            "Tem aeroporto",
+            "Precisa de passaporte",
+            "Tem turbulência",
+            "Meio de transporte rápido",
+            "Tem comissários"
+          ]
+        },
+        {
+          "word": "Mala",
+          "difficulty": "easy",
+          "hints": [
+            "Guarda roupas",
+            "Tem rodinhas",
+            "Pode ficar pesada",
+            "Leva em viagens",
+            "Pode ser despachada",
+            "Tem cadeado"
+          ]
+        },
+        {
+          "word": "Hotel",
+          "difficulty": "easy",
+          "hints": [
+            "Lugar de dormir",
+            "Tem recepção",
+            "Serviço de quarto",
+            "Café da manhã incluso",
+            "Tem check-in",
+            "Hospedagem"
+          ]
+        },
+        {
+          "word": "Passaporte",
+          "difficulty": "medium",
+          "hints": [
+            "Documento oficial",
+            "Precisa de visto",
+            "Usado em viagens internacionais",
+            "Tem carimbos",
+            "Validade de 10 anos",
+            "Identidade no exterior"
+          ]
+        },
+        {
+          "word": "Mapa",
+          "difficulty": "easy",
+          "hints": [
+            "Mostra o caminho",
+            "Tem ruas e cidades",
+            "Pode ser de papel",
+            "Hoje é no celular",
+            "Ajuda a não se perder",
+            "Representação geográfica"
+          ]
+        },
+        {
+          "word": "Turista",
+          "difficulty": "easy",
+          "hints": [
+            "Tira muitas fotos",
+            "Usa chapéu e protetor",
+            "Visita pontos famosos",
+            "Pode estar perdido",
+            "Gasta dinheiro",
+            "Leva lembrancinhas"
+          ]
+        },
+        {
+          "word": "Cruzeiro",
+          "difficulty": "medium",
+          "hints": [
+            "Navio grande",
+            "Viagem no mar",
+            "Tem piscinas e shows",
+            "Várias paradas",
+            "Tudo incluso",
+            "Pode dar enjoo"
+          ]
+        },
+        {
+          "word": "Camping",
+          "difficulty": "medium",
+          "hints": [
+            "Dormir na barraca",
+            "Contato com a natureza",
+            "Tem fogueira",
+            "Leva repelente",
+            "Lugar aberto",
+            "Aventura"
+          ]
+        },
+        {
+          "word": "Intercâmbio",
+          "difficulty": "medium",
+          "hints": [
+            "Estudar fora",
+            "Aprender outra língua",
+            "Morar em outro país",
+            "Experiência cultural",
+            "Conhecer gente nova",
+            "Dura meses ou anos"
+          ]
+        },
+        {
+          "word": "Mochilão",
+          "difficulty": "medium",
+          "hints": [
+            "Viagem barata",
+            "Leva tudo nas costas",
+            "Vários destinos",
+            "Dorme em hostels",
+            "Liberdade total",
+            "Espírito jovem"
+          ]
+        },
+        {
+          "word": "Ponto turístico",
+          "difficulty": "easy",
+          "hints": [
+            "Lugar famoso",
+            "Sempre cheio",
+            "Cartão postal",
+            "Todo mundo visita",
+            "Tem fila",
+            "Histórico ou bonito"
+          ]
+        },
+        {
+          "word": "Guia de viagem",
+          "difficulty": "medium",
+          "hints": [
+            "Pessoa ou livro",
+            "Dá informações",
+            "Explica a história",
+            "Conhece os atalhos",
+            "Lidera o grupo",
+            "Dá dicas locais"
+          ]
+        },
+        {
+          "word": "Souvenir",
+          "difficulty": "medium",
+          "hints": [
+            "Lembrancinha",
+            "Chaveiro ou imã",
+            "Presente para amigos",
+            "Comprado na viagem",
+            "Recordação física",
+            "Geralmente barato"
+          ]
+        },
+        {
+          "word": "Resort",
+          "difficulty": "medium",
+          "hints": [
+            "Hotel de luxo",
+            "Muitas atividades",
+            "Perto da praia",
+            "Para relaxar",
+            "Estrutura completa",
+            "Férias em família"
+          ]
+        },
+        {
+          "word": "Rodoviária",
+          "difficulty": "easy",
+          "hints": [
+            "Lugar de ônibus",
+            "Viagens terrestres",
+            "Tem guichês",
+            "Geralmente barulhenta",
+            "Embarque e desembarque",
+            "Mais barato que avião"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "esportes",
+      "label": "Esportes e Lazer",
+      "items": [
+        {
+          "word": "Natação",
+          "difficulty": "easy",
+          "hints": [
+            "Feito na água",
+            "Usa touca e óculos",
+            "Vários estilos",
+            "Ótimo exercício",
+            "Pode ser no mar ou piscina",
+            "Não transpira visivelmente"
+          ]
+        },
+        {
+          "word": "Basquete",
+          "difficulty": "easy",
+          "hints": [
+            "Tem cesta",
+            "Jogadores altos",
+            "Quica a bola",
+            "NBA é a liga famosa",
+            "Times de 5 pessoas",
+            "Usa as mãos"
+          ]
+        },
+        {
+          "word": "Vôlei",
+          "difficulty": "easy",
+          "hints": [
+            "Tem uma rede",
+            "Usa as mãos",
+            "Tem o saque",
+            "Pode ser na quadra ou areia",
+            "Não pode deixar cair",
+            "Tem o líbero"
+          ]
+        },
+        {
+          "word": "Corrida",
+          "difficulty": "easy",
+          "hints": [
+            "Usa tênis",
+            "Pode ser maratona",
+            "Gasta muita caloria",
+            "Pode ser na rua",
+            "Melhora o fôlego",
+            "Só depende de você"
+          ]
+        },
+        {
+          "word": "Yoga",
+          "difficulty": "medium",
+          "hints": [
+            "Posturas e respiração",
+            "Busca equilíbrio",
+            "Usa um tapetinho",
+            "Lugar silencioso",
+            "Flexibilidade",
+            "Paz mental"
+          ]
+        },
+        {
+          "word": "Skate",
+          "difficulty": "easy",
+          "hints": [
+            "Tem quatro rodinhas",
+            "Faz manobras",
+            "Usa shape",
+            "Cultura urbana",
+            "Pode cair muito",
+            "Esporte olímpico"
+          ]
+        },
+        {
+          "word": "Surfe",
+          "difficulty": "easy",
+          "hints": [
+            "Usa prancha",
+            "No mar",
+            "Depende das ondas",
+            "Estilo de vida",
+            "Usa parafina",
+            "Equilíbrio na água"
+          ]
+        },
+        {
+          "word": "Tênis",
+          "difficulty": "medium",
+          "hints": [
+            "Usa raquete",
+            "Bolinha amarela",
+            "Tem rede no meio",
+            "Pode ser saibro",
+            "Jogo individual ou dupla",
+            "Pontuação curiosa"
+          ]
+        },
+        {
+          "word": "Luta",
+          "difficulty": "medium",
+          "hints": [
+            "Contato físico",
+            "Tem tatame",
+            "Usa luvas ou quimono",
+            "Artes marciais",
+            "Tem nocaute",
+            "Disciplina e força"
+          ]
+        },
+        {
+          "word": "Ciclismo",
+          "difficulty": "easy",
+          "hints": [
+            "Usa bicicleta",
+            "Tem pedal",
+            "Usa capacete",
+            "Pode ser trilha ou estrada",
+            "Meio de transporte também",
+            "Equilíbrio"
+          ]
+        },
+        {
+          "word": "Crossfit",
+          "difficulty": "medium",
+          "hints": [
+            "Treino intenso",
+            "Usa pneus e cordas",
+            "Comunidade forte",
+            "Muitos exercícios",
+            "Cansa muito",
+            "Moda nas academias"
+          ]
+        },
+        {
+          "word": "Xadrez",
+          "difficulty": "medium",
+          "hints": [
+            "Jogo de tabuleiro",
+            "Peças brancas e pretas",
+            "Estratégia pura",
+            "Tem o rei e a rainha",
+            "Xeque-mate",
+            "Esporte da mente"
+          ]
+        },
+        {
+          "word": "Dança de salão",
+          "difficulty": "medium",
+          "hints": [
+            "Em par",
+            "Ritmos variados",
+            "Passos marcados",
+            "Socialização",
+            "Elegância",
+            "Baile"
+          ]
+        },
+        {
+          "word": "Trilha",
+          "difficulty": "easy",
+          "hints": [
+            "Caminhada na natureza",
+            "Usa bota",
+            "Subir morros",
+            "Ar puro",
+            "Pode ter mato",
+            "Vista bonita no final"
+          ]
+        },
+        {
+          "word": "Pesca",
+          "difficulty": "easy",
+          "hints": [
+            "Usa vara e anzol",
+            "Paciência é chave",
+            "Perto da água",
+            "Pode ser lazer ou sustento",
+            "Tem isca",
+            "Histórias exageradas"
+          ]
+        }
+      ]
+    }
+  ]
+}

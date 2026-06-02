@@ -1,79 +1,17 @@
-
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#f5f3ff">
-    <title>PlayNode</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      // Tema "claro e divertido": cores alegres, cantos arredondados, sombras suaves
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              fun: {
-                purple:   '#7c3aed',
-                purple2:  '#a78bfa',
-                pink:     '#ec4899',
-                coral:    '#fb7185',
-                yellow:   '#fbbf24',
-                green:    '#34d399',
-                sky:      '#38bdf8',
-                ink:      '#3b2a66',
-                muted:    '#8b7fb0',
-                cream:    '#fffdf9',
-              }
-            },
-            fontFamily: {
-              fun: ['Fredoka', 'system-ui', 'sans-serif'],
-            },
-            boxShadow: {
-              soft:        '0 12px 28px -12px rgba(124,58,237,0.35)',
-              'soft-pink': '0 12px 28px -12px rgba(236,72,153,0.40)',
-              'soft-sky':  '0 12px 28px -12px rgba(56,189,248,0.40)',
-              'soft-sm':   '0 6px 16px -8px rgba(59,42,102,0.25)',
-            },
-            borderRadius: {
-              '4xl': '2rem',
-            },
-          }
-        }
-      }
-    </script>
+    <meta name="theme-color" content="#0D0A19">
+    <title>CatDecks</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Baloo+2:wght@500;600;700;800&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
-        html, body, #root {
-            height: 100vh;   /* fallback */
-            height: 100dvh;  /* respeita a barra do navegador no mobile */
-        }
-        body {
-            font-family: 'Fredoka', system-ui, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-            overflow: hidden; /* o scroll é gerenciado dentro de cada tela */
-            color: #3b2a66;
-        }
-        /* Fundo claro e alegre com leve gradiente */
-        #root {
-            background: linear-gradient(160deg, #f5f3ff 0%, #fffdf9 45%, #eff6ff 100%);
-        }
-    </style>
-<script type="importmap">
-{
-  "imports": {
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.37.0"
-  }
-}
-</script>
 </head>
 <body>
     <div id="root"></div>
-<script type="module" src="/index.tsx"></script>
+    <script type="module" src="/index.tsx"></script>
 </body>
 </html>

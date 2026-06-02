@@ -1,23 +1,26 @@
 
 import React, { useState } from 'react';
+import { VenetianMask, Drama, Flame, Link2, Check, ChevronRight, Martini } from 'lucide-react';
 import SingleDeviceMode from '../components/SingleDeviceMode';
-import { Player, GameMode } from '../types';
+import ThemeToggle from '../components/ThemeToggle';
+import { GameMode } from '../types';
 
 interface LobbyProps {
   roomCode: string;
   isHost: boolean;
-  players: Player[];
-  onStartGame: (mode: GameMode) => Promise<void>;
+  players: { id: string; name: string }[];
+  alcoholicMode: boolean;
+  onAlcoholicChange: (v: boolean) => void;
+  onStartGame: (mode: GameMode, opts?: { alcoholicMode?: boolean }) => void;
 }
 
 const GAMES = [
-  { mode: GameMode.IMPOSTOR, title: 'O Impostor', desc: 'Um não sabe a palavra', icon: 'fa-user-secret', grad: 'from-fun-pink to-fun-coral' },
-  { mode: GameMode.QUEM_SOU_EU, title: 'Quem Sou Eu?', desc: 'Descubra seu personagem', icon: 'fa-id-badge', grad: 'from-fun-yellow to-fun-coral' },
-  { mode: GameMode.DILEMAS, title: 'Dilemas', desc: 'Votação polêmica', icon: 'fa-bolt', grad: 'from-fun-sky to-fun-purple' },
+  { mode: GameMode.IMPOSTOR, title: 'O Impostor', desc: 'Um não sabe a palavra', Icon: VenetianMask, color: 'text-danger', bg: 'bg-danger/15' },
+  { mode: GameMode.QUEM_SOU_EU, title: 'Quem Sou Eu?', desc: 'Adivinhe seu personagem', Icon: Drama, color: 'text-warning', bg: 'bg-warning/15' },
+  { mode: GameMode.DILEMAS, title: 'Dilemas', desc: 'Votação polêmica', Icon: Flame, color: 'text-accent', bg: 'bg-accent/15' },
 ];
 
-const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, onStartGame }) => {
-  const [loading, setLoading] = useState(false);
+const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, alcoholicMode, onAlcoholicChange, onStartGame }) => {
   const [copied, setCopied] = useState(false);
 
   const inviteUrl = `${window.location.origin}${window.location.pathname}?room=${roomCode}`;
@@ -29,37 +32,21 @@ const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, onStartGame })
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleStart = async (mode: GameMode) => {
-    if (players.length < 2 && mode !== GameMode.DILEMAS) {
-      alert("Convide pelo menos mais um amigo para testar!");
-      return;
-    }
-    setLoading(true);
-    try {
-      await onStartGame(mode);
-    } catch {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="flex flex-col h-full">
-      <header className="p-6 text-center space-y-4">
-        <div>
-          <p className="font-fun text-sm text-fun-muted uppercase tracking-widest">Código da sala</p>
-          <h2 className="font-fun font-bold text-5xl text-transparent bg-clip-text bg-gradient-to-r from-fun-purple to-fun-pink tracking-wider">{roomCode || '----'}</h2>
-        </div>
-
-        <div className="flex flex-col items-center gap-3">
-          <div className="bg-white p-3 rounded-4xl shadow-soft">
-            <img src={qrUrl} alt="QR Code para entrar" className="w-28 h-28 rounded-xl" />
+      <header className="p-6 pb-4 text-center relative">
+        <div className="absolute top-5 right-5"><ThemeToggle /></div>
+        <p className="font-sans text-sm text-text-muted uppercase tracking-widest">Código da sala</p>
+        <h2 className="font-display font-extrabold text-5xl text-gradient tracking-wider">{roomCode || '----'}</h2>
+        <div className="flex flex-col items-center gap-3 mt-3">
+          <div className="bg-white p-2.5 rounded-3xl shadow-lg">
+            <img src={qrUrl} alt="QR Code" className="w-24 h-24 rounded-xl" />
           </div>
-
           <button
             onClick={handleCopy}
-            className={`font-fun font-semibold text-sm px-5 py-2.5 rounded-3xl shadow-soft-sm active:scale-95 transition-all ${copied ? 'bg-fun-green text-white' : 'bg-white text-fun-purple'}`}
+            className={`font-display font-bold text-sm px-4 py-2 rounded-2xl border transition-colors flex items-center gap-2 ${copied ? 'bg-success text-white border-success' : 'bg-surface text-accent border-line'}`}
           >
-            <i className={`fas ${copied ? 'fa-check' : 'fa-link'} mr-2`}></i>
+            {copied ? <Check size={16} /> : <Link2 size={16} />}
             {copied ? 'Copiado!' : 'Copiar convite'}
           </button>
         </div>
@@ -67,14 +54,14 @@ const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, onStartGame })
 
       <main className="px-5 flex-1 min-h-0 overflow-y-auto space-y-6 pb-10">
         <section>
-          <h3 className="font-fun font-semibold text-fun-muted mb-2 ml-1">Jogadores ({players.length})</h3>
+          <h3 className="font-display font-bold text-text-secondary mb-2 ml-1">Jogadores ({players.length})</h3>
           <div className="flex flex-wrap gap-2">
-            {players.map(p => {
+            {players.map((p) => {
               const isMe = p.id === localStorage.getItem('pnode_pid');
               return (
                 <span
                   key={p.id}
-                  className={`font-fun px-4 py-2 rounded-2xl shadow-soft-sm animate-in zoom-in-50 ${isMe ? 'bg-gradient-to-r from-fun-purple to-fun-pink text-white' : 'bg-white text-fun-ink'}`}
+                  className={`font-sans font-medium px-4 py-2 rounded-2xl border ${isMe ? 'bg-accent text-white border-accent' : 'bg-surface text-text-primary border-line'}`}
                 >
                   {isMe ? '🙋 Você' : `👤 ${p.name}`}
                 </span>
@@ -83,49 +70,55 @@ const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, onStartGame })
           </div>
         </section>
 
-        {isHost && (
-          <SingleDeviceMode roomCode={roomCode} isHost={isHost} players={players} />
-        )}
+        {isHost && <SingleDeviceMode roomCode={roomCode} isHost={isHost} players={players} />}
 
         {isHost ? (
-          <section className="space-y-3">
-            <h3 className="font-fun font-semibold text-fun-muted ml-1">Escolha o jogo</h3>
+          <>
+            {/* Toggle modo alcoólico */}
+            <button
+              onClick={() => onAlcoholicChange(!alcoholicMode)}
+              className="w-full flex items-center gap-3 p-4 rounded-3xl bg-surface border border-line text-left"
+            >
+              <div className={`w-10 h-10 rounded-2xl flex items-center justify-center ${alcoholicMode ? 'bg-danger/15 text-danger' : 'bg-surface-2 text-text-muted'}`}>
+                <Martini size={20} />
+              </div>
+              <div className="flex-1">
+                <p className="font-display font-bold text-text-primary">Modo alcoólico 🍻</p>
+                <p className="font-sans text-xs text-text-muted">Libera conteúdo adulto (18+)</p>
+              </div>
+              <span className={`w-12 h-7 rounded-full p-1 transition-colors ${alcoholicMode ? 'bg-danger' : 'bg-surface-2'}`}>
+                <span className={`block w-5 h-5 rounded-full bg-white transition-transform ${alcoholicMode ? 'translate-x-5' : ''}`} />
+              </span>
+            </button>
 
-            {GAMES.map(g => (
-              <button
-                key={g.mode}
-                onClick={() => !loading && handleStart(g.mode)}
-                disabled={loading}
-                className="w-full p-4 bg-white rounded-4xl shadow-soft-sm text-left flex items-center gap-4 active:scale-[0.98] hover:shadow-soft transition-all disabled:opacity-50"
-              >
-                <div className={`w-14 h-14 shrink-0 rounded-3xl bg-gradient-to-br ${g.grad} text-white flex items-center justify-center shadow-soft-sm`}>
-                  <i className={`fas ${g.icon} text-2xl`}></i>
-                </div>
-                <div className="min-w-0">
-                  <h4 className="font-fun font-bold text-xl text-fun-ink">{g.title}</h4>
-                  <p className="font-fun text-fun-muted text-sm">{g.desc}</p>
-                </div>
-                <i className="fas fa-chevron-right text-fun-purple2 ml-auto"></i>
-              </button>
-            ))}
-          </section>
+            <section className="space-y-3">
+              <h3 className="font-display font-bold text-text-secondary ml-1">Escolha o jogo</h3>
+              {GAMES.map(({ mode, title, desc, Icon, color, bg }) => (
+                <button
+                  key={mode}
+                  onClick={() => onStartGame(mode, { alcoholicMode })}
+                  className="w-full p-4 bg-surface border border-line rounded-3xl text-left flex items-center gap-4 active:scale-[0.98] hover:border-accent transition-all"
+                >
+                  <div className={`w-14 h-14 shrink-0 rounded-2xl ${bg} ${color} flex items-center justify-center`}>
+                    <Icon size={26} />
+                  </div>
+                  <div className="min-w-0">
+                    <h4 className="font-display font-bold text-xl text-text-primary">{title}</h4>
+                    <p className="font-sans text-text-muted text-sm">{desc}</p>
+                  </div>
+                  <ChevronRight className="text-text-muted ml-auto" size={20} />
+                </button>
+              ))}
+            </section>
+          </>
         ) : (
-          <div className="p-8 text-center bg-white rounded-4xl shadow-soft flex flex-col items-center mt-4">
-            <div className="w-14 h-14 rounded-full bg-fun-purple/10 flex items-center justify-center mb-4">
-              <div className="w-3 h-3 bg-fun-purple rounded-full animate-ping"></div>
-            </div>
-            <p className="font-fun font-bold text-lg text-fun-ink">Aguardando o host…</p>
-            <p className="font-fun text-fun-muted text-sm mt-1">ele vai escolher um jogo!</p>
+          <div className="p-8 text-center bg-surface border border-line rounded-4xl flex flex-col items-center mt-4">
+            <div className="w-3 h-3 bg-accent rounded-full animate-ping mb-4" />
+            <p className="font-display font-bold text-lg text-text-primary">Aguardando o host…</p>
+            <p className="font-sans text-text-muted text-sm mt-1">ele vai escolher um jogo!</p>
           </div>
         )}
       </main>
-
-      {loading && (
-        <div className="fixed inset-0 bg-white/85 backdrop-blur-md flex flex-col items-center justify-center z-50">
-          <div className="w-12 h-12 border-4 border-fun-purple border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="font-fun font-semibold text-fun-purple text-xl">Preparando o jogo…</p>
-        </div>
-      )}
     </div>
   );
 };
