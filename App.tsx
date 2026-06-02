@@ -27,6 +27,7 @@ const App: React.FC = () => {
   const [hasRoomState, setHasRoomState] = useState(false);
   const [players, setPlayers] = useState<{ id: string; name: string }[]>([]);
   const [alcoholicMode, setAlcoholicMode] = useState(false);
+  const [roomMode, setRoomMode] = useState<'online' | 'local'>('online');
 
   // Jogo em andamento (single-device). null = ainda no lobby.
   const [activeGame, setActiveGame] = useState<{ mode: GameMode; config: GameConfig } | null>(null);
@@ -47,8 +48,12 @@ const App: React.FC = () => {
     return () => localStorageSyncService.destroy();
   }, [playerId]);
 
-  const handleStartSession = async (name: string, code?: string) => {
+  const handleStartSession = async (name: string, code?: string, mode?: 'online' | 'local') => {
     setUserName(name);
+    setRoomMode(mode ?? 'online');
+    if ((mode ?? 'online') === 'online' && !code) {
+      toast('🚧 Multiplayer online chega em breve — jogando no mesmo aparelho por enquanto');
+    }
     try {
       if (code) {
         const result = await localStorageSyncService.joinRoom(code.toUpperCase().trim(), name, playerId);
@@ -106,6 +111,7 @@ const App: React.FC = () => {
         isHost={isHost}
         players={players}
         alcoholicMode={alcoholicMode}
+        onlineMode={roomMode === 'online'}
         onAlcoholicChange={setAlcoholicMode}
         onStartGame={startGame}
       />

@@ -1,11 +1,13 @@
 
 import React, { useState } from 'react';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Wifi, Smartphone } from 'lucide-react';
 import Button from '../components/Button';
 import ThemeToggle from '../components/ThemeToggle';
 
+export type RoomMode = 'online' | 'local';
+
 interface HomeProps {
-  onJoin: (name: string, code?: string) => Promise<void> | void;
+  onJoin: (name: string, code?: string, mode?: RoomMode) => Promise<void> | void;
   initialCode?: string;
 }
 
@@ -13,6 +15,7 @@ const Home: React.FC<HomeProps> = ({ onJoin, initialCode }) => {
   const [name, setName] = useState('');
   const [code, setCode] = useState(initialCode || '');
   const [showJoin, setShowJoin] = useState(!!initialCode);
+  const [mode, setMode] = useState<RoomMode>('online');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,7 +25,7 @@ const Home: React.FC<HomeProps> = ({ onJoin, initialCode }) => {
     setIsLoading(true);
     setError(null);
     try {
-      await onJoin(name.trim(), showJoin ? code : undefined);
+      await onJoin(name.trim(), showJoin ? code : undefined, mode);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao conectar');
     } finally {
@@ -92,6 +95,25 @@ const Home: React.FC<HomeProps> = ({ onJoin, initialCode }) => {
           </div>
         ) : (
           <div className="space-y-3">
+            {/* Switch de modo: Online (padrão) x Mesmo aparelho */}
+            <div className="flex gap-2 p-1.5 rounded-2xl bg-surface border border-line">
+              <button
+                type="button"
+                onClick={() => setMode('online')}
+                className={`flex-1 py-2.5 rounded-xl font-display font-bold text-sm flex items-center justify-center gap-2 transition-colors ${mode === 'online' ? 'bg-accent text-white' : 'text-text-secondary'}`}
+              >
+                <Wifi size={16} /> Online
+                <span className="text-[10px] font-sans opacity-80">em breve</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode('local')}
+                className={`flex-1 py-2.5 rounded-xl font-display font-bold text-sm flex items-center justify-center gap-2 transition-colors ${mode === 'local' ? 'bg-accent text-white' : 'text-text-secondary'}`}
+              >
+                <Smartphone size={16} /> Mesmo aparelho
+              </button>
+            </div>
+
             <Button type="submit" disabled={!name.trim() || isLoading}>
               {isLoading ? 'Criando...' : '✨ Criar nova sala'}
             </Button>
