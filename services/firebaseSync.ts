@@ -6,7 +6,7 @@
  * Jogadores ficam num MAPA (/rooms/<CODE>/players/<playerId>) para evitar
  * corrida quando vários entram ao mesmo tempo; o listener converte em array.
  */
-import { ref, set, get, update, onValue, off } from 'firebase/database';
+import { ref, set, get, update, onValue, off, onDisconnect } from 'firebase/database';
 import { db } from './firebase';
 import type { GameMode } from '../types';
 
@@ -50,6 +50,12 @@ class FirebaseSyncService {
   private errorListeners = new Set<ErrorListener>();
   private unsub: (() => void) | null = null;
 
+  /** Remove o jogador automaticamente do Firebase quando ele fecha o app / cai a conexão. */
+  private armDisconnect(code: string, playerId: string) {
+    if (!db) return;
+    onDisconnect(ref(db, `rooms/${code}/players/${playerId}`)).remove();
+  }
+
   private subscribe(code: string) {
     if (!db) return;
     const roomRef = ref(db, `rooms/${code}`);
@@ -80,6 +86,7 @@ class FirebaseSyncService {
     };
     await set(ref(db, `rooms/${code}`), room);
     this.currentCode = code;
+    this.armDisconnect(code, playerId);
     this.subscribe(code);
     return snapshotToRoom(room);
   }
@@ -97,8 +104,24 @@ class FirebaseSyncService {
       id: playerId, name: playerName, isActive: true, hasActedThisTurn: false, joinedAt: Date.now(),
     });
     this.currentCode = clean;
+    this.armDisconnect(clean, playerId);
     this.subscribe(clean);
     return snapshotToRoom(snap.val());
+  }
+
+  /** Sai da sala: cancela a auto-remoção e remove o jogador. */
+  async leaveRoom(code: string, playerId: string): Promise<void> {
+    if (!db) return;
+    const pRef = ref(db, `rooms/${code}/players/${playerId}`);
+    try { await onDisconnect(pRef).cancel(); } catch {}
+    await set(pRef, null);
+    this.clearRoom();
+  }
+
+  /** Assume o papel de host (usado quando o host anterior saiu). */
+  claimHost(code: string, playerId: string): void {
+    if (!db) return;
+    update(ref(db, `rooms/${code}`), { hostId: playerId });
   }
 
   addLocalPlayer(code: string, playerId: string, playerName: string): void {

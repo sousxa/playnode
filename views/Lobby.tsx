@@ -1,8 +1,9 @@
 
 import React, { useState } from 'react';
-import { VenetianMask, Drama, Flame, Link2, Check, ChevronRight, Wifi, Skull, HeartCrack, Trophy, Layers, Timer, Moon } from 'lucide-react';
+import { VenetianMask, Drama, Flame, Link2, Check, ChevronRight, Wifi, Skull, HeartCrack, Trophy, Layers, Timer, Moon, LogOut } from 'lucide-react';
 import SingleDeviceMode from '../components/SingleDeviceMode';
 import ThemeToggle from '../components/ThemeToggle';
+import GameInfoSheet from '../components/GameInfoSheet';
 import { GameMode } from '../types';
 
 interface LobbyProps {
@@ -10,10 +11,10 @@ interface LobbyProps {
   isHost: boolean;
   players: { id: string; name: string }[];
   onlineMode?: boolean;
-  hasRanking?: boolean;
   onSelectGame: (mode: GameMode) => void;
   onShowRanking?: () => void;
   onAddPlayer: (name: string) => void;
+  onLeave: () => void;
 }
 
 const GAMES = [
@@ -27,8 +28,9 @@ const GAMES = [
   { mode: GameMode.CIDADE_DORME, title: 'A Cidade Dorme', desc: 'Dedução: ache o assassino', Icon: Moon, color: 'text-accent', bg: 'bg-accent/15' },
 ];
 
-const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, onlineMode, hasRanking, onSelectGame, onShowRanking, onAddPlayer }) => {
+const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, onlineMode, onSelectGame, onShowRanking, onAddPlayer, onLeave }) => {
   const [copied, setCopied] = useState(false);
+  const [infoMode, setInfoMode] = useState<GameMode | null>(null);
 
   const inviteUrl = `${window.location.origin}${window.location.pathname}?room=${roomCode}`;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(inviteUrl)}`;
@@ -90,51 +92,57 @@ const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, onlineMode, ha
         </div>
       </section>
 
-      {hasRanking && (
-        <button
-          onClick={onShowRanking}
-          className="w-full flex items-center gap-3 p-4 rounded-3xl bg-accent/10 border border-accent/30 text-left active:scale-[0.98] transition-transform"
-        >
-          <div className="w-10 h-10 rounded-2xl bg-accent/15 text-accent flex items-center justify-center">
-            <Trophy size={20} />
-          </div>
-          <div className="flex-1">
-            <p className="font-display font-bold text-text-primary">Ranking da sala</p>
-            <p className="font-sans text-xs text-text-muted">Pontos somados de todos os jogos</p>
-          </div>
-          <ChevronRight className="text-text-muted" size={20} />
-        </button>
-      )}
+      <button
+        onClick={onShowRanking}
+        className="w-full flex items-center gap-3 p-4 rounded-3xl bg-accent/10 border border-accent/30 text-left active:scale-[0.98] transition-transform"
+      >
+        <div className="w-10 h-10 rounded-2xl bg-accent/15 text-accent flex items-center justify-center">
+          <Trophy size={20} />
+        </div>
+        <div className="flex-1">
+          <p className="font-display font-bold text-text-primary">Ranking da sala</p>
+          <p className="font-sans text-xs text-text-muted">Pontos somados de todos os jogos</p>
+        </div>
+        <ChevronRight className="text-text-muted" size={20} />
+      </button>
 
       {isHost && <SingleDeviceMode isHost={isHost} onAddPlayer={onAddPlayer} online={onlineMode} />}
 
-      {isHost ? (
-          <section className="space-y-3">
-            <h3 className="font-display font-bold text-text-secondary ml-1">Escolha o jogo</h3>
-            {GAMES.map(({ mode, title, desc, Icon, color, bg }) => (
-              <button
-                key={mode}
-                onClick={() => onSelectGame(mode)}
-                className="w-full p-4 bg-surface border border-line rounded-3xl text-left flex items-center gap-4 active:scale-[0.98] hover:border-accent transition-all"
-              >
-                <div className={`w-14 h-14 shrink-0 rounded-2xl ${bg} ${color} flex items-center justify-center`}>
-                  <Icon size={26} />
-                </div>
-                <div className="min-w-0">
-                  <h4 className="font-display font-bold text-xl text-text-primary">{title}</h4>
-                  <p className="font-sans text-text-muted text-sm">{desc}</p>
-                </div>
-                <ChevronRight className="text-text-muted ml-auto" size={20} />
-              </button>
-            ))}
-          </section>
-      ) : (
-        <div className="p-8 text-center bg-surface border border-line rounded-4xl flex flex-col items-center">
-          <div className="w-3 h-3 bg-accent rounded-full animate-ping mb-4" />
-          <p className="font-display font-bold text-lg text-text-primary">Aguardando o host…</p>
-          <p className="font-sans text-text-muted text-sm mt-1">ele vai escolher um jogo!</p>
-        </div>
-      )}
+      <section className="space-y-3">
+        <h3 className="font-display font-bold text-text-secondary ml-1">
+          Jogos {!isHost && <span className="font-sans font-normal text-text-muted text-sm">· só o host inicia</span>}
+        </h3>
+        {GAMES.map(({ mode, title, desc, Icon, color, bg }) => (
+          <button
+            key={mode}
+            onClick={() => setInfoMode(mode)}
+            className="w-full p-4 bg-surface border border-line rounded-3xl text-left flex items-center gap-4 active:scale-[0.98] hover:border-accent transition-all"
+          >
+            <div className={`w-14 h-14 shrink-0 rounded-2xl ${bg} ${color} flex items-center justify-center`}>
+              <Icon size={26} />
+            </div>
+            <div className="min-w-0">
+              <h4 className="font-display font-bold text-xl text-text-primary">{title}</h4>
+              <p className="font-sans text-text-muted text-sm">{desc}</p>
+            </div>
+            <ChevronRight className="text-text-muted ml-auto" size={20} />
+          </button>
+        ))}
+      </section>
+
+      <button
+        onClick={onLeave}
+        className="w-full flex items-center justify-center gap-2 py-3 font-display font-bold text-text-muted hover:text-danger transition-colors"
+      >
+        <LogOut size={18} /> Sair da sala
+      </button>
+
+      <GameInfoSheet
+        mode={infoMode}
+        isHost={isHost}
+        onClose={() => setInfoMode(null)}
+        onPlay={(m) => { setInfoMode(null); onSelectGame(m); }}
+      />
     </div>
   );
 };

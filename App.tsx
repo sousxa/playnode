@@ -59,9 +59,14 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const onRoom = (room: any) => {
+      const ps = room.players || [];
+      // Migração de host: se o host saiu e eu sou o 1º da fila, assumo a sala.
+      if (room.code && ps.length > 0 && !ps.some((p: any) => p.id === room.hostId) && ps[0].id === playerId) {
+        syncRef.current.claimHost(room.code, playerId);
+      }
       setRoomCode(room.code);
       setIsHost(room.hostId === playerId);
-      setPlayers((room.players || []).map((p: any) => ({ id: p.id, name: p.name })));
+      setPlayers(ps.map((p: any) => ({ id: p.id, name: p.name })));
       setHasRoomState(true);
     };
     const onErr = (msg: string) => toast.error(msg);
@@ -118,6 +123,18 @@ const App: React.FC = () => {
   const handleAddPlayer = (name: string) => {
     const id = `local_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
     syncRef.current.addLocalPlayer(roomCode, id, name);
+  };
+
+  const handleLeave = () => {
+    try { syncRef.current.leaveRoom(roomCode, playerId); } catch {}
+    setUserName('');
+    setHasRoomState(false);
+    setRoomCode('');
+    setPlayers([]);
+    setIsHost(false);
+    setActiveGame(null);
+    setConfiguringGame(null);
+    setShowRanking(false);
   };
 
   const selectGame = (mode: GameMode) => {
@@ -186,8 +203,8 @@ const App: React.FC = () => {
         onlineMode={roomMode === 'online'}
         onSelectGame={selectGame}
         onAddPlayer={handleAddPlayer}
-        hasRanking={Object.values(sessionScores).some((v) => v > 0)}
         onShowRanking={() => setShowRanking(true)}
+        onLeave={handleLeave}
       />
     );
   }

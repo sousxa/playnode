@@ -292,6 +292,16 @@ class LocalStorageSyncService {
     this.lastUpdateTimestamp = 0;
   }
 
+  /** Paridade com o firebaseSync: sair = limpar a sala local. */
+  leaveRoom(_code: string, _playerId: string): void {
+    this.clearRoom();
+  }
+
+  /** Paridade com o firebaseSync (mesmo aparelho não tem migração de host). */
+  claimHost(_code: string, _playerId: string): void {
+    /* no-op */
+  }
+
   /**
    * Salva a sala no localStorage
    */

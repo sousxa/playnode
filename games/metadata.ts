@@ -82,3 +82,101 @@ export const GAME_TITLES: Record<string, string> = {
   [GameMode.STOP]: 'Stop!',
   [GameMode.CIDADE_DORME]: 'A Cidade Dorme',
 };
+
+export interface GameInfo {
+  emoji: string;
+  tagline: string;
+  players: string;
+  howTo: string[];
+}
+
+export const GAME_INFO: Record<string, GameInfo> = {
+  [GameMode.IMPOSTOR]: {
+    emoji: '🕵️',
+    tagline: 'Blefe e descubra quem não sabe a palavra.',
+    players: '3+ jogadores',
+    howTo: [
+      'Todos recebem a mesma palavra secreta — menos o impostor, que recebe só uma dica vaga.',
+      'Cada um dá uma pista sobre a palavra, sem entregar de graça.',
+      'Depois, todos votam em quem acham que é o impostor.',
+      'Se for pego, o impostor ainda pode tentar adivinhar a palavra para roubar a vitória.',
+    ],
+  },
+  [GameMode.QUEM_SOU_EU]: {
+    emoji: '🎭',
+    tagline: 'Adivinhe qual personagem você é.',
+    players: '2+ jogadores',
+    howTo: [
+      'Cada um recebe um personagem secreto (sem ver o próprio).',
+      'Na sua vez, vire o aparelho para a galera ver e dê pistas.',
+      'Você faz perguntas de "sim ou não" para adivinhar quem é.',
+      'Acertou? Ponto pra você! Senão, passa a vez.',
+    ],
+  },
+  [GameMode.DILEMAS]: {
+    emoji: '🔥',
+    tagline: 'Escolhas impossíveis que revelam a galera.',
+    players: '2+ jogadores',
+    howTo: [
+      'Aparece um dilema com duas opções (A ou B).',
+      'Cada um vota em segredo na sua opção.',
+      'No fim, o resultado mostra como o grupo se dividiu.',
+      'Sem resposta certa — é só pra gerar treta saudável. 😈',
+    ],
+  },
+  [GameMode.AMIGOS_DE_MERDA]: {
+    emoji: '💀',
+    tagline: 'Quem é mais provável de... ?',
+    players: '3+ jogadores',
+    howTo: [
+      'Aparece uma pergunta tipo "quem é mais capaz de...".',
+      'Cada um vota em segredo em alguém do grupo.',
+      'O reveal mostra quem levou mais votos na pergunta.',
+      'No fim, sai o ranking do "pior do grupo". 😬',
+    ],
+  },
+  [GameMode.VERDADE_OU_DESAFIO]: {
+    emoji: '🌶️',
+    tagline: 'O clássico ousado, com níveis de intensidade.',
+    players: '2+ jogadores',
+    howTo: [
+      'Na sua vez, escolha Verdade ou Desafio.',
+      'O app sorteia uma carta do nível que vocês configuraram.',
+      'Cumpriu? Passa pro próximo.',
+      'Tem modo alcoólico opcional pra deixar mais pesado. 🍻',
+    ],
+  },
+  [GameMode.CARTAS_PODRES]: {
+    emoji: '🃏',
+    tagline: 'Complete a frase mais sem noção.',
+    players: '3+ jogadores',
+    howTo: [
+      'A cada rodada, um jogador é o Juiz e lê uma carta preta com lacuna.',
+      'Os outros escolhem em segredo uma carta branca da própria mão.',
+      'O Juiz lê todas em voz alta e escolhe a mais engraçada.',
+      'Quem foi escolhido ganha o ponto. O Juiz gira a cada rodada.',
+    ],
+  },
+  [GameMode.STOP]: {
+    emoji: '⏱️',
+    tagline: 'Stop / Adedonha contra o relógio.',
+    players: '2+ jogadores',
+    howTo: [
+      'Sorteamos uma letra e mostramos as categorias.',
+      'Todos preenchem uma palavra de cada categoria com aquela letra.',
+      'Quem terminar grita STOP (ou o tempo acaba).',
+      'Confiram juntos: resposta única vale mais que repetida.',
+    ],
+  },
+  [GameMode.CIDADE_DORME]: {
+    emoji: '🌙',
+    tagline: 'Dedução social: ache o assassino.',
+    players: '4+ jogadores',
+    howTo: [
+      'Cada um recebe um papel secreto (Assassino, Médico, Detetive ou Cidadão).',
+      'À noite, o assassino escolhe uma vítima, o médico salva alguém e o detetive investiga.',
+      'De dia, a cidade discute e vota em quem eliminar.',
+      'A cidade vence se pegar o assassino; o assassino vence se sobrar.',
+    ],
+  },
+};
