@@ -55,12 +55,24 @@ const App: React.FC = () => {
   const syncRef = useRef<SyncService>(localStorageSyncService);
 
   const reportScores = (scores: Record<string, number>) => {
-    setSessionScores((prev) => {
-      const next = { ...prev };
-      for (const [id, v] of Object.entries(scores)) next[id] = (next[id] ?? 0) + (v ?? 0);
-      return next;
-    });
+    if (roomMode === 'online') {
+      // Online: só o host grava no ranking da sala; todos veem via onRanking.
+      if (isHost) firebaseSyncService.addToRanking(roomCode, scores);
+    } else {
+      setSessionScores((prev) => {
+        const next = { ...prev };
+        for (const [id, v] of Object.entries(scores)) next[id] = (next[id] ?? 0) + (v ?? 0);
+        return next;
+      });
+    }
   };
+
+  // Online: ranking da sala em tempo real.
+  useEffect(() => {
+    if (roomMode !== 'online' || !roomCode) return;
+    const unsub = firebaseSyncService.onRanking(roomCode, (r) => setSessionScores(r));
+    return unsub;
+  }, [roomMode, roomCode]);
 
   useEffect(() => {
     const onRoom = (room: any) => {

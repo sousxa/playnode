@@ -15,7 +15,7 @@ export interface DilemasState {
 }
 
 export type DilemasAction =
-  | { type: 'CAST_VOTE'; choice: 'A' | 'B' }
+  | { type: 'CAST_VOTE'; choice: 'A' | 'B'; voterId?: string }
   | { type: 'NEXT' };
 
 /** Filtra conteúdo adulto se o modo alcoólico estiver desligado. */
@@ -39,13 +39,12 @@ export function initGame(config: GameConfig): DilemasState {
 export function reducer(state: DilemasState, action: DilemasAction): DilemasState {
   switch (action.type) {
     case 'CAST_VOTE': {
-      const voter = state.players[state.voterIdx];
-      const votes = { ...state.votes, [voter.id]: action.choice };
-      const next = state.voterIdx + 1;
-      if (next >= state.players.length) {
-        return { ...state, votes, phase: 'results' };
-      }
-      return { ...state, votes, voterIdx: next };
+      // online: voto vem com voterId (simultâneo). local: usa o jogador da vez (sequencial).
+      const voterId = action.voterId ?? state.players[state.voterIdx].id;
+      const votes = { ...state.votes, [voterId]: action.choice };
+      const allVoted = state.players.every((p) => votes[p.id] !== undefined);
+      if (allVoted) return { ...state, votes, phase: 'results' };
+      return { ...state, votes, voterIdx: action.voterId ? state.voterIdx : state.voterIdx + 1 };
     }
     case 'NEXT': {
       const nextIdx = state.currentIdx + 1;

@@ -87,21 +87,24 @@ const AmigosDeMerda: React.FC<Props> = ({ config, onExit, onReportScores, onRank
   }
 
   // voting
-  const voter = state.players[state.voterIdx];
-  const myTurn = !online || voter.id === playerId;
-
-  if (!myTurn) {
+  if (online) {
+    const myVoted = state.votes[playerId || ''] !== undefined;
+    const count = Object.keys(state.votes).length;
+    if (myVoted) {
+      return wrap(
+        <div className="flex-1 flex flex-col justify-center text-center space-y-4">
+          <div className="text-5xl">🤐</div>
+          <p className="font-display font-bold text-lg text-text-primary">Voto registrado!</p>
+          <p className="font-sans text-text-muted text-sm">Aguardando os outros… {count}/{state.players.length}</p>
+        </div>,
+      );
+    }
     return wrap(
-      <div className="flex-1 flex flex-col justify-center text-center space-y-4">
-        <div className="w-14 h-14 rounded-full bg-danger/10 flex items-center justify-center mx-auto">
-          <div className="w-3 h-3 bg-danger rounded-full animate-ping" />
-        </div>
-        <p className="font-display font-bold text-lg text-text-primary">Vez de {voter.name}</p>
-        <p className="font-sans text-text-muted text-sm">{state.voterIdx + 1}/{state.players.length} votando…</p>
-      </div>,
+      <VoteTurn voterName="Você" question={question.text} targets={state.players} progress={`${count}/${state.players.length} votaram`} online onVote={(targetId) => dispatch({ type: 'CAST_VOTE', targetId, voterId: playerId })} />,
     );
   }
 
+  const voter = state.players[state.voterIdx];
   return wrap(
     <VoteTurn
       key={voter.id}
@@ -109,7 +112,7 @@ const AmigosDeMerda: React.FC<Props> = ({ config, onExit, onReportScores, onRank
       question={question.text}
       targets={state.players}
       progress={`${state.voterIdx + 1}/${state.players.length}`}
-      online={!!online}
+      online={false}
       onVote={(targetId) => dispatch({ type: 'CAST_VOTE', targetId })}
     />,
   );

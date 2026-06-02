@@ -6,7 +6,7 @@
  * Jogadores ficam num MAPA (/rooms/<CODE>/players/<playerId>) para evitar
  * corrida quando vários entram ao mesmo tempo; o listener converte em array.
  */
-import { ref, set, get, update, onValue, off, onDisconnect, push, onChildAdded } from 'firebase/database';
+import { ref, set, get, update, onValue, off, onDisconnect, push, onChildAdded, runTransaction } from 'firebase/database';
 import { db } from './firebase';
 import type { GameMode } from '../types';
 
@@ -160,6 +160,24 @@ class FirebaseSyncService {
     if (!db) return;
     // set substitui o estado inteiro; sanitiza undefined (Firebase rejeita).
     set(ref(db, `rooms/${code}/gameState`), JSON.parse(JSON.stringify(gameState)));
+  }
+
+  /** Soma pontos ao ranking acumulado da sala (atômico). */
+  addToRanking(code: string, scores: Record<string, number>): void {
+    if (!db) return;
+    runTransaction(ref(db, `rooms/${code}/ranking`), (cur: Record<string, number> | null) => {
+      const next = { ...(cur || {}) };
+      for (const [id, v] of Object.entries(scores)) next[id] = (next[id] || 0) + (v || 0);
+      return next;
+    });
+  }
+
+  /** Assina o ranking acumulado da sala. */
+  onRanking(code: string, cb: (ranking: Record<string, number>) => void): () => void {
+    if (!db) return () => {};
+    const r = ref(db, `rooms/${code}/ranking`);
+    const handler = onValue(r, (snap) => cb(snap.val() || {}));
+    return () => off(r, 'value', handler);
   }
 
   /** Envia uma reação/zoeira para a sala (tomate, cutucada, etc.). */

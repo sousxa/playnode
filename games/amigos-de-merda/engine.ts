@@ -17,7 +17,7 @@ export interface AmigosState {
 }
 
 export type AmigosAction =
-  | { type: 'CAST_VOTE'; targetId: string }
+  | { type: 'CAST_VOTE'; targetId: string; voterId?: string }
   | { type: 'NEXT' };
 
 function pickQuestions(config: GameConfig): MostLikelyItem[] {
@@ -47,10 +47,11 @@ export function tally(state: AmigosState): Record<string, number> {
 export function reducer(state: AmigosState, action: AmigosAction): AmigosState {
   switch (action.type) {
     case 'CAST_VOTE': {
-      const voter = state.players[state.voterIdx];
-      const votes = { ...state.votes, [voter.id]: action.targetId };
-      const next = state.voterIdx + 1;
-      if (next < state.players.length) return { ...state, votes, voterIdx: next };
+      // online: voto com voterId (simultâneo). local: jogador da vez (sequencial).
+      const voterId = action.voterId ?? state.players[state.voterIdx].id;
+      const votes = { ...state.votes, [voterId]: action.targetId };
+      const allVoted = state.players.every((p) => votes[p.id] !== undefined);
+      if (!allVoted) return { ...state, votes, voterIdx: action.voterId ? state.voterIdx : state.voterIdx + 1 };
       // todos votaram → soma os votos recebidos ao placar e mostra resultado
       const scores = { ...state.scores };
       for (const target of Object.values(votes)) scores[target] = (scores[target] ?? 0) + 1;
