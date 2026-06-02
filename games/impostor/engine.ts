@@ -34,6 +34,7 @@ export interface ImpostorState {
 
 export type ImpostorAction =
   | { type: 'NEXT_DISTRIBUTE' }
+  | { type: 'BEGIN_CLUES' }
   | { type: 'START_VOTING' }
   | { type: 'CAST_VOTE'; suspectId: string }
   | { type: 'IMPOSTOR_GUESS'; word: string }
@@ -132,6 +133,10 @@ export function reducer(state: ImpostorState, action: ImpostorAction): ImpostorS
       if (next >= state.players.length) return { ...state, phase: 'clues' };
       return { ...state, distributedIdx: next };
     }
+
+    case 'BEGIN_CLUES':
+      // Online: todos já viram seu segredo no próprio celular → vai direto pras dicas.
+      return { ...state, phase: 'clues' };
 
     case 'START_VOTING':
       return { ...state, phase: 'voting', voterIdx: 0, votes: {} };

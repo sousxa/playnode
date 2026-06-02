@@ -31,13 +31,13 @@ const GameRoom: React.FC<GameRoomProps> = ({ mode, config, onExit, onReportScore
   const onlineProps = { online, roomCode, playerId, isHost };
   switch (mode) {
     case GameMode.IMPOSTOR:
-      return <Impostor config={config} onExit={onExit} {...scoreProps} />;
+      return <Impostor config={config} onExit={onExit} {...scoreProps} {...onlineProps} />;
     case GameMode.QUEM_SOU_EU:
-      return <QuemSouEu config={config} onExit={onExit} {...scoreProps} />;
+      return <QuemSouEu config={config} onExit={onExit} {...scoreProps} {...onlineProps} />;
     case GameMode.DILEMAS:
       return <Dilemas config={config} onExit={onExit} {...onlineProps} />;
     case GameMode.AMIGOS_DE_MERDA:
-      return <AmigosDeMerda config={config} onExit={onExit} {...scoreProps} />;
+      return <AmigosDeMerda config={config} onExit={onExit} {...scoreProps} {...onlineProps} />;
     case GameMode.VERDADE_OU_DESAFIO:
       return <VerdadeOuDesafio config={config} onExit={onExit} />;
     case GameMode.CARTAS_PODRES:

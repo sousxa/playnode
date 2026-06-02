@@ -6,6 +6,7 @@ import GameHeader from '../shared/GameHeader';
 import GameOver from '../shared/GameOver';
 import CoverScreen from '../shared/CoverScreen';
 import type { GameConfig } from '../../engine/types';
+import { useSyncedReducer } from '../../hooks/useSyncedReducer';
 import { initGame, reducer, getVoteTally, type ImpostorState } from './engine';
 
 interface Props {
@@ -13,36 +14,83 @@ interface Props {
   onExit: () => void;
   onReportScores?: (scores: Record<string, number>) => void;
   onRanking?: () => void;
+  online?: boolean;
+  roomCode?: string;
+  playerId?: string;
+  isHost?: boolean;
 }
 
-const Impostor: React.FC<Props> = ({ config, onExit, onReportScores, onRanking }) => {
-  const [state, setState] = useState<ImpostorState>(() => initGame(config));
-  const dispatch = (a: Parameters<typeof reducer>[1]) => setState((s) => reducer(s, a));
-  const playAgain = () => setState(initGame(config));
+const SecretCard: React.FC<{ secret: { type: 'word' | 'hint'; text: string }; categoryLabel: string }> = ({ secret, categoryLabel }) => (
+  secret.type === 'hint' ? (
+    <div className="space-y-3">
+      <div className="text-5xl">🕵️</div>
+      <h2 className="font-display font-extrabold text-2xl text-danger">Você é o Impostor!</h2>
+      <p className="font-sans text-text-secondary">Sua dica:</p>
+      <p className="font-display font-bold text-xl text-text-primary">"{secret.text}"</p>
+      <p className="font-sans text-sm text-text-muted">Blefe e descubra a palavra sem ser pego.</p>
+    </div>
+  ) : (
+    <div className="space-y-3">
+      <div className="text-5xl">🤫</div>
+      <p className="font-sans text-text-secondary">A palavra secreta é</p>
+      <p className="font-display font-extrabold text-3xl text-accent overflow-wrap-anywhere">{secret.text}</p>
+      <p className="font-sans text-sm text-text-muted">Categoria: {categoryLabel}</p>
+    </div>
+  )
+);
+
+const Wait: React.FC<{ text: string }> = ({ text }) => (
+  <div className="flex-1 flex flex-col justify-center text-center space-y-4">
+    <div className="w-14 h-14 rounded-full bg-accent/10 flex items-center justify-center mx-auto">
+      <div className="w-3 h-3 bg-accent rounded-full animate-ping" />
+    </div>
+    <p className="font-sans text-text-secondary">{text}</p>
+  </div>
+);
+
+const Impostor: React.FC<Props> = ({ config, onExit, onReportScores, onRanking, online, roomCode, playerId, isHost }) => {
+  const { state, dispatch, reset } = useSyncedReducer(reducer, () => initGame(config), { online, roomCode, isHost });
+  const me = playerId || '';
 
   useEffect(() => {
-    if (state.phase === 'reveal' && state.caught && !state.stolen) {
+    if (state?.phase === 'reveal' && state.caught && !state.stolen) {
       confetti({ particleCount: 120, spread: 75, origin: { y: 0.6 } });
     }
-  }, [state.phase, state.caught, state.stolen]);
+  }, [state?.phase, state?.caught, state?.stolen]);
 
   useEffect(() => {
-    if (state.phase === 'gameOver') onReportScores?.(state.scores);
+    if (state?.phase === 'gameOver') onReportScores?.(state.scores);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.phase]);
+  }, [state?.phase]);
 
-  const wrap = (children: React.ReactNode) => (
+  const wrap = (children: React.ReactNode, header = true) => (
     <div className="page-wrapper flex flex-col p-5">
-      <GameHeader title="O Impostor" round={state.round} totalRounds={state.totalRounds} onExit={onExit} />
+      {header && state && <GameHeader title="O Impostor" round={state.round} totalRounds={state.totalRounds} onExit={onExit} />}
       <div className="flex-1 flex flex-col justify-center w-full max-w-md mx-auto">{children}</div>
     </div>
   );
 
+  if (!state) return wrap(<p className="text-center font-sans text-text-secondary">Conectando à partida…</p>, false);
+
   // ── distribute ──
   if (state.phase === 'distribute') {
+    if (online) {
+      const secret = state.playerSecrets[me];
+      return wrap(
+        <div className="space-y-6 text-center">
+          <div className="bg-surface border-2 border-line rounded-4xl p-8">
+            {secret ? <SecretCard secret={secret} categoryLabel={state.categoryLabel} /> : <p className="font-sans text-text-secondary">Aguardando…</p>}
+          </div>
+          {isHost ? (
+            <Button onClick={() => dispatch({ type: 'BEGIN_CLUES' })}>Todos viram? Começar 🎬</Button>
+          ) : (
+            <p className="font-sans text-sm text-text-muted">Quando todos virem, o host começa.</p>
+          )}
+        </div>,
+      );
+    }
     const player = state.players[state.distributedIdx];
     const secret = state.playerSecrets[player.id];
-    const isImpostor = secret.type === 'hint';
     return wrap(
       <CoverScreen
         key={player.id}
@@ -50,23 +98,8 @@ const Impostor: React.FC<Props> = ({ config, onExit, onReportScores, onRanking }
         onDone={() => dispatch({ type: 'NEXT_DISTRIBUTE' })}
         doneLabel={state.distributedIdx + 1 >= state.players.length ? 'Começar! 🎬' : 'Pronto, passar 👉'}
       >
-        {isImpostor ? (
-          <div className="space-y-3">
-            <div className="text-5xl">🕵️</div>
-            <h2 className="font-display font-extrabold text-2xl text-danger">Você é o Impostor!</h2>
-            <p className="font-sans text-text-secondary">Sua dica:</p>
-            <p className="font-display font-bold text-xl text-text-primary">"{secret.text}"</p>
-            <p className="font-sans text-sm text-text-muted">Blefe e descubra a palavra sem ser pego.</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            <div className="text-5xl">🤫</div>
-            <p className="font-sans text-text-secondary">A palavra secreta é</p>
-            <p className="font-display font-extrabold text-3xl text-accent overflow-wrap-anywhere">{secret.text}</p>
-            <p className="font-sans text-sm text-text-muted">Categoria: {state.categoryLabel}</p>
-          </div>
-        )}
-      </CoverScreen>
+        <SecretCard secret={secret} categoryLabel={state.categoryLabel} />
+      </CoverScreen>,
     );
   }
 
@@ -83,27 +116,43 @@ const Impostor: React.FC<Props> = ({ config, onExit, onReportScores, onRanking }
           <p>🕵️ O impostor blefa sem saber a palavra.</p>
           <p>🎯 Depois todos votam em quem acham que é o impostor.</p>
         </div>
-        <Button onClick={() => dispatch({ type: 'START_VOTING' })}>Ir para votação 🗳️</Button>
-      </div>
+        {(!online || isHost) ? (
+          <Button onClick={() => dispatch({ type: 'START_VOTING' })}>Ir para votação 🗳️</Button>
+        ) : (
+          <p className="font-sans text-sm text-text-muted">Aguardando o host iniciar a votação…</p>
+        )}
+      </div>,
     );
   }
 
   // ── voting ──
   if (state.phase === 'voting') {
     const voter = state.players[state.voterIdx];
+    const suspects = state.players.filter((p) => p.id !== voter.id);
+    if (online) {
+      if (voter.id !== me) return wrap(<Wait text={`Aguardando ${voter.name} votar… (${state.voterIdx + 1}/${state.players.length})`} />);
+      return wrap(
+        <div className="space-y-4">
+          <h2 className="font-display font-extrabold text-xl text-text-primary text-center">Quem é o impostor?</h2>
+          <div className="grid grid-cols-2 gap-3">
+            {suspects.map((s) => (
+              <button key={s.id} onClick={() => dispatch({ type: 'CAST_VOTE', suspectId: s.id })} className="font-display font-bold p-4 rounded-2xl bg-surface border border-line text-text-primary active:scale-95 hover:border-accent transition-all">
+                {s.name}
+              </button>
+            ))}
+          </div>
+        </div>,
+      );
+    }
     return wrap(
-      <VotingTurn
-        key={voter.id}
-        voterName={voter.name}
-        suspects={state.players.filter((p) => p.id !== voter.id)}
-        progress={`${state.voterIdx + 1}/${state.players.length}`}
-        onVote={(suspectId) => dispatch({ type: 'CAST_VOTE', suspectId })}
-      />
+      <VotingTurn key={voter.id} voterName={voter.name} suspects={suspects} progress={`${state.voterIdx + 1}/${state.players.length}`} onVote={(id) => dispatch({ type: 'CAST_VOTE', suspectId: id })} />,
     );
   }
 
-  // ── guess: impostor pego tenta adivinhar a palavra ──
+  // ── guess (impostor pego tenta adivinhar) ──
   if (state.phase === 'guess') {
+    const amImpostor = state.impostorIds.includes(me);
+    if (online && !amImpostor) return wrap(<Wait text="O impostor está tentando adivinhar a palavra…" />);
     return wrap(
       <div className="space-y-5 text-center">
         <div className="text-5xl">🕵️</div>
@@ -111,16 +160,12 @@ const Impostor: React.FC<Props> = ({ config, onExit, onReportScores, onRanking }
         <p className="font-sans text-text-secondary">Última chance: adivinhe a palavra secreta para roubar a vitória.</p>
         <div className="grid grid-cols-2 gap-3">
           {state.guessOptions.map((w) => (
-            <button
-              key={w}
-              onClick={() => dispatch({ type: 'IMPOSTOR_GUESS', word: w })}
-              className="font-display font-bold p-4 rounded-2xl bg-surface border border-line text-text-primary active:scale-95 hover:border-danger transition-all overflow-wrap-anywhere"
-            >
+            <button key={w} onClick={() => dispatch({ type: 'IMPOSTOR_GUESS', word: w })} className="font-display font-bold p-4 rounded-2xl bg-surface border border-line text-text-primary active:scale-95 hover:border-danger transition-all overflow-wrap-anywhere">
               {w}
             </button>
           ))}
         </div>
-      </div>
+      </div>,
     );
   }
 
@@ -133,7 +178,6 @@ const Impostor: React.FC<Props> = ({ config, onExit, onReportScores, onRanking }
     if (!state.caught) { title = 'O impostor escapou! 🕵️'; color = 'text-danger'; }
     else if (state.stolen) { title = 'Pego — mas roubou a vitória! 🥷'; color = 'text-warning'; }
     else { title = 'O grupo venceu! 🎉'; color = 'text-success'; }
-
     return wrap(
       <div className="space-y-5 text-center">
         <h2 className={`font-display font-extrabold text-3xl ${color}`}>{title}</h2>
@@ -151,13 +195,17 @@ const Impostor: React.FC<Props> = ({ config, onExit, onReportScores, onRanking }
             </div>
           ))}
         </div>
-        <Button onClick={() => dispatch({ type: 'NEXT_ROUND' })}>{isLast ? 'Ver resultado 🏆' : 'Próxima rodada 👉'}</Button>
-      </div>
+        {(!online || isHost) ? (
+          <Button onClick={() => dispatch({ type: 'NEXT_ROUND' })}>{isLast ? 'Ver resultado 🏆' : 'Próxima rodada 👉'}</Button>
+        ) : (
+          <p className="font-sans text-sm text-text-muted">Aguardando o host continuar…</p>
+        )}
+      </div>,
     );
   }
 
   // ── gameOver ──
-  return wrap(<GameOver title="Fim de jogo!" players={state.players} scores={state.scores} onPlayAgain={playAgain} onExit={onExit} onRanking={onRanking} />);
+  return wrap(<GameOver title="Fim de jogo!" players={state.players} scores={state.scores} onPlayAgain={reset} onExit={onExit} onRanking={onRanking} />);
 };
 
 const VotingTurn: React.FC<{

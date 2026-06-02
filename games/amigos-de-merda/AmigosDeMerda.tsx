@@ -5,6 +5,7 @@ import Button from '../../components/Button';
 import GameHeader from '../shared/GameHeader';
 import GameOver from '../shared/GameOver';
 import type { GameConfig } from '../../engine/types';
+import { useSyncedReducer } from '../../hooks/useSyncedReducer';
 import { initGame, reducer, tally, type AmigosState } from './engine';
 
 interface Props {
@@ -12,29 +13,42 @@ interface Props {
   onExit: () => void;
   onReportScores?: (scores: Record<string, number>) => void;
   onRanking?: () => void;
+  online?: boolean;
+  roomCode?: string;
+  playerId?: string;
+  isHost?: boolean;
 }
 
-const AmigosDeMerda: React.FC<Props> = ({ config, onExit, onReportScores, onRanking }) => {
-  const [state, setState] = useState<AmigosState>(() => initGame(config));
-  const dispatch = (a: Parameters<typeof reducer>[1]) => setState((s) => reducer(s, a));
-  const playAgain = () => setState(initGame(config));
+const AmigosDeMerda: React.FC<Props> = ({ config, onExit, onReportScores, onRanking, online, roomCode, playerId, isHost }) => {
+  const { state, dispatch, reset } = useSyncedReducer(reducer, () => initGame(config), { online, roomCode, isHost });
 
   useEffect(() => {
-    if (state.phase === 'gameOver') onReportScores?.(state.scores);
+    if (state?.phase === 'gameOver') onReportScores?.(state.scores);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.phase]);
+  }, [state?.phase]);
 
-  const question = state.questions[state.currentIdx];
-
-  const wrap = (children: React.ReactNode) => (
+  const wrap = (children: React.ReactNode, header = true) => (
     <div className="page-wrapper flex flex-col p-5">
-      <GameHeader title="Amigos de Merda" round={state.currentIdx + 1} totalRounds={state.questions.length} onExit={onExit} />
+      {header && state && <GameHeader title="Amigos de Merda" round={state.currentIdx + 1} totalRounds={state.questions.length} onExit={onExit} />}
       <div className="flex-1 flex flex-col justify-center w-full max-w-md mx-auto">{children}</div>
     </div>
   );
 
+  if (!state) return wrap(<p className="text-center font-sans text-text-secondary">Conectando à partida…</p>, false);
+
+  const question = state.questions[state.currentIdx];
+
   if (state.phase === 'gameOver') {
-    return wrap(<GameOver title="O pior do grupo 😈" players={state.players} scores={state.scores} onPlayAgain={playAgain} onExit={onExit} onRanking={onRanking} />);
+    return wrap(
+      <GameOver
+        title="O pior do grupo 😈"
+        players={state.players}
+        scores={state.scores}
+        onPlayAgain={reset}
+        onExit={onExit}
+        onRanking={onRanking}
+      />,
+    );
   }
 
   if (state.phase === 'results') {
@@ -42,6 +56,7 @@ const AmigosDeMerda: React.FC<Props> = ({ config, onExit, onReportScores, onRank
     const max = Math.max(0, ...Object.values(t));
     const isLast = state.currentIdx + 1 >= state.questions.length;
     const ranked = [...state.players].sort((a, b) => (t[b.id] ?? 0) - (t[a.id] ?? 0));
+    const canAdvance = !online || isHost;
     return wrap(
       <div className="space-y-5">
         <h2 className="font-display font-extrabold text-xl text-text-primary text-center overflow-wrap-anywhere">{question.text}</h2>
@@ -62,13 +77,31 @@ const AmigosDeMerda: React.FC<Props> = ({ config, onExit, onReportScores, onRank
             );
           })}
         </div>
-        <Button onClick={() => dispatch({ type: 'NEXT' })}>{isLast ? 'Ver o ranking 🏆' : 'Próxima 👉'}</Button>
-      </div>
+        {canAdvance ? (
+          <Button onClick={() => dispatch({ type: 'NEXT' })}>{isLast ? 'Ver o ranking 🏆' : 'Próxima 👉'}</Button>
+        ) : (
+          <p className="text-center font-sans text-sm text-text-muted">Aguardando o host continuar…</p>
+        )}
+      </div>,
     );
   }
 
   // voting
   const voter = state.players[state.voterIdx];
+  const myTurn = !online || voter.id === playerId;
+
+  if (!myTurn) {
+    return wrap(
+      <div className="flex-1 flex flex-col justify-center text-center space-y-4">
+        <div className="w-14 h-14 rounded-full bg-danger/10 flex items-center justify-center mx-auto">
+          <div className="w-3 h-3 bg-danger rounded-full animate-ping" />
+        </div>
+        <p className="font-display font-bold text-lg text-text-primary">Vez de {voter.name}</p>
+        <p className="font-sans text-text-muted text-sm">{state.voterIdx + 1}/{state.players.length} votando…</p>
+      </div>,
+    );
+  }
+
   return wrap(
     <VoteTurn
       key={voter.id}
@@ -76,8 +109,9 @@ const AmigosDeMerda: React.FC<Props> = ({ config, onExit, onReportScores, onRank
       question={question.text}
       targets={state.players}
       progress={`${state.voterIdx + 1}/${state.players.length}`}
+      online={!!online}
       onVote={(targetId) => dispatch({ type: 'CAST_VOTE', targetId })}
-    />
+    />,
   );
 };
 
@@ -86,9 +120,10 @@ const VoteTurn: React.FC<{
   question: string;
   targets: { id: string; name: string }[];
   progress: string;
+  online: boolean;
   onVote: (id: string) => void;
-}> = ({ voterName, question, targets, progress, onVote }) => {
-  const [revealed, setRevealed] = useState(false);
+}> = ({ voterName, question, targets, progress, online, onVote }) => {
+  const [revealed, setRevealed] = useState(online);
   if (!revealed) {
     return (
       <button onClick={() => setRevealed(true)} className="w-full bg-surface border-2 border-line rounded-4xl p-10 text-center flex flex-col items-center gap-4">

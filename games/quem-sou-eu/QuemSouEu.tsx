@@ -4,53 +4,86 @@ import Button from '../../components/Button';
 import GameHeader from '../shared/GameHeader';
 import GameOver from '../shared/GameOver';
 import type { GameConfig } from '../../engine/types';
-import { initGame, reducer, type WhoAmIState } from './engine';
+import { useSyncedReducer } from '../../hooks/useSyncedReducer';
+import { initGame, reducer, whoAmIEngine, type WhoAmIState } from './engine';
 
 interface Props {
   config: GameConfig;
   onExit: () => void;
   onReportScores?: (scores: Record<string, number>) => void;
   onRanking?: () => void;
+  online?: boolean;
+  roomCode?: string;
+  playerId?: string;
+  isHost?: boolean;
 }
 
-const QuemSouEu: React.FC<Props> = ({ config, onExit, onReportScores, onRanking }) => {
-  const [state, setState] = useState<WhoAmIState>(() => initGame(config));
-  const dispatch = (a: Parameters<typeof reducer>[1]) => setState((s) => reducer(s, a));
-  const playAgain = () => setState(initGame(config));
+const QuemSouEu: React.FC<Props> = ({ config, onExit, onReportScores, onRanking, online, roomCode, playerId, isHost }) => {
+  const { state: raw, dispatch, reset } = useSyncedReducer(reducer, () => initGame(config), { online, roomCode, isHost });
 
   useEffect(() => {
-    if (state.phase === 'gameOver') onReportScores?.(state.scores);
+    if (raw?.phase === 'gameOver') onReportScores?.(raw.scores);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.phase]);
+  }, [raw?.phase]);
 
-  const wrap = (children: React.ReactNode) => (
+  const wrap = (children: React.ReactNode, header = true) => (
     <div className="page-wrapper flex flex-col p-5">
-      <GameHeader title="Quem Sou Eu?" onExit={onExit} />
+      {header && raw && <GameHeader title="Quem Sou Eu?" onExit={onExit} />}
       <div className="flex-1 flex flex-col justify-center w-full max-w-md mx-auto">{children}</div>
     </div>
   );
 
-  if (state.phase === 'gameOver') {
+  if (!raw) return wrap(<p className="text-center font-sans text-text-secondary">Conectando à partida…</p>, false);
+
+  if (raw.phase === 'gameOver') {
+    return wrap(<GameOver title="Acabou!" players={raw.players} scores={raw.scores} onPlayAgain={reset} onExit={onExit} onRanking={onRanking} />);
+  }
+
+  const current = raw.players[raw.turnIdx];
+
+  // ── ONLINE: cada celular vê só a sua parte ──
+  if (online) {
+    const view = whoAmIEngine.getPlayerView(raw, playerId || '');
+    const myTurn = current.id === playerId;
+    if (myTurn) {
+      // Eu estou adivinhando → NÃO vejo meu personagem.
+      return wrap(
+        <div className="space-y-6 text-center">
+          <div className="text-5xl">🤔</div>
+          <h2 className="font-display font-extrabold text-2xl text-text-primary">Sua vez de adivinhar!</h2>
+          <p className="font-sans text-text-secondary">Faça perguntas de "sim ou não" pra galera e tente descobrir quem você é.</p>
+          <div className="grid grid-cols-2 gap-3">
+            <Button variant="success" onClick={() => dispatch({ type: 'RESOLVE', correct: true })}>Acertei! ✓</Button>
+            <Button variant="secondary" onClick={() => dispatch({ type: 'RESOLVE', correct: false })}>Passar</Button>
+          </div>
+        </div>,
+      );
+    }
+    // Outros veem o personagem do jogador da vez (pra dar dicas).
     return wrap(
-      <GameOver title="Acabou!" players={state.players} scores={state.scores} onPlayAgain={playAgain} onExit={onExit} onRanking={onRanking} />
+      <div className="space-y-5 text-center">
+        <p className="font-sans text-text-secondary">{current.name} está adivinhando…</p>
+        <div className="bg-surface border-2 border-line rounded-4xl p-8">
+          <p className="font-sans text-text-secondary text-sm mb-2">{current.name} é:</p>
+          <p className="font-display font-extrabold text-3xl text-accent overflow-wrap-anywhere">🎭 {view.assignments[current.id]}</p>
+        </div>
+        <p className="font-sans text-text-muted text-sm">Dê dicas! Só {current.name} controla o "acertou".</p>
+      </div>,
     );
   }
 
-  const current = state.players[state.turnIdx];
-  const character = state.assignments[current.id];
-
+  // ── LOCAL (mesmo aparelho): passa e joga com cover ──
   return wrap(
     <TurnCard
       key={current.id}
       name={current.name}
-      character={character}
-      progress={`${state.turnIdx + 1}/${state.players.length}`}
+      character={raw.assignments[current.id]}
+      progress={`${raw.turnIdx + 1}/${raw.players.length}`}
       onResolve={(correct) => dispatch({ type: 'RESOLVE', correct })}
-    />
+    />,
   );
 };
 
-// O aparelho fica virado para o GRUPO; o jogador da vez não deve olhar.
 const TurnCard: React.FC<{
   name: string;
   character: string;
@@ -58,25 +91,16 @@ const TurnCard: React.FC<{
   onResolve: (correct: boolean) => void;
 }> = ({ name, character, progress, onResolve }) => {
   const [revealed, setRevealed] = useState(false);
-
   if (!revealed) {
     return (
-      <button
-        onClick={() => setRevealed(true)}
-        className="w-full bg-surface border-2 border-line rounded-4xl p-10 text-center flex flex-col items-center gap-4"
-      >
-        <div className="w-16 h-16 rounded-3xl bg-warning/15 flex items-center justify-center">
-          <EyeOff className="text-warning" size={28} />
-        </div>
+      <button onClick={() => setRevealed(true)} className="w-full bg-surface border-2 border-line rounded-4xl p-10 text-center flex flex-col items-center gap-4">
+        <div className="w-16 h-16 rounded-3xl bg-warning/15 flex items-center justify-center"><EyeOff className="text-warning" size={28} /></div>
         <p className="font-sans text-text-secondary">Vez de</p>
         <h2 className="font-display font-extrabold text-3xl text-text-primary">{name}</h2>
-        <p className="font-sans text-sm text-text-muted">
-          {progress} · {name}, NÃO olhe! Vire o aparelho para a galera e toque.
-        </p>
+        <p className="font-sans text-sm text-text-muted">{progress} · {name}, NÃO olhe! Vire o aparelho pra galera e toque.</p>
       </button>
     );
   }
-
   return (
     <div className="space-y-6 text-center">
       <div className="bg-surface border-2 border-line rounded-4xl p-8">

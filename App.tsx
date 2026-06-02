@@ -16,7 +16,7 @@ import { firebaseEnabled } from './services/firebase';
 const AGE_KEY = 'catdecks-age-ok';
 
 // Jogos que já têm partida ONLINE sincronizada (os demais: só "mesmo aparelho" por enquanto).
-const ONLINE_GAMES = new Set<GameMode>([GameMode.DILEMAS]);
+const ONLINE_GAMES = new Set<GameMode>([GameMode.DILEMAS, GameMode.AMIGOS_DE_MERDA, GameMode.QUEM_SOU_EU, GameMode.IMPOSTOR]);
 
 // Serviços de sincronização com a mesma API (escolhidos por modo).
 type SyncService = typeof localStorageSyncService | typeof firebaseSyncService;
