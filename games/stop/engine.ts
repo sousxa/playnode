@@ -1,18 +1,19 @@
 import type { GameConfig, GameEngine, Player } from '../../engine/types';
-import { shuffle, pickRandom, sampleN } from '../../engine/utils';
+import { pickRandom } from '../../engine/utils';
 
-// Letras comuns no português (sem K, Q, W, X, Y, Z e outras difíceis)
+// Letras comuns no português (sem K, Q, W, X, Y, Z e outras difíceis).
 const LETTERS = 'ABCDEFGHIJLMNOPRSTUV'.split('');
 
-const CATEGORIES = [
+/** Pool de categorias disponíveis para escolher na config. */
+export const STOP_CATEGORIES = [
   'Nome', 'Animal', 'Cor', 'Fruta', 'Comida', 'Objeto', 'País', 'Cidade',
-  'Marca', 'Profissão', 'Filme ou série', 'Parte do corpo', 'CEP (carro/esporte/profissão)',
-  'Famoso', 'Time', 'Bebida', 'Verbo', 'Palavrão', 'Banda ou cantor',
+  'Marca', 'Profissão', 'Filme ou série', 'Parte do corpo', 'Famoso',
+  'Time', 'Bebida', 'Verbo', 'Banda ou cantor', 'Desenho',
 ];
 
-const CATS_PER_ROUND = 6;
+const DEFAULT_CATEGORIES = ['Nome', 'Animal', 'Cor', 'Comida', 'Objeto', 'País'];
 
-export type StopPhase = 'playing' | 'roundEnd' | 'gameOver';
+export type StopPhase = 'spin' | 'playing' | 'review' | 'gameOver';
 
 export interface StopState {
   phase: StopPhase;
@@ -24,7 +25,7 @@ export interface StopState {
   totalRounds: number;
 }
 
-export type StopAction = { type: 'STOP' } | { type: 'NEXT' };
+export type StopAction = { type: 'SPIN' } | { type: 'STOP' } | { type: 'NEXT' };
 
 function drawLetter(used: string[]): string {
   const avail = LETTERS.filter((l) => !used.includes(l));
@@ -32,13 +33,13 @@ function drawLetter(used: string[]): string {
 }
 
 export function initGame(config: GameConfig): StopState {
-  const letter = drawLetter([]);
+  const categories = config.stopCategories && config.stopCategories.length >= 2 ? config.stopCategories : DEFAULT_CATEGORIES;
   return {
-    phase: 'playing',
+    phase: 'spin',
     players: config.players,
-    letter,
-    categories: sampleN(CATEGORIES, CATS_PER_ROUND),
-    usedLetters: [letter],
+    letter: '',
+    categories,
+    usedLetters: [],
     round: 1,
     totalRounds: config.rounds ?? 5,
   };
@@ -46,19 +47,15 @@ export function initGame(config: GameConfig): StopState {
 
 export function reducer(state: StopState, action: StopAction): StopState {
   switch (action.type) {
+    case 'SPIN': {
+      const letter = drawLetter(state.usedLetters);
+      return { ...state, letter, usedLetters: [...state.usedLetters, letter], phase: 'playing' };
+    }
     case 'STOP':
-      return { ...state, phase: 'roundEnd' };
+      return { ...state, phase: 'review' };
     case 'NEXT': {
       if (state.round >= state.totalRounds) return { ...state, phase: 'gameOver' };
-      const letter = drawLetter(state.usedLetters);
-      return {
-        ...state,
-        letter,
-        categories: shuffle(sampleN(CATEGORIES, CATS_PER_ROUND)),
-        usedLetters: [...state.usedLetters, letter],
-        round: state.round + 1,
-        phase: 'playing',
-      };
+      return { ...state, round: state.round + 1, phase: 'spin', letter: '' };
     }
     default:
       return state;

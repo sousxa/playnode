@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { ChevronLeft, Minus, Plus, Martini } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Minus, Plus, Martini } from 'lucide-react';
 import Button from '../components/Button';
 import { GameMode } from '../types';
 import { GAME_CONFIG_SCHEMA, GAME_TITLES } from '../games/metadata';
+import { STOP_CATEGORIES } from '../games/stop/engine';
 
 import type { IntensityLevel } from '../engine/types';
 
@@ -12,6 +13,7 @@ export interface ConfigExtras {
   impostorCount?: number;
   alcoholicMode: boolean;
   intensityLevel?: IntensityLevel;
+  stopCategories?: string[];
 }
 
 interface GameConfigProps {
@@ -47,6 +49,9 @@ const GameConfig: React.FC<GameConfigProps> = ({ mode, playerCount, onBack, onSt
   const [impostorCount, setImpostorCount] = useState(playerCount >= 7 ? 2 : 1);
   const [alcoholic, setAlcoholic] = useState(false);
   const [intensity, setIntensity] = useState<IntensityLevel>('medio');
+  const [stopCats, setStopCats] = useState<string[]>(STOP_CATEGORIES.slice(0, 6));
+  const toggleCat = (c: string) =>
+    setStopCats((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
 
   return (
     <div className="page-wrapper p-5 space-y-5">
@@ -61,11 +66,16 @@ const GameConfig: React.FC<GameConfigProps> = ({ mode, playerCount, onBack, onSt
       {schema.categories && (
         <section className="space-y-2">
           <h3 className="font-display font-bold text-text-secondary ml-1">Categoria</h3>
-          <div className="grid grid-cols-2 gap-2">
-            <CatChip active={categoryId === 'all'} onClick={() => setCategoryId('all')} icon="🎲" label="Misturar" />
-            {schema.categories.map((c) => (
-              <CatChip key={c.id} active={categoryId === c.id} onClick={() => setCategoryId(c.id)} icon={c.icon} label={c.label} />
-            ))}
+          <div className="relative">
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 pr-8">
+              <CatChip active={categoryId === 'all'} onClick={() => setCategoryId('all')} icon="🎲" label="Misturar" />
+              {schema.categories.map((c) => (
+                <CatChip key={c.id} active={categoryId === c.id} onClick={() => setCategoryId(c.id)} icon={c.icon} label={c.label} />
+              ))}
+            </div>
+            <div className="pointer-events-none absolute right-0 top-0 bottom-1 w-12 bg-gradient-to-l from-bg to-transparent flex items-center justify-end">
+              <ChevronRight className="text-accent" size={20} />
+            </div>
           </div>
         </section>
       )}
@@ -83,6 +93,28 @@ const GameConfig: React.FC<GameConfigProps> = ({ mode, playerCount, onBack, onSt
                 {lvl === 'medio' ? 'Médio' : lvl}
               </button>
             ))}
+          </div>
+        </section>
+      )}
+
+      {schema.stopCategories && (
+        <section className="space-y-2">
+          <h3 className="font-display font-bold text-text-secondary ml-1">
+            Categorias <span className="font-sans font-normal text-text-muted text-sm">· escolha (mín. 2)</span>
+          </h3>
+          <div className="grid grid-cols-2 gap-2">
+            {STOP_CATEGORIES.map((c) => {
+              const active = stopCats.includes(c);
+              return (
+                <button
+                  key={c}
+                  onClick={() => toggleCat(c)}
+                  className={`p-3 rounded-2xl border font-display font-bold text-sm text-left transition-all ${active ? 'bg-accent text-white border-accent' : 'bg-surface text-text-secondary border-line'}`}
+                >
+                  {active ? '✓ ' : ''}{c}
+                </button>
+              );
+            })}
           </div>
         </section>
       )}
@@ -110,7 +142,10 @@ const GameConfig: React.FC<GameConfigProps> = ({ mode, playerCount, onBack, onSt
         </button>
       )}
 
-      <Button onClick={() => onStart({ categoryId, rounds, impostorCount, alcoholicMode: alcoholic, intensityLevel: intensity })}>
+      <Button
+        disabled={schema.stopCategories && stopCats.length < 2}
+        onClick={() => onStart({ categoryId, rounds, impostorCount, alcoholicMode: alcoholic, intensityLevel: intensity, stopCategories: stopCats })}
+      >
         Começar! 🎬
       </Button>
     </div>
@@ -120,10 +155,10 @@ const GameConfig: React.FC<GameConfigProps> = ({ mode, playerCount, onBack, onSt
 const CatChip: React.FC<{ active: boolean; onClick: () => void; icon?: string; label: string }> = ({ active, onClick, icon, label }) => (
   <button
     onClick={onClick}
-    className={`flex items-center gap-2 p-3 rounded-2xl border text-left transition-all ${active ? 'bg-accent text-white border-accent' : 'bg-surface text-text-primary border-line'}`}
+    className={`shrink-0 flex items-center gap-2 px-4 py-3 rounded-2xl border whitespace-nowrap transition-all ${active ? 'bg-accent text-white border-accent' : 'bg-surface text-text-primary border-line'}`}
   >
-    <span className="text-lg shrink-0">{icon}</span>
-    <span className="font-display font-bold text-sm leading-tight">{label}</span>
+    <span className="text-lg">{icon}</span>
+    <span className="font-display font-bold text-sm">{label}</span>
   </button>
 );
 

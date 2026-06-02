@@ -39,6 +39,8 @@ export interface GameConfigSchema {
   alcoholic?: boolean;
   /** Seletor de intensidade (leve/médio/pesado). */
   intensity?: boolean;
+  /** Multi-seleção das categorias do Stop. */
+  stopCategories?: boolean;
 }
 
 export const GAME_CONFIG_SCHEMA: Record<string, GameConfigSchema> = {
@@ -68,6 +70,7 @@ export const GAME_CONFIG_SCHEMA: Record<string, GameConfigSchema> = {
   },
   [GameMode.STOP]: {
     rounds: { min: 3, max: 10, default: 5, label: 'Rodadas' },
+    stopCategories: true,
   },
   [GameMode.CIDADE_DORME]: {},
 };

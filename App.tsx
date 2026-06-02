@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Toaster, toast } from 'sonner';
 import Home from './views/Home';
 import Lobby from './views/Lobby';
@@ -172,6 +173,7 @@ const App: React.FC = () => {
       categoryId: extras.categoryId,
       impostorCount: extras.impostorCount,
       intensityLevel: extras.intensityLevel,
+      stopCategories: extras.stopCategories,
     };
     if (roomMode === 'online') {
       // host transmite o início; os outros entram via onRoom (status PLAYING).
@@ -237,9 +239,32 @@ const App: React.FC = () => {
     );
   }
 
+  const screenKey = !ageOk
+    ? 'age'
+    : !userName || !hasRoomState
+    ? 'home'
+    : showRanking
+    ? 'ranking'
+    : activeGame
+    ? 'game'
+    : configuringGame
+    ? 'config'
+    : 'lobby';
+
   return (
     <>
-      {screen}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={screenKey}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.2 }}
+          className="h-full"
+        >
+          {screen}
+        </motion.div>
+      </AnimatePresence>
       {roomMode === 'online' && hasRoomState && roomCode && (
         <Reactions roomCode={roomCode} playerId={playerId} playerName={userName} />
       )}

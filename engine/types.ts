@@ -24,6 +24,8 @@ export interface GameConfig {
   categoryId?: string;
   /** Nº de impostores (jogo do Impostor). */
   impostorCount?: number;
+  /** Categorias escolhidas para o Stop. */
+  stopCategories?: string[];
 }
 
 /**
