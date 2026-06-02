@@ -4,36 +4,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#0d0221">
+    <meta name="theme-color" content="#f5f3ff">
     <title>PlayNode</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-      // Tema arcade/retrô para o Tailwind CDN
+      // Tema "claro e divertido": cores alegres, cantos arredondados, sombras suaves
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              arcade: {
-                bg:     '#0d0221',
-                panel:  '#1b0e3d',
-                panel2: '#2a1758',
-                line:   '#3d2a6b',
-                yellow: '#ffd60a',
-                cyan:   '#00e5ff',
-                pink:   '#ff2d95',
-                green:  '#39ff14',
-                purple: '#b14cff',
-                red:    '#ff3b5c',
+              fun: {
+                purple:   '#7c3aed',
+                purple2:  '#a78bfa',
+                pink:     '#ec4899',
+                coral:    '#fb7185',
+                yellow:   '#fbbf24',
+                green:    '#34d399',
+                sky:      '#38bdf8',
+                ink:      '#3b2a66',
+                muted:    '#8b7fb0',
+                cream:    '#fffdf9',
               }
             },
             fontFamily: {
-              pixel: ['"Press Start 2P"', 'monospace'],
-              retro: ['"VT323"', 'monospace'],
+              fun: ['Fredoka', 'system-ui', 'sans-serif'],
             },
             boxShadow: {
-              hard:    '4px 4px 0 0 #000',
-              'hard-lg': '6px 6px 0 0 #000',
-              'hard-cyan': '4px 4px 0 0 #00e5ff',
+              soft:        '0 12px 28px -12px rgba(124,58,237,0.35)',
+              'soft-pink': '0 12px 28px -12px rgba(236,72,153,0.40)',
+              'soft-sky':  '0 12px 28px -12px rgba(56,189,248,0.40)',
+              'soft-sm':   '0 6px 16px -8px rgba(59,42,102,0.25)',
+            },
+            borderRadius: {
+              '4xl': '2rem',
             },
           }
         }
@@ -41,56 +44,22 @@
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
         html, body, #root {
             height: 100vh;   /* fallback */
             height: 100dvh;  /* respeita a barra do navegador no mobile */
         }
         body {
-            font-family: 'VT323', monospace;
+            font-family: 'Fredoka', system-ui, sans-serif;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
             overflow: hidden; /* o scroll é gerenciado dentro de cada tela */
-            background-color: #0d0221;
-            color: #f5f5f5;
+            color: #3b2a66;
         }
-        /* Grade/scanlines estilo monitor CRT de fliperama */
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 50;
-            background:
-              repeating-linear-gradient(
-                0deg,
-                rgba(0, 0, 0, 0.18) 0px,
-                rgba(0, 0, 0, 0.18) 1px,
-                transparent 1px,
-                transparent 3px
-              );
-            mix-blend-mode: multiply;
-        }
-        /* Fundo com grade de neon sutil */
+        /* Fundo claro e alegre com leve gradiente */
         #root {
-            background-color: #0d0221;
-            background-image:
-              linear-gradient(rgba(177, 76, 255, 0.07) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(177, 76, 255, 0.07) 1px, transparent 1px);
-            background-size: 32px 32px;
+            background: linear-gradient(160deg, #f5f3ff 0%, #fffdf9 45%, #eff6ff 100%);
         }
-        /* Fontes pixeladas renderizam melhor sem antialiasing exagerado */
-        .font-pixel { -webkit-font-smoothing: none; image-rendering: pixelated; }
-        /* Texto da fonte VT323 um pouco maior por padrão (ela é miúda) */
-        .text-retro-base { font-size: 1.25rem; line-height: 1.3; }
-        /* Brilho neon reutilizável */
-        .glow-cyan   { text-shadow: 0 0 8px rgba(0,229,255,0.8), 0 0 2px rgba(0,229,255,1); }
-        .glow-pink   { text-shadow: 0 0 8px rgba(255,45,149,0.8), 0 0 2px rgba(255,45,149,1); }
-        .glow-yellow { text-shadow: 0 0 8px rgba(255,214,10,0.8), 0 0 2px rgba(255,214,10,1); }
-        .glow-green  { text-shadow: 0 0 8px rgba(57,255,20,0.8), 0 0 2px rgba(57,255,20,1); }
-        /* Cursor piscando estilo terminal */
-        @keyframes blink { 0%, 49% { opacity: 1 } 50%, 100% { opacity: 0 } }
-        .blink { animation: blink 1s steps(1) infinite; }
     </style>
 <script type="importmap">
 {

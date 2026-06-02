@@ -18,20 +18,16 @@ const Button: React.FC<ButtonProps> = ({
   disabled = false,
   type = 'button'
 }) => {
-  // Estética arcade: fonte pixel, borda preta grossa, sombra "dura" deslocada
-  // e o botão "afunda" ao pressionar (translate + sombra some).
   const baseStyles =
-    "w-full py-4 px-5 font-pixel text-xs sm:text-sm uppercase tracking-wide " +
-    "border-4 border-black shadow-hard transition-all duration-75 " +
-    "flex items-center justify-center gap-3 " +
-    "active:translate-x-[4px] active:translate-y-[4px] active:shadow-none " +
-    "disabled:opacity-40 disabled:active:translate-x-0 disabled:active:translate-y-0 disabled:active:shadow-hard disabled:cursor-not-allowed";
+    "w-full py-4 px-6 rounded-3xl font-fun font-semibold text-lg " +
+    "flex items-center justify-center gap-2 transition-all duration-150 " +
+    "active:scale-[0.97] disabled:opacity-50 disabled:active:scale-100 disabled:cursor-not-allowed";
 
   const variants = {
-    primary: "bg-arcade-yellow text-black",
-    secondary: "bg-arcade-cyan text-black",
-    danger: "bg-arcade-pink text-white",
-    ghost: "bg-arcade-panel2 text-arcade-cyan border-arcade-line shadow-none active:translate-x-0 active:translate-y-0",
+    primary: "bg-gradient-to-r from-fun-purple to-fun-pink text-white shadow-soft hover:brightness-105",
+    secondary: "bg-white text-fun-purple border-2 border-fun-purple2/40 shadow-soft-sm hover:border-fun-purple",
+    danger: "bg-gradient-to-r from-fun-coral to-fun-pink text-white shadow-soft-pink hover:brightness-105",
+    ghost: "bg-transparent text-fun-muted hover:bg-fun-purple/5",
   };
 
   return (

@@ -9,14 +9,11 @@ interface PrivateInfoDisplayProps {
 }
 
 const PrivateInfoDisplay: React.FC<PrivateInfoDisplayProps> = ({
-  playerId,
-  currentPlayerId,
   privateData,
   gameMode,
   onReveal
 }) => {
   const [revealed, setRevealed] = useState(false);
-  const isViewingOwnInfo = playerId === currentPlayerId;
 
   const handleReveal = () => {
     setRevealed(true);
@@ -24,59 +21,59 @@ const PrivateInfoDisplay: React.FC<PrivateInfoDisplayProps> = ({
   };
 
   const renderPrivateInfo = () => {
-    if (!privateData) return <div className="font-retro text-2xl text-arcade-line">sem dados</div>;
+    if (!privateData) return <div className="text-fun-muted">Sem dados</div>;
 
     switch (gameMode) {
       case 'IMPOSTOR':
         if (privateData.role === 'impostor') {
           return (
             <div className="text-center">
-              <div className="text-6xl mb-4">🕵️</div>
-              <h3 className="font-pixel text-xl text-arcade-pink glow-pink leading-relaxed">VOCÊ É O<br/>IMPOSTOR!</h3>
-              <p className="font-retro text-xl text-arcade-cyan mt-4">descubra a palavra sem ser pego</p>
+              <div className="text-6xl mb-3">🕵️</div>
+              <h3 className="font-fun font-bold text-3xl text-fun-pink">Você é o Impostor!</h3>
+              <p className="text-fun-muted mt-2 text-lg">Descubra a palavra sem ser pego</p>
             </div>
           );
         }
         return (
           <div className="text-center">
-            <div className="text-5xl mb-3">🤫</div>
-            <p className="font-pixel text-[10px] text-arcade-green glow-green mb-3">A PALAVRA É</p>
-            <p className="font-pixel text-2xl text-arcade-yellow glow-yellow break-words leading-relaxed">{privateData.word}</p>
-            <p className="font-retro text-xl text-arcade-cyan mt-4">proteja do impostor!</p>
+            <div className="text-5xl mb-2">🤫</div>
+            <p className="font-fun text-fun-muted text-lg">A palavra secreta é</p>
+            <p className="font-fun font-bold text-4xl text-fun-purple mt-1 break-words">{privateData.word}</p>
+            <p className="text-fun-muted mt-2">Proteja do impostor!</p>
           </div>
         );
 
       case 'QUEM_SOU_EU':
         return (
           <div className="text-center">
-            <div className="text-5xl mb-3">🎭</div>
-            <p className="font-pixel text-[10px] text-arcade-green glow-green mb-3">VOCÊ É</p>
-            <p className="font-pixel text-xl text-arcade-yellow glow-yellow break-words leading-relaxed">{privateData.myCharacter}</p>
+            <div className="text-5xl mb-2">🎭</div>
+            <p className="font-fun text-fun-muted text-lg">Você é</p>
+            <p className="font-fun font-bold text-3xl text-fun-purple mt-1 break-words">{privateData.myCharacter}</p>
           </div>
         );
 
       default:
-        return <div className="font-retro text-2xl text-arcade-cyan">🤔 jogo em andamento</div>;
+        return <div className="text-fun-muted text-lg">🤔 Jogo em andamento</div>;
     }
   };
 
   return (
-    <div className="bg-arcade-panel border-4 border-black shadow-hard p-6 min-h-[240px] flex flex-col justify-center">
+    <div className="bg-white rounded-4xl shadow-soft p-6 min-h-[230px] flex flex-col justify-center">
       {!revealed ? (
         <div className="text-center">
-          <div className="text-6xl mb-4">🔒</div>
-          <p className="font-retro text-2xl text-arcade-cyan mb-6 leading-tight">
-            informação secreta<br/>só você pode ver
+          <div className="text-6xl mb-3">🔒</div>
+          <p className="font-fun text-fun-muted text-lg mb-5 leading-snug">
+            Informação secreta<br/>só você pode ver
           </p>
           <button
             onClick={handleReveal}
-            className="font-pixel text-xs uppercase px-6 py-4 bg-arcade-green text-black border-4 border-black shadow-hard active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all"
+            className="font-fun font-semibold px-7 py-3 rounded-3xl bg-gradient-to-r from-fun-green to-fun-sky text-white shadow-soft-sky active:scale-95 transition-all"
           >
-            🔓 REVELAR
+            🔓 Revelar
           </button>
         </div>
       ) : (
-        renderPrivateInfo()
+        <div className="animate-in zoom-in-95 duration-300">{renderPrivateInfo()}</div>
       )}
     </div>
   );

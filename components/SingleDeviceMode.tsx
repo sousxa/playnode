@@ -45,12 +45,12 @@ const SingleDeviceMode: React.FC<SingleDeviceModeProps> = ({
   }
 
   return (
-    <div className="space-y-3 p-4 bg-arcade-panel2 border-4 border-arcade-line">
+    <div className="space-y-3 p-4 rounded-4xl bg-fun-purple/5 border-2 border-dashed border-fun-purple2/40">
       <div>
-        <h3 className="font-pixel text-[10px] text-arcade-yellow glow-yellow mb-1">
-          📱 MESMO APARELHO
+        <h3 className="font-fun font-semibold text-fun-ink">
+          📱 Mesmo aparelho
         </h3>
-        <p className="font-retro text-lg text-arcade-cyan leading-tight">
+        <p className="font-fun text-sm text-fun-muted leading-snug">
           adicione amigos que vão jogar neste celular
         </p>
       </div>
@@ -58,7 +58,7 @@ const SingleDeviceMode: React.FC<SingleDeviceModeProps> = ({
       <div className="flex gap-2">
         <input
           type="text"
-          placeholder="nome..."
+          placeholder="Nome do amigo"
           value={newPlayerName}
           onChange={(e) => setNewPlayerName(e.target.value)}
           onKeyPress={(e) => {
@@ -67,14 +67,14 @@ const SingleDeviceMode: React.FC<SingleDeviceModeProps> = ({
             }
           }}
           disabled={isAdding}
-          className="flex-1 min-w-0 px-3 py-2 bg-arcade-bg border-4 border-black text-arcade-cyan font-retro text-xl placeholder:text-arcade-line outline-none focus:border-arcade-cyan"
+          className="flex-1 min-w-0 px-4 py-2.5 rounded-2xl bg-white border-2 border-fun-purple2/30 text-fun-ink font-fun placeholder:text-fun-muted/60 outline-none focus:border-fun-purple focus:ring-4 focus:ring-fun-purple/15 transition-all"
         />
         <button
           onClick={handleAddPlayer}
           disabled={!newPlayerName.trim() || isAdding}
-          className="shrink-0 font-pixel text-[10px] px-4 bg-arcade-green text-black border-4 border-black shadow-hard active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all disabled:opacity-40"
+          className="shrink-0 font-fun font-semibold px-5 rounded-2xl bg-gradient-to-r from-fun-green to-fun-sky text-white shadow-soft-sky active:scale-95 transition-all disabled:opacity-40"
         >
-          + ADD
+          + Add
         </button>
       </div>
     </div>

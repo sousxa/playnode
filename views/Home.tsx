@@ -30,93 +30,77 @@ const Home: React.FC<HomeProps> = ({ onJoin, initialCode }) => {
   };
 
   const inputClass =
-    "w-full p-4 bg-arcade-bg border-4 border-black text-arcade-cyan font-retro text-2xl " +
-    "placeholder:text-arcade-line outline-none focus:border-arcade-cyan transition-colors " +
-    "shadow-hard disabled:opacity-50";
+    "w-full p-4 rounded-3xl bg-white border-2 border-fun-purple2/30 text-fun-ink text-lg font-fun " +
+    "placeholder:text-fun-muted/60 outline-none focus:border-fun-purple focus:ring-4 focus:ring-fun-purple/15 " +
+    "shadow-soft-sm transition-all disabled:opacity-60";
 
   return (
     <div className="h-full overflow-y-auto flex flex-col p-6 justify-center items-center">
-      <div className="mb-10 text-center">
-        <div className="w-20 h-20 bg-arcade-pink border-4 border-black flex items-center justify-center mx-auto mb-6 shadow-hard rotate-[-4deg]">
-          <i className="fas fa-gamepad text-black text-4xl"></i>
+      <div className="mb-8 text-center">
+        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-fun-purple to-fun-pink flex items-center justify-center mx-auto mb-5 shadow-soft rotate-3">
+          <i className="fas fa-gamepad text-white text-4xl"></i>
         </div>
-        <h1 className="font-pixel text-3xl text-arcade-yellow glow-yellow mb-3 leading-tight">
-          PLAY<span className="text-arcade-pink glow-pink">NODE</span>
+        <h1 className="font-fun font-bold text-5xl text-fun-ink tracking-tight">
+          Play<span className="text-transparent bg-clip-text bg-gradient-to-r from-fun-purple to-fun-pink">Node</span>
         </h1>
-        <p className="font-retro text-xl text-arcade-cyan tracking-wide">
-          &gt; jogos em grupo<span className="blink">_</span>
-        </p>
+        <p className="font-fun text-fun-muted text-lg mt-1">Jogos em grupo, na hora 🎉</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-5">
-        <div>
-          <label className="font-pixel text-[10px] text-arcade-green glow-green block mb-2 ml-1">
-            JOGADOR 1
-          </label>
-          <input
-            autoFocus
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="seu nome"
-            disabled={isLoading}
-            className={inputClass}
-          />
-        </div>
+      <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4">
+        <input
+          autoFocus
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Seu nome"
+          disabled={isLoading}
+          className={inputClass}
+        />
 
         {error && (
-          <div className="p-3 bg-arcade-red border-4 border-black text-white font-retro text-xl shadow-hard">
-            ⚠ {error}
+          <div className="p-4 rounded-2xl bg-fun-coral/15 border-2 border-fun-coral/40 text-fun-ink font-fun text-sm">
+            ⚠️ {error}
           </div>
         )}
 
         {showJoin ? (
           <div className="space-y-4">
-            <div>
-              <label className="font-pixel text-[10px] text-arcade-green glow-green block mb-2 ml-1">
-                CÓDIGO
-              </label>
-              <input
-                type="text"
-                maxLength={4}
-                value={code}
-                onChange={(e) => setCode(e.target.value.toUpperCase())}
-                placeholder="XXXX"
-                disabled={isLoading}
-                className={`${inputClass} text-center tracking-[0.5em] uppercase font-pixel !text-2xl text-arcade-yellow`}
-              />
-            </div>
+            <input
+              type="text"
+              maxLength={4}
+              value={code}
+              onChange={(e) => setCode(e.target.value.toUpperCase())}
+              placeholder="CÓDIGO"
+              disabled={isLoading}
+              className={`${inputClass} text-center tracking-[0.4em] uppercase font-bold text-2xl text-fun-purple`}
+            />
             <Button type="submit" disabled={!name.trim() || code.length < 4 || isLoading}>
-              {isLoading ? 'ENTRANDO...' : '▶ ENTRAR'}
+              {isLoading ? 'Entrando...' : '🚪 Entrar na sala'}
             </Button>
             <button
               type="button"
               onClick={() => { setShowJoin(false); setError(null); }}
               disabled={isLoading}
-              className="w-full font-retro text-xl text-arcade-line hover:text-arcade-cyan transition-colors py-1"
+              className="w-full font-fun text-fun-muted hover:text-fun-purple transition-colors py-1"
             >
-              ou criar nova sala
+              ou criar uma nova sala
             </button>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3">
             <Button type="submit" disabled={!name.trim() || isLoading}>
-              {isLoading ? 'CRIANDO...' : '★ CRIAR SALA'}
+              {isLoading ? 'Criando...' : '✨ Criar nova sala'}
             </Button>
             <Button
               variant="secondary"
               onClick={() => { setShowJoin(true); setError(null); }}
               disabled={isLoading}
             >
-              ENTRAR COM CÓDIGO
+              🔑 Entrar com código
             </Button>
           </div>
         )}
       </form>
-
-      <p className="font-retro text-lg text-arcade-line mt-10 tracking-widest">
-        © PLAYNODE ARCADE
-      </p>
     </div>
   );
 };

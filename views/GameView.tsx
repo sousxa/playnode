@@ -17,7 +17,6 @@ const GameView: React.FC<GameViewProps> = ({ state, onReset, playerId, roomCode 
 
   const players = state.players;
   const turnSystem = state.turnSystem;
-  const isMyTurn = turnSystem.currentPlayerId === playerId;
   const currentPlayer = players.find(p => p.id === turnSystem.currentPlayerId);
 
   const activePlayers = players.filter(p => p.isActive);
@@ -67,7 +66,7 @@ const GameView: React.FC<GameViewProps> = ({ state, onReset, playerId, roomCode 
     persist(draft => {
       const caught = accusedId === draft.data.impostorId;
       draft.data.accusedId = accusedId;
-      draft.data.winner = caught ? 'GRUPO VENCEU!' : 'IMPOSTOR FUGIU!';
+      draft.data.winner = caught ? 'O grupo venceu! 🎉' : 'O Impostor escapou! 🕵️';
       draft.data.caught = caught;
       draft.turnSystem.phase = 'finished';
       draft.status = 'FINISHED';
@@ -96,24 +95,21 @@ const GameView: React.FC<GameViewProps> = ({ state, onReset, playerId, roomCode 
     });
   };
 
-  // --- HELPERS DE ESTILO ---
-  const sectionTitle = "font-pixel text-lg sm:text-xl text-arcade-yellow glow-yellow leading-relaxed";
+  const heading = "font-fun font-bold text-3xl text-fun-ink";
 
   // --- RENDERING LOGIC FOR EACH MODE ---
 
   const renderImpostor = () => {
     if (turnSystem.phase === 'setup') {
-      if (!currentPlayer) return <div className="font-pixel text-arcade-cyan">CARREGANDO...</div>;
+      if (!currentPlayer) return <div className="font-fun text-fun-muted">Carregando…</div>;
       const isViewingPlayer = currentPlayer.id === playerId;
 
       return (
         <div className="space-y-5">
           <TurnIndicator turnSystem={turnSystem} players={players} currentPlayerId={playerId} />
-          <div className="text-center space-y-2">
-            <p className="font-pixel text-[10px] text-arcade-green glow-green">
-              {isViewingPlayer ? 'SUA VEZ' : 'PASSE O APARELHO PARA'}
-            </p>
-            <h3 className="font-pixel text-2xl text-arcade-pink glow-pink break-words">{currentPlayer.name}</h3>
+          <div className="text-center space-y-1">
+            <p className="font-fun text-fun-muted">{isViewingPlayer ? 'Sua vez' : 'Passe o aparelho para'}</p>
+            <h3 className="font-fun font-bold text-3xl text-fun-purple break-words">{currentPlayer.name}</h3>
           </div>
           <PrivateInfoDisplay
             key={currentPlayer.id}
@@ -122,22 +118,22 @@ const GameView: React.FC<GameViewProps> = ({ state, onReset, playerId, roomCode 
             privateData={currentPlayer.privateData}
             gameMode="IMPOSTOR"
           />
-          <Button onClick={nextTurn}>PRÓXIMO ▶</Button>
+          <Button onClick={nextTurn}>Próximo 👉</Button>
         </div>
       );
     }
 
     if (turnSystem.phase === 'playing') {
       return (
-        <div className="space-y-6 text-center">
-          <h2 className={sectionTitle}>FAÇAM<br/>PERGUNTAS!</h2>
-          <div className="p-5 bg-arcade-panel border-4 border-black shadow-hard text-left space-y-3 font-retro text-xl text-arcade-cyan">
-            <p>▸ perguntem uns aos outros sobre a palavra</p>
-            <p>▸ o impostor finge que sabe</p>
-            <p>▸ descubram quem é o impostor</p>
+        <div className="space-y-5 text-center">
+          <h2 className={heading}>Façam perguntas! 💬</h2>
+          <div className="p-5 bg-white rounded-4xl shadow-soft text-left space-y-2 font-fun text-fun-ink">
+            <p>👉 Perguntem uns aos outros sobre a palavra</p>
+            <p>🕵️ O impostor finge que sabe</p>
+            <p>🎯 Descubram quem é o impostor</p>
           </div>
-          <Button onClick={startVoting}>INICIAR VOTAÇÃO</Button>
-          <Button variant="ghost" onClick={onReset}>SAIR</Button>
+          <Button onClick={startVoting}>Iniciar votação 🗳️</Button>
+          <Button variant="ghost" onClick={onReset}>Sair</Button>
         </div>
       );
     }
@@ -145,14 +141,14 @@ const GameView: React.FC<GameViewProps> = ({ state, onReset, playerId, roomCode 
     if (turnSystem.phase === 'voting') {
       return (
         <div className="space-y-5 text-center">
-          <h2 className={sectionTitle}>QUEM É O<br/>IMPOSTOR?</h2>
-          <p className="font-retro text-xl text-arcade-cyan leading-tight">decidam juntos e toquem no acusado</p>
+          <h2 className={heading}>Quem é o impostor? 🕵️</h2>
+          <p className="font-fun text-fun-muted">Decidam juntos e toquem no acusado</p>
           <div className="grid grid-cols-2 gap-3">
             {players.filter(p => p.isActive).map(player => (
               <button
                 key={player.id}
                 onClick={() => accuseImpostor(player.id)}
-                className="font-pixel text-[11px] p-4 border-4 border-black shadow-hard active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all bg-arcade-panel2 text-arcade-cyan hover:bg-arcade-pink hover:text-white"
+                className="font-fun font-semibold p-4 rounded-3xl bg-white text-fun-ink shadow-soft-sm active:scale-95 hover:bg-fun-pink hover:text-white transition-all"
               >
                 {player.name}
               </button>
@@ -167,31 +163,31 @@ const GameView: React.FC<GameViewProps> = ({ state, onReset, playerId, roomCode 
     const accused = players.find(p => p.id === state.data?.accusedId);
     return (
       <div className="space-y-5 text-center">
-        <h2 className={`font-pixel text-2xl leading-relaxed ${state.data?.caught ? 'text-arcade-green glow-green' : 'text-arcade-pink glow-pink'}`}>
-          {state.data?.winner || 'FIM!'}
+        <h2 className={`font-fun font-bold text-3xl ${state.data?.caught ? 'text-fun-green' : 'text-fun-pink'}`}>
+          {state.data?.winner || 'Fim de jogo!'}
         </h2>
-        <div className="bg-arcade-panel border-4 border-black shadow-hard p-5 space-y-3">
-          <p className="font-pixel text-[10px] text-arcade-cyan">A PALAVRA ERA</p>
-          <p className="font-pixel text-xl text-arcade-yellow glow-yellow break-words">{state.data?.secretWord}</p>
-          <p className="font-pixel text-[10px] text-arcade-cyan mt-3">O IMPOSTOR ERA</p>
-          <p className="font-pixel text-lg text-arcade-pink glow-pink">🕵️ {impostor?.name || '???'}</p>
-          {accused && <p className="font-retro text-lg text-arcade-line mt-2">grupo acusou: {accused.name}</p>}
+        <div className="bg-white rounded-4xl shadow-soft p-6 space-y-2">
+          <p className="font-fun text-fun-muted">A palavra era</p>
+          <p className="font-fun font-bold text-3xl text-fun-purple break-words">{state.data?.secretWord}</p>
+          <p className="font-fun text-fun-muted mt-3">O impostor era</p>
+          <p className="font-fun font-bold text-2xl text-fun-pink">🕵️ {impostor?.name || '???'}</p>
+          {accused && <p className="font-fun text-sm text-fun-muted mt-2">O grupo acusou: {accused.name}</p>}
         </div>
-        <Button variant="danger" onClick={onReset}>JOGAR DE NOVO</Button>
+        <Button variant="danger" onClick={onReset}>Jogar de novo 🔄</Button>
       </div>
     );
   };
 
   const renderWhoAmI = () => {
     if (turnSystem.phase === 'setup') {
-      if (!currentPlayer) return <div className="font-pixel text-arcade-cyan">CARREGANDO...</div>;
+      if (!currentPlayer) return <div className="font-fun text-fun-muted">Carregando…</div>;
       const isViewingPlayer = currentPlayer.id === playerId;
       return (
         <div className="space-y-5">
           <TurnIndicator turnSystem={turnSystem} players={players} currentPlayerId={playerId} />
-          <div className="text-center space-y-2">
-            <p className="font-pixel text-[10px] text-arcade-green glow-green">PERSONAGEM DE</p>
-            <h3 className="font-pixel text-2xl text-arcade-pink glow-pink break-words">{currentPlayer.name}</h3>
+          <div className="text-center space-y-1">
+            <p className="font-fun text-fun-muted">Personagem de</p>
+            <h3 className="font-fun font-bold text-3xl text-fun-purple break-words">{currentPlayer.name}</h3>
           </div>
           <PrivateInfoDisplay
             key={currentPlayer.id}
@@ -200,20 +196,20 @@ const GameView: React.FC<GameViewProps> = ({ state, onReset, playerId, roomCode 
             privateData={currentPlayer.privateData}
             gameMode="QUEM_SOU_EU"
           />
-          <Button onClick={nextTurn}>{isViewingPlayer ? 'VI ✓' : 'PRÓXIMO ▶'}</Button>
+          <Button onClick={nextTurn}>{isViewingPlayer ? 'Já vi ✓' : 'Próximo 👉'}</Button>
         </div>
       );
     }
 
     if (turnSystem.phase === 'playing') {
       return (
-        <div className="space-y-6 text-center">
-          <h2 className={sectionTitle}>FAÇA<br/>PERGUNTAS!</h2>
-          <p className="font-retro text-2xl text-arcade-cyan leading-tight">
-            faça perguntas de "sim ou não" para descobrir quem você é
+        <div className="space-y-5 text-center">
+          <h2 className={heading}>Faça perguntas! 💬</h2>
+          <p className="font-fun text-fun-muted text-lg leading-snug">
+            Faça perguntas de "sim ou não" para descobrir quem você é
           </p>
-          <Button onClick={finishWhoAmI}>REVELAR TODOS</Button>
-          <Button variant="ghost" onClick={onReset}>SAIR</Button>
+          <Button onClick={finishWhoAmI}>Revelar todos 🎭</Button>
+          <Button variant="ghost" onClick={onReset}>Sair</Button>
         </div>
       );
     }
@@ -221,16 +217,16 @@ const GameView: React.FC<GameViewProps> = ({ state, onReset, playerId, roomCode 
     // finished
     return (
       <div className="space-y-5 text-center">
-        <h2 className="font-pixel text-xl text-arcade-green glow-green leading-relaxed">PERSONAGENS!</h2>
+        <h2 className={`${heading} text-fun-green`}>Personagens! 🎭</h2>
         <div className="space-y-2">
           {players.map(p => (
-            <div key={p.id} className="bg-arcade-panel border-4 border-black shadow-hard p-3 flex justify-between items-center">
-              <span className="font-retro text-xl text-arcade-cyan">{p.name}</span>
-              <span className="font-pixel text-[11px] text-arcade-yellow glow-yellow">🎭 {state.data?.assignments?.[p.id] || '???'}</span>
+            <div key={p.id} className="bg-white rounded-3xl shadow-soft-sm p-4 flex justify-between items-center">
+              <span className="font-fun text-fun-ink">{p.name}</span>
+              <span className="font-fun font-bold text-fun-purple">🎭 {state.data?.assignments?.[p.id] || '???'}</span>
             </div>
           ))}
         </div>
-        <Button variant="danger" onClick={onReset}>JOGAR DE NOVO</Button>
+        <Button variant="danger" onClick={onReset}>Jogar de novo 🔄</Button>
       </div>
     );
   };
@@ -246,30 +242,30 @@ const GameView: React.FC<GameViewProps> = ({ state, onReset, playerId, roomCode 
 
       return (
         <div className="space-y-6 text-center">
-          <h2 className="font-pixel text-base text-arcade-yellow glow-yellow leading-relaxed break-words">{state.data.scenario}</h2>
+          <h2 className="font-fun font-bold text-2xl text-fun-ink break-words">{state.data.scenario}</h2>
           <div className="space-y-4">
-            <div className="bg-arcade-panel border-4 border-black shadow-hard p-4 text-left">
+            <div className="bg-white rounded-4xl shadow-soft p-5 text-left">
               <div className="flex justify-between items-center mb-2">
-                <span className="font-retro text-xl text-arcade-pink">A: {state.data.optionA}</span>
-                <span className="font-pixel text-sm text-arcade-pink glow-pink">{pctA}%</span>
+                <span className="font-fun font-semibold text-fun-pink">A: {state.data.optionA}</span>
+                <span className="font-fun font-bold text-fun-pink">{pctA}%</span>
               </div>
-              <div className="w-full bg-arcade-bg border-2 border-black h-4">
-                <div className="bg-arcade-pink h-full transition-all" style={{ width: `${pctA}%` }} />
+              <div className="w-full bg-fun-purple/10 rounded-full h-3">
+                <div className="bg-gradient-to-r from-fun-pink to-fun-coral h-3 rounded-full transition-all" style={{ width: `${pctA}%` }} />
               </div>
-              <p className="font-retro text-lg text-arcade-line mt-1">{countA} voto(s)</p>
+              <p className="font-fun text-sm text-fun-muted mt-1">{countA} voto(s)</p>
             </div>
-            <div className="bg-arcade-panel border-4 border-black shadow-hard p-4 text-left">
+            <div className="bg-white rounded-4xl shadow-soft p-5 text-left">
               <div className="flex justify-between items-center mb-2">
-                <span className="font-retro text-xl text-arcade-cyan">B: {state.data.optionB}</span>
-                <span className="font-pixel text-sm text-arcade-cyan glow-cyan">{pctB}%</span>
+                <span className="font-fun font-semibold text-fun-sky">B: {state.data.optionB}</span>
+                <span className="font-fun font-bold text-fun-sky">{pctB}%</span>
               </div>
-              <div className="w-full bg-arcade-bg border-2 border-black h-4">
-                <div className="bg-arcade-cyan h-full transition-all" style={{ width: `${pctB}%` }} />
+              <div className="w-full bg-fun-purple/10 rounded-full h-3">
+                <div className="bg-gradient-to-r from-fun-sky to-fun-purple h-3 rounded-full transition-all" style={{ width: `${pctB}%` }} />
               </div>
-              <p className="font-retro text-lg text-arcade-line mt-1">{countB} voto(s)</p>
+              <p className="font-fun text-sm text-fun-muted mt-1">{countB} voto(s)</p>
             </div>
           </div>
-          <Button variant="danger" onClick={onReset}>JOGAR DE NOVO</Button>
+          <Button variant="danger" onClick={onReset}>Jogar de novo 🔄</Button>
         </div>
       );
     }
@@ -278,35 +274,36 @@ const GameView: React.FC<GameViewProps> = ({ state, onReset, playerId, roomCode 
     return (
       <div className="space-y-5">
         <div className="text-center space-y-3">
-          <span className="inline-block font-pixel text-[10px] bg-arcade-pink text-white px-3 py-2 border-2 border-black">DILEMA</span>
-          <h2 className="font-pixel text-base text-arcade-yellow glow-yellow leading-relaxed break-words">{state.data.scenario}</h2>
+          <span className="inline-block font-fun font-semibold text-sm bg-fun-pink/15 text-fun-pink px-4 py-1.5 rounded-full">Dilema 🔥</span>
+          <h2 className="font-fun font-bold text-2xl text-fun-ink break-words leading-tight">{state.data.scenario}</h2>
         </div>
         <div className="space-y-4">
           <button
             onClick={() => castDilemmaVote('A')}
-            className={`w-full p-5 border-4 border-black shadow-hard text-left transition-all active:translate-x-[4px] active:translate-y-[4px] active:shadow-none ${
-              myVote === 'A' ? 'bg-arcade-pink text-white ring-4 ring-arcade-yellow' : 'bg-arcade-panel2 text-arcade-cyan'
+            className={`w-full p-5 rounded-4xl text-left shadow-soft active:scale-[0.98] transition-all ${
+              myVote === 'A' ? 'bg-gradient-to-r from-fun-pink to-fun-coral text-white ring-4 ring-fun-yellow/60' : 'bg-white text-fun-ink'
             }`}
           >
-            <span className="font-pixel text-[10px] block mb-2 text-arcade-yellow">OPÇÃO A {myVote === 'A' && '✓'}</span>
-            <span className="font-retro text-2xl leading-tight">{state.data.optionA}</span>
+            <span className={`font-fun text-sm block mb-1 ${myVote === 'A' ? 'text-white/80' : 'text-fun-muted'}`}>Opção A {myVote === 'A' && '✓'}</span>
+            <span className="font-fun font-semibold text-lg">{state.data.optionA}</span>
           </button>
           <button
             onClick={() => castDilemmaVote('B')}
-            className={`w-full p-5 border-4 border-black shadow-hard text-left transition-all active:translate-x-[4px] active:translate-y-[4px] active:shadow-none ${
-              myVote === 'B' ? 'bg-arcade-cyan text-black ring-4 ring-arcade-yellow' : 'bg-arcade-panel2 text-arcade-cyan'
+            className={`w-full p-5 rounded-4xl text-left shadow-soft active:scale-[0.98] transition-all ${
+              myVote === 'B' ? 'bg-gradient-to-r from-fun-sky to-fun-purple text-white ring-4 ring-fun-yellow/60' : 'bg-white text-fun-ink'
             }`}
           >
-            <span className="font-pixel text-[10px] block mb-2 text-arcade-yellow">OPÇÃO B {myVote === 'B' && '✓'}</span>
-            <span className="font-retro text-2xl leading-tight">{state.data.optionB}</span>
+            <span className={`font-fun text-sm block mb-1 ${myVote === 'B' ? 'text-white/80' : 'text-fun-muted'}`}>Opção B {myVote === 'B' && '✓'}</span>
+            <span className="font-fun font-semibold text-lg">{state.data.optionB}</span>
           </button>
         </div>
         <div className="text-center space-y-3">
-          <p className="font-pixel text-[10px] text-arcade-green glow-green">
-            {Object.keys(state.data.votes || {}).length} / {activePlayers.length} VOTARAM
+          <p className="font-fun text-sm text-fun-muted">
+            {Object.keys(state.data.votes || {}).length} de {activePlayers.length} votaram
+            {allPlayersActed && ' — todos votaram! 🎉'}
           </p>
-          <Button onClick={showDilemmaResults} disabled={!myVote}>VER RESULTADOS</Button>
-          <Button variant="ghost" onClick={onReset}>SAIR</Button>
+          <Button onClick={showDilemmaResults} disabled={!myVote}>Ver resultados 📊</Button>
+          <Button variant="ghost" onClick={onReset}>Sair</Button>
         </div>
       </div>
     );
