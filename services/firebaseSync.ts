@@ -100,13 +100,15 @@ class FirebaseSyncService {
       this.errorListeners.forEach((l) => l(msg));
       throw new Error(msg);
     }
-    await set(ref(db, `rooms/${clean}/players/${playerId}`), {
-      id: playerId, name: playerName, isActive: true, hasActedThisTurn: false, joinedAt: Date.now(),
-    });
+    const me = { id: playerId, name: playerName, isActive: true, hasActedThisTurn: false, joinedAt: Date.now() };
+    await set(ref(db, `rooms/${clean}/players/${playerId}`), me);
     this.currentCode = clean;
     this.armDisconnect(clean, playerId);
     this.subscribe(clean);
-    return snapshotToRoom(snap.val());
+    // Retorna a sala JÁ com o próprio jogador incluído (evita lista "sem você" no seu aparelho).
+    const val = snap.val();
+    val.players = { ...(val.players || {}), [playerId]: me };
+    return snapshotToRoom(val);
   }
 
   /** Sai da sala: cancela a auto-remoção e remove o jogador. */
