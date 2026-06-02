@@ -15,10 +15,14 @@ export interface WhoAmIState {
 
 export type WhoAmIAction = { type: 'RESOLVE'; correct: boolean };
 
-function assignCharacters(players: Player[]): Record<string, string> {
-  // junta todos os personagens de todas as categorias e sorteia sem repetir
-  const all = whoAmIContent.categories.flatMap((c) => c.items.map((i) => i.name));
-  const picked = shuffle(all).slice(0, players.length);
+function assignCharacters(players: Player[], categoryId: string): Record<string, string> {
+  // Filtra pela categoria escolhida, ou junta todas no "Misturar"
+  const cats =
+    categoryId && categoryId !== 'all'
+      ? whoAmIContent.categories.filter((c) => c.id === categoryId)
+      : whoAmIContent.categories;
+  const pool = (cats.length ? cats : whoAmIContent.categories).flatMap((c) => c.items.map((i) => i.name));
+  const picked = shuffle(pool).slice(0, players.length);
   const map: Record<string, string> = {};
   players.forEach((p, i) => { map[p.id] = picked[i] ?? `Personagem ${i + 1}`; });
   return map;
@@ -28,7 +32,7 @@ export function initGame(config: GameConfig): WhoAmIState {
   return {
     phase: 'playing',
     players: config.players,
-    assignments: assignCharacters(config.players),
+    assignments: assignCharacters(config.players, config.categoryId ?? 'all'),
     turnIdx: 0,
     scores: Object.fromEntries(config.players.map((p) => [p.id, 0])),
   };

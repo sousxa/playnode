@@ -1,8 +1,9 @@
 import type { GameConfig, GameEngine, Player } from '../../engine/types';
 import { impostorContent } from '../../content';
-import { shuffle, pickRandom } from '../../engine/utils';
+import { IMPOSTOR_WEAK } from '../metadata';
+import { shuffle, pickRandom, sampleN } from '../../engine/utils';
 
-export type ImpostorPhase = 'distribute' | 'clues' | 'voting' | 'reveal' | 'gameOver';
+export type ImpostorPhase = 'distribute' | 'clues' | 'voting' | 'guess' | 'reveal' | 'gameOver';
 
 export interface PlayerSecret {
   type: 'word' | 'hint';
@@ -15,14 +16,15 @@ export interface ImpostorState {
   impostorIds: string[];
   word: string;
   categoryLabel: string;
-  /** Segredo por jogador: palavra (civil) ou dica genérica (impostor). */
+  categoryId: string;
   playerSecrets: Record<string, PlayerSecret>;
-  /** Índice do jogador recebendo o segredo (fase distribute). */
+  /** Opções para o impostor tentar adivinhar a palavra (palavra real + iscas). */
+  guessOptions: string[];
   distributedIdx: number;
-  /** Votos: voterId -> suspectId. */
   votes: Record<string, string>;
-  /** Índice do votante atual (votação sequencial passa-e-joga). */
   voterIdx: number;
+  caught: boolean;
+  stolen: boolean;
   round: number;
   totalRounds: number;
   scores: Record<string, number>;
@@ -34,13 +36,24 @@ export type ImpostorAction =
   | { type: 'NEXT_DISTRIBUTE' }
   | { type: 'START_VOTING' }
   | { type: 'CAST_VOTE'; suspectId: string }
+  | { type: 'IMPOSTOR_GUESS'; word: string }
   | { type: 'NEXT_ROUND' };
 
-function setupRound(players: Player[], impostorCount: number, usedWords: string[]) {
-  const cats = impostorContent.categories
+function buildPool(categoryId: string) {
+  if (categoryId && categoryId !== 'all') {
+    const only = impostorContent.categories.filter((c) => c.id === categoryId);
+    if (only.length) return only;
+  }
+  // "Misturar": exclui categorias abstratas que rendem rodadas fracas
+  return impostorContent.categories.filter((c) => !IMPOSTOR_WEAK.includes(c.id));
+}
+
+function setupRound(players: Player[], impostorCount: number, categoryId: string, usedWords: string[]) {
+  const base = buildPool(categoryId);
+  const avail = base
     .map((c) => ({ ...c, items: c.items.filter((i) => !usedWords.includes(i.word)) }))
     .filter((c) => c.items.length > 0);
-  const src = cats.length > 0 ? cats : impostorContent.categories;
+  const src = avail.length > 0 ? avail : base;
 
   const category = pickRandom(src);
   const item = pickRandom(category.items);
@@ -55,26 +68,37 @@ function setupRound(players: Player[], impostorCount: number, usedWords: string[
       : { type: 'word', text: item.word };
   }
 
+  // Iscas: outras palavras da mesma categoria (ou do pool)
+  const decoyPool = category.items.map((i) => i.word).filter((w) => w !== item.word);
+  const fallbackPool = src.flatMap((c) => c.items.map((i) => i.word)).filter((w) => w !== item.word);
+  const decoys = sampleN(decoyPool.length >= 3 ? decoyPool : fallbackPool, 3);
+  const guessOptions = shuffle([item.word, ...decoys]);
+
   return {
     phase: 'distribute' as ImpostorPhase,
     impostorIds,
     word: item.word,
     categoryLabel: category.label,
     playerSecrets,
+    guessOptions,
     distributedIdx: 0,
     votes: {},
     voterIdx: 0,
+    caught: false,
+    stolen: false,
   };
 }
 
 export function initGame(config: GameConfig): ImpostorState {
   const players = config.players;
-  const impostorCount = players.length >= 7 ? 2 : 1;
+  const categoryId = config.categoryId ?? 'all';
+  const impostorCount = config.impostorCount ?? (players.length >= 7 ? 2 : 1);
   const totalRounds = config.rounds ?? 3;
-  const round = setupRound(players, impostorCount, []);
+  const round = setupRound(players, impostorCount, categoryId, []);
   return {
     ...round,
     players,
+    categoryId,
     round: 1,
     totalRounds,
     scores: Object.fromEntries(players.map((p) => [p.id, 0])),
@@ -83,13 +107,29 @@ export function initGame(config: GameConfig): ImpostorState {
   };
 }
 
+/** +1 para cada civil que votou em um impostor. */
+function awardCivilians(state: ImpostorState, scores: Record<string, number>) {
+  for (const p of state.players) {
+    if (state.impostorIds.includes(p.id)) continue;
+    const suspect = state.votes[p.id];
+    if (suspect && state.impostorIds.includes(suspect)) scores[p.id] = (scores[p.id] ?? 0) + 1;
+  }
+}
+
+function civiliansCaughtImpostor(state: ImpostorState): boolean {
+  const civIds = state.players.map((p) => p.id).filter((id) => !state.impostorIds.includes(id));
+  const hits = civIds.filter((id) => {
+    const s = state.votes[id];
+    return s && state.impostorIds.includes(s);
+  }).length;
+  return civIds.length > 0 && hits > civIds.length / 2;
+}
+
 export function reducer(state: ImpostorState, action: ImpostorAction): ImpostorState {
   switch (action.type) {
     case 'NEXT_DISTRIBUTE': {
       const next = state.distributedIdx + 1;
-      if (next >= state.players.length) {
-        return { ...state, phase: 'clues' };
-      }
+      if (next >= state.players.length) return { ...state, phase: 'clues' };
       return { ...state, distributedIdx: next };
     }
 
@@ -100,23 +140,33 @@ export function reducer(state: ImpostorState, action: ImpostorAction): ImpostorS
       const voter = state.players[state.voterIdx];
       const votes = { ...state.votes, [voter.id]: action.suspectId };
       const nextIdx = state.voterIdx + 1;
-      if (nextIdx >= state.players.length) {
-        return applyScores({ ...state, votes, phase: 'reveal' });
+      if (nextIdx < state.players.length) return { ...state, votes, voterIdx: nextIdx };
+
+      // último voto: apura
+      const next = { ...state, votes };
+      const scores = { ...state.scores };
+      awardCivilians(next, scores);
+      const caught = civiliansCaughtImpostor(next);
+      if (caught) {
+        // impostor foi pego → tem uma chance de adivinhar a palavra pra roubar
+        return { ...next, scores, caught: true, phase: 'guess' };
       }
-      return { ...state, votes, voterIdx: nextIdx };
+      // impostor escapou → +2 cada
+      for (const id of state.impostorIds) scores[id] = (scores[id] ?? 0) + 2;
+      return { ...next, scores, caught: false, phase: 'reveal' };
+    }
+
+    case 'IMPOSTOR_GUESS': {
+      const stolen = action.word === state.word;
+      const scores = { ...state.scores };
+      if (stolen) for (const id of state.impostorIds) scores[id] = (scores[id] ?? 0) + 2;
+      return { ...state, scores, stolen, phase: 'reveal' };
     }
 
     case 'NEXT_ROUND': {
-      if (state.round >= state.totalRounds) {
-        return { ...state, phase: 'gameOver' };
-      }
-      const next = setupRound(state.players, state.impostorCount, state.usedWords);
-      return {
-        ...state,
-        ...next,
-        usedWords: [...state.usedWords, next.word],
-        round: state.round + 1,
-      };
+      if (state.round >= state.totalRounds) return { ...state, phase: 'gameOver' };
+      const next = setupRound(state.players, state.impostorCount, state.categoryId, state.usedWords);
+      return { ...state, ...next, usedWords: [...state.usedWords, next.word], round: state.round + 1 };
     }
 
     default:
@@ -124,42 +174,10 @@ export function reducer(state: ImpostorState, action: ImpostorAction): ImpostorS
   }
 }
 
-/** Impostor só cai se a MAIORIA dos civis votar nele. Calcula pontos. */
-function applyScores(state: ImpostorState): ImpostorState {
-  const scores = { ...state.scores };
-  const civilianIds = state.players.map((p) => p.id).filter((id) => !state.impostorIds.includes(id));
-
-  let civViaImpostor = 0;
-  for (const voterId of civilianIds) {
-    const suspect = state.votes[voterId];
-    if (suspect && state.impostorIds.includes(suspect)) {
-      civViaImpostor++;
-      scores[voterId] = (scores[voterId] ?? 0) + 1; // acertou
-    }
-  }
-
-  const caught = civilianIds.length > 0 && civViaImpostor > civilianIds.length / 2;
-  if (!caught) {
-    for (const id of state.impostorIds) scores[id] = (scores[id] ?? 0) + 2; // impostor escapou
-  }
-  return { ...state, scores };
-}
-
 export function getVoteTally(state: ImpostorState): Record<string, number> {
   const tally: Record<string, number> = {};
-  for (const suspect of Object.values(state.votes)) {
-    tally[suspect] = (tally[suspect] ?? 0) + 1;
-  }
+  for (const suspect of Object.values(state.votes)) tally[suspect] = (tally[suspect] ?? 0) + 1;
   return tally;
-}
-
-export function wasImpostorCaught(state: ImpostorState): boolean {
-  const civilianIds = state.players.map((p) => p.id).filter((id) => !state.impostorIds.includes(id));
-  const civViaImpostor = civilianIds.filter((id) => {
-    const s = state.votes[id];
-    return s && state.impostorIds.includes(s);
-  }).length;
-  return civilianIds.length > 0 && civViaImpostor > civilianIds.length / 2;
 }
 
 export const impostorEngine: GameEngine<ImpostorState, ImpostorAction> = {
@@ -173,14 +191,14 @@ export const impostorEngine: GameEngine<ImpostorState, ImpostorAction> = {
   },
   getPlayerView: (s, playerId) => {
     const revealed = s.phase === 'reveal' || s.phase === 'gameOver';
+    const isImpostor = s.impostorIds.includes(playerId);
     return {
       ...s,
-      // só o próprio segredo
       playerSecrets: { [playerId]: s.playerSecrets[playerId] },
-      // identidade do impostor e palavra escondidas até o reveal
       impostorIds: revealed ? s.impostorIds : [],
       word: revealed ? s.word : '',
-      // votos escondidos até o reveal
+      // opções de palpite só fazem sentido para o impostor na fase guess
+      guessOptions: isImpostor || revealed ? s.guessOptions : [],
       votes: revealed ? s.votes : {},
     };
   },

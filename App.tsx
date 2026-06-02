@@ -3,9 +3,10 @@ import { Toaster, toast } from 'sonner';
 import Home from './views/Home';
 import Lobby from './views/Lobby';
 import GameRoom from './views/GameRoom';
+import GameConfig, { type ConfigExtras } from './views/GameConfig';
 import AgeGate from './components/AgeGate';
 import { GameMode } from './types';
-import type { GameConfig } from './engine/types';
+import type { GameConfig as EngineConfig } from './engine/types';
 import { localStorageSyncService } from './services/localStorageSync';
 
 const AGE_KEY = 'catdecks-age-ok';
@@ -26,11 +27,12 @@ const App: React.FC = () => {
   const [initialRoomFromUrl, setInitialRoomFromUrl] = useState<string | null>(null);
   const [hasRoomState, setHasRoomState] = useState(false);
   const [players, setPlayers] = useState<{ id: string; name: string }[]>([]);
-  const [alcoholicMode, setAlcoholicMode] = useState(false);
   const [roomMode, setRoomMode] = useState<'online' | 'local'>('online');
 
+  // Jogo sendo configurado (tela GameConfig). null = não está configurando.
+  const [configuringGame, setConfiguringGame] = useState<GameMode | null>(null);
   // Jogo em andamento (single-device). null = ainda no lobby.
-  const [activeGame, setActiveGame] = useState<{ mode: GameMode; config: GameConfig } | null>(null);
+  const [activeGame, setActiveGame] = useState<{ mode: GameMode; config: EngineConfig } | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -77,16 +79,27 @@ const App: React.FC = () => {
     }
   };
 
-  const startGame = async (mode: GameMode, opts?: { alcoholicMode?: boolean }) => {
+  // Lobby: escolheu um jogo → vai para a tela de configuração.
+  const selectGame = (mode: GameMode) => {
     if (players.length < 2 && mode !== GameMode.DILEMAS) {
       toast.error('Adicione pelo menos 2 jogadores!');
       return;
     }
-    const config: GameConfig = {
+    setConfiguringGame(mode);
+  };
+
+  // GameConfig: confirmou → monta a config e inicia o jogo.
+  const confirmConfig = (extras: ConfigExtras) => {
+    if (!configuringGame) return;
+    const config: EngineConfig = {
       players: players.map((p) => ({ id: p.id, name: p.name })),
-      alcoholicMode: opts?.alcoholicMode ?? alcoholicMode,
+      alcoholicMode: extras.alcoholicMode,
+      rounds: extras.rounds,
+      categoryId: extras.categoryId,
+      impostorCount: extras.impostorCount,
     };
-    setActiveGame({ mode, config });
+    setActiveGame({ mode: configuringGame, config });
+    setConfiguringGame(null);
   };
 
   const exitGame = () => setActiveGame(null);
@@ -104,16 +117,23 @@ const App: React.FC = () => {
     screen = <Home onJoin={handleStartSession} initialCode={initialRoomFromUrl || undefined} />;
   } else if (activeGame) {
     screen = <GameRoom mode={activeGame.mode} config={activeGame.config} onExit={exitGame} />;
+  } else if (configuringGame) {
+    screen = (
+      <GameConfig
+        mode={configuringGame}
+        playerCount={players.length}
+        onBack={() => setConfiguringGame(null)}
+        onStart={confirmConfig}
+      />
+    );
   } else {
     screen = (
       <Lobby
         roomCode={roomCode}
         isHost={isHost}
         players={players}
-        alcoholicMode={alcoholicMode}
         onlineMode={roomMode === 'online'}
-        onAlcoholicChange={setAlcoholicMode}
-        onStartGame={startGame}
+        onSelectGame={selectGame}
       />
     );
   }

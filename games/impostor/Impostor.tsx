@@ -6,7 +6,7 @@ import GameHeader from '../shared/GameHeader';
 import GameOver from '../shared/GameOver';
 import CoverScreen from '../shared/CoverScreen';
 import type { GameConfig } from '../../engine/types';
-import { initGame, reducer, getVoteTally, wasImpostorCaught, type ImpostorState } from './engine';
+import { initGame, reducer, getVoteTally, type ImpostorState } from './engine';
 
 interface Props {
   config: GameConfig;
@@ -18,12 +18,11 @@ const Impostor: React.FC<Props> = ({ config, onExit }) => {
   const dispatch = (a: Parameters<typeof reducer>[1]) => setState((s) => reducer(s, a));
   const playAgain = () => setState(initGame(config));
 
-  // Confete quando o grupo pega o impostor
   useEffect(() => {
-    if (state.phase === 'reveal' && wasImpostorCaught(state)) {
+    if (state.phase === 'reveal' && state.caught && !state.stolen) {
       confetti({ particleCount: 120, spread: 75, origin: { y: 0.6 } });
     }
-  }, [state.phase]);
+  }, [state.phase, state.caught, state.stolen]);
 
   const wrap = (children: React.ReactNode) => (
     <div className="page-wrapper flex flex-col p-5">
@@ -32,7 +31,7 @@ const Impostor: React.FC<Props> = ({ config, onExit }) => {
     </div>
   );
 
-  // ── distribute: cada um vê seu segredo ──
+  // ── distribute ──
   if (state.phase === 'distribute') {
     const player = state.players[state.distributedIdx];
     const secret = state.playerSecrets[player.id];
@@ -64,7 +63,7 @@ const Impostor: React.FC<Props> = ({ config, onExit }) => {
     );
   }
 
-  // ── clues: discussão ──
+  // ── clues ──
   if (state.phase === 'clues') {
     return wrap(
       <div className="space-y-6 text-center">
@@ -73,16 +72,16 @@ const Impostor: React.FC<Props> = ({ config, onExit }) => {
         </div>
         <h2 className="font-display font-extrabold text-2xl text-text-primary">Hora das dicas!</h2>
         <div className="bg-surface border border-line rounded-3xl p-5 text-left space-y-2 font-sans text-text-secondary">
-          <p>🗣️ Cada um fala uma dica sobre a palavra.</p>
-          <p>🕵️ O impostor tenta blefar sem saber a palavra.</p>
-          <p>🎯 Depois, todos votam em quem acham que é o impostor.</p>
+          <p>🗣️ Cada um fala uma dica sobre a palavra (sem entregar!).</p>
+          <p>🕵️ O impostor blefa sem saber a palavra.</p>
+          <p>🎯 Depois todos votam em quem acham que é o impostor.</p>
         </div>
         <Button onClick={() => dispatch({ type: 'START_VOTING' })}>Ir para votação 🗳️</Button>
       </div>
     );
   }
 
-  // ── voting: votação secreta passa-e-joga ──
+  // ── voting ──
   if (state.phase === 'voting') {
     const voter = state.players[state.voterIdx];
     return wrap(
@@ -96,26 +95,46 @@ const Impostor: React.FC<Props> = ({ config, onExit }) => {
     );
   }
 
+  // ── guess: impostor pego tenta adivinhar a palavra ──
+  if (state.phase === 'guess') {
+    return wrap(
+      <div className="space-y-5 text-center">
+        <div className="text-5xl">🕵️</div>
+        <h2 className="font-display font-extrabold text-2xl text-text-primary">Impostor foi pego!</h2>
+        <p className="font-sans text-text-secondary">Última chance: adivinhe a palavra secreta para roubar a vitória.</p>
+        <div className="grid grid-cols-2 gap-3">
+          {state.guessOptions.map((w) => (
+            <button
+              key={w}
+              onClick={() => dispatch({ type: 'IMPOSTOR_GUESS', word: w })}
+              className="font-display font-bold p-4 rounded-2xl bg-surface border border-line text-text-primary active:scale-95 hover:border-danger transition-all overflow-wrap-anywhere"
+            >
+              {w}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   // ── reveal ──
   if (state.phase === 'reveal') {
-    const caught = wasImpostorCaught(state);
     const impostors = state.players.filter((p) => state.impostorIds.includes(p.id));
     const tally = getVoteTally(state);
     const isLast = state.round >= state.totalRounds;
+    let title: string, color: string;
+    if (!state.caught) { title = 'O impostor escapou! 🕵️'; color = 'text-danger'; }
+    else if (state.stolen) { title = 'Pego — mas roubou a vitória! 🥷'; color = 'text-warning'; }
+    else { title = 'O grupo venceu! 🎉'; color = 'text-success'; }
+
     return wrap(
       <div className="space-y-5 text-center">
-        <h2 className={`font-display font-extrabold text-3xl ${caught ? 'text-success' : 'text-danger'}`}>
-          {caught ? 'O grupo venceu! 🎉' : 'O impostor escapou! 🕵️'}
-        </h2>
+        <h2 className={`font-display font-extrabold text-3xl ${color}`}>{title}</h2>
         <div className="bg-surface border border-line rounded-4xl p-5 space-y-2">
           <p className="font-sans text-text-secondary text-sm">A palavra era</p>
           <p className="font-display font-extrabold text-2xl text-accent overflow-wrap-anywhere">{state.word}</p>
-          <p className="font-sans text-text-secondary text-sm mt-3">
-            {impostors.length > 1 ? 'Os impostores eram' : 'O impostor era'}
-          </p>
-          <p className="font-display font-bold text-xl text-danger">
-            🕵️ {impostors.map((i) => i.name).join(', ')}
-          </p>
+          <p className="font-sans text-text-secondary text-sm mt-3">{impostors.length > 1 ? 'Os impostores eram' : 'O impostor era'}</p>
+          <p className="font-display font-bold text-xl text-danger">🕵️ {impostors.map((i) => i.name).join(', ')}</p>
         </div>
         <div className="bg-surface border border-line rounded-3xl p-4 space-y-1">
           {state.players.map((p) => (
@@ -125,20 +144,15 @@ const Impostor: React.FC<Props> = ({ config, onExit }) => {
             </div>
           ))}
         </div>
-        <Button onClick={() => dispatch({ type: 'NEXT_ROUND' })}>
-          {isLast ? 'Ver resultado 🏆' : 'Próxima rodada 👉'}
-        </Button>
+        <Button onClick={() => dispatch({ type: 'NEXT_ROUND' })}>{isLast ? 'Ver resultado 🏆' : 'Próxima rodada 👉'}</Button>
       </div>
     );
   }
 
   // ── gameOver ──
-  return wrap(
-    <GameOver title="Fim de jogo!" players={state.players} scores={state.scores} onPlayAgain={playAgain} onExit={onExit} />
-  );
+  return wrap(<GameOver title="Fim de jogo!" players={state.players} scores={state.scores} onPlayAgain={playAgain} onExit={onExit} />);
 };
 
-// Turno de votação: cobre, revela ao votante, mostra suspeitos.
 const VotingTurn: React.FC<{
   voterName: string;
   suspects: { id: string; name: string }[];
@@ -146,35 +160,22 @@ const VotingTurn: React.FC<{
   onVote: (suspectId: string) => void;
 }> = ({ voterName, suspects, progress, onVote }) => {
   const [revealed, setRevealed] = useState(false);
-
   if (!revealed) {
     return (
-      <button
-        onClick={() => setRevealed(true)}
-        className="w-full bg-surface border-2 border-line rounded-4xl p-10 text-center flex flex-col items-center gap-4"
-      >
-        <div className="w-16 h-16 rounded-3xl bg-accent/15 flex items-center justify-center">
-          <Eye className="text-accent" size={28} />
-        </div>
+      <button onClick={() => setRevealed(true)} className="w-full bg-surface border-2 border-line rounded-4xl p-10 text-center flex flex-col items-center gap-4">
+        <div className="w-16 h-16 rounded-3xl bg-accent/15 flex items-center justify-center"><Eye className="text-accent" size={28} /></div>
         <p className="font-sans text-text-secondary">Voto secreto de</p>
         <h2 className="font-display font-extrabold text-3xl text-text-primary">{voterName}</h2>
         <p className="font-sans text-sm text-text-muted">{progress} · toque para votar</p>
       </button>
     );
   }
-
   return (
     <div className="space-y-4">
-      <h2 className="font-display font-extrabold text-xl text-text-primary text-center">
-        Quem é o impostor, {voterName}?
-      </h2>
+      <h2 className="font-display font-extrabold text-xl text-text-primary text-center">Quem é o impostor, {voterName}?</h2>
       <div className="grid grid-cols-2 gap-3">
         {suspects.map((s) => (
-          <button
-            key={s.id}
-            onClick={() => onVote(s.id)}
-            className="font-display font-bold p-4 rounded-2xl bg-surface border border-line text-text-primary active:scale-95 hover:border-accent transition-all"
-          >
+          <button key={s.id} onClick={() => onVote(s.id)} className="font-display font-bold p-4 rounded-2xl bg-surface border border-line text-text-primary active:scale-95 hover:border-accent transition-all">
             {s.name}
           </button>
         ))}

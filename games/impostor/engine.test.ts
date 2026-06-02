@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { initGame, reducer, wasImpostorCaught, impostorEngine, type ImpostorState } from './engine';
+import { initGame, reducer, impostorEngine, type ImpostorState } from './engine';
 import type { Player } from '../../engine/types';
 
 const players: Player[] = [
@@ -8,65 +8,68 @@ const players: Player[] = [
   { id: 'c', name: 'Caio' },
   { id: 'd', name: 'Davi' },
 ];
+const cfg = { players, alcoholicMode: false, rounds: 2, impostorCount: 1, categoryId: 'all' };
 
-const cfg = { players, alcoholicMode: false, rounds: 2 };
+function voteAll(s: ImpostorState, suspectId: string): ImpostorState {
+  s = { ...s, phase: 'voting', voterIdx: 0, votes: {} };
+  for (let i = 0; i < players.length; i++) s = reducer(s, { type: 'CAST_VOTE', suspectId });
+  return s;
+}
 
 describe('Impostor engine', () => {
-  it('distribui 1 impostor e palavra para os civis', () => {
+  it('distribui impostor (dica) e civis (palavra)', () => {
     const s = initGame(cfg);
     expect(s.impostorIds).toHaveLength(1);
-    const impostorId = s.impostorIds[0];
-    expect(s.playerSecrets[impostorId].type).toBe('hint');
-    for (const p of players) {
-      if (p.id !== impostorId) {
-        expect(s.playerSecrets[p.id].type).toBe('word');
-        expect(s.playerSecrets[p.id].text).toBe(s.word);
-      }
+    const imp = s.impostorIds[0];
+    expect(s.playerSecrets[imp].type).toBe('hint');
+    for (const p of players) if (p.id !== imp) {
+      expect(s.playerSecrets[p.id].type).toBe('word');
+      expect(s.playerSecrets[p.id].text).toBe(s.word);
     }
   });
 
-  it('distribute avança até a fase de dicas', () => {
-    let s = initGame(cfg);
-    for (let i = 0; i < players.length; i++) s = reducer(s, { type: 'NEXT_DISTRIBUTE' });
-    expect(s.phase).toBe('clues');
+  it('respeita a categoria escolhida', () => {
+    const s = initGame({ ...cfg, categoryId: 'esportes' });
+    expect(s.categoryLabel.toLowerCase()).toContain('esporte');
   });
 
-  it('impostor cai só com MAIORIA de civis votando nele', () => {
+  it('maioria de civis no impostor -> fase guess (caught)', () => {
     let s = initGame(cfg);
-    const impostorId = s.impostorIds[0];
-    const civilians = players.filter((p) => p.id !== impostorId);
-    s = { ...s, phase: 'voting', voterIdx: 0, votes: {} };
-    // ordem de votação = ordem de players; cada um vota no impostor (todos civis acertam)
-    // mas o impostor também "vota" — fazemos todos votarem no impostor
-    for (let i = 0; i < players.length; i++) {
-      s = reducer(s, { type: 'CAST_VOTE', suspectId: impostorId });
-    }
+    const imp = s.impostorIds[0];
+    s = voteAll(s, imp);
+    expect(s.caught).toBe(true);
+    expect(s.phase).toBe('guess');
+    // civis que acertaram pontuam
+    for (const p of players) if (p.id !== imp) expect(s.scores[p.id]).toBe(1);
+  });
+
+  it('impostor pego mas adivinha a palavra -> rouba (+2)', () => {
+    let s = initGame(cfg);
+    const imp = s.impostorIds[0];
+    s = voteAll(s, imp);
+    s = reducer(s, { type: 'IMPOSTOR_GUESS', word: s.word });
+    expect(s.stolen).toBe(true);
     expect(s.phase).toBe('reveal');
-    expect(wasImpostorCaught(s)).toBe(true);
-    // cada civil que acertou ganha 1 ponto
-    for (const c of civilians) expect(s.scores[c.id]).toBeGreaterThanOrEqual(1);
+    expect(s.scores[imp]).toBe(2);
   });
 
-  it('impostor escapa quando ninguém o acusa (ganha 2 pts)', () => {
+  it('impostor escapa (ninguém acusa) -> +2 e vai direto pro reveal', () => {
     let s = initGame(cfg);
-    const impostorId = s.impostorIds[0];
-    const innocent = players.find((p) => p.id !== impostorId)!;
-    s = { ...s, phase: 'voting', voterIdx: 0, votes: {} };
-    for (let i = 0; i < players.length; i++) {
-      s = reducer(s, { type: 'CAST_VOTE', suspectId: innocent.id });
-    }
-    expect(wasImpostorCaught(s)).toBe(false);
-    expect(s.scores[impostorId]).toBe(2);
+    const imp = s.impostorIds[0];
+    const innocent = players.find((p) => p.id !== imp)!;
+    s = voteAll(s, innocent.id);
+    expect(s.caught).toBe(false);
+    expect(s.phase).toBe('reveal');
+    expect(s.scores[imp]).toBe(2);
   });
 
   it('getPlayerView esconde palavra/impostor/votos antes do reveal', () => {
     const s = initGame(cfg);
-    const impostorId = s.impostorIds[0];
-    const civ = players.find((p) => p.id !== impostorId)!;
+    const imp = s.impostorIds[0];
+    const civ = players.find((p) => p.id !== imp)!;
     const view = impostorEngine.getPlayerView(s, civ.id);
     expect(view.impostorIds).toEqual([]);
     expect(view.word).toBe('');
-    // só vê o próprio segredo
     expect(Object.keys(view.playerSecrets)).toEqual([civ.id]);
   });
 

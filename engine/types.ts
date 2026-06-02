@@ -20,6 +20,10 @@ export interface GameConfig {
   alcoholicMode: boolean;
   intensityLevel?: IntensityLevel;
   rounds?: number;
+  /** Categoria escolhida (id) ou 'all' para misturar. */
+  categoryId?: string;
+  /** Nº de impostores (jogo do Impostor). */
+  impostorCount?: number;
 }
 
 /**

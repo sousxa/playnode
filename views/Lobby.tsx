@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { VenetianMask, Drama, Flame, Link2, Check, ChevronRight, Martini, Wifi } from 'lucide-react';
+import { VenetianMask, Drama, Flame, Link2, Check, ChevronRight, Wifi } from 'lucide-react';
 import SingleDeviceMode from '../components/SingleDeviceMode';
 import ThemeToggle from '../components/ThemeToggle';
 import { GameMode } from '../types';
@@ -9,10 +9,8 @@ interface LobbyProps {
   roomCode: string;
   isHost: boolean;
   players: { id: string; name: string }[];
-  alcoholicMode: boolean;
   onlineMode?: boolean;
-  onAlcoholicChange: (v: boolean) => void;
-  onStartGame: (mode: GameMode, opts?: { alcoholicMode?: boolean }) => void;
+  onSelectGame: (mode: GameMode) => void;
 }
 
 const GAMES = [
@@ -21,7 +19,7 @@ const GAMES = [
   { mode: GameMode.DILEMAS, title: 'Dilemas', desc: 'Votação polêmica', Icon: Flame, color: 'text-accent', bg: 'bg-accent/15' },
 ];
 
-const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, alcoholicMode, onlineMode, onAlcoholicChange, onStartGame }) => {
+const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, onlineMode, onSelectGame }) => {
   const [copied, setCopied] = useState(false);
 
   const inviteUrl = `${window.location.origin}${window.location.pathname}?room=${roomCode}`;
@@ -87,29 +85,12 @@ const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, alcoholicMode,
       {isHost && <SingleDeviceMode roomCode={roomCode} isHost={isHost} players={players} />}
 
       {isHost ? (
-        <>
-          <button
-            onClick={() => onAlcoholicChange(!alcoholicMode)}
-            className="w-full flex items-center gap-3 p-4 rounded-3xl bg-surface border border-line text-left"
-          >
-            <div className={`w-10 h-10 rounded-2xl flex items-center justify-center ${alcoholicMode ? 'bg-danger/15 text-danger' : 'bg-surface-2 text-text-muted'}`}>
-              <Martini size={20} />
-            </div>
-            <div className="flex-1">
-              <p className="font-display font-bold text-text-primary">Modo alcoólico 🍻</p>
-              <p className="font-sans text-xs text-text-muted">Libera conteúdo adulto (18+)</p>
-            </div>
-            <span className={`w-12 h-7 rounded-full p-1 transition-colors ${alcoholicMode ? 'bg-danger' : 'bg-surface-2'}`}>
-              <span className={`block w-5 h-5 rounded-full bg-white transition-transform ${alcoholicMode ? 'translate-x-5' : ''}`} />
-            </span>
-          </button>
-
           <section className="space-y-3">
             <h3 className="font-display font-bold text-text-secondary ml-1">Escolha o jogo</h3>
             {GAMES.map(({ mode, title, desc, Icon, color, bg }) => (
               <button
                 key={mode}
-                onClick={() => onStartGame(mode, { alcoholicMode })}
+                onClick={() => onSelectGame(mode)}
                 className="w-full p-4 bg-surface border border-line rounded-3xl text-left flex items-center gap-4 active:scale-[0.98] hover:border-accent transition-all"
               >
                 <div className={`w-14 h-14 shrink-0 rounded-2xl ${bg} ${color} flex items-center justify-center`}>
@@ -123,7 +104,6 @@ const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, alcoholicMode,
               </button>
             ))}
           </section>
-        </>
       ) : (
         <div className="p-8 text-center bg-surface border border-line rounded-4xl flex flex-col items-center">
           <div className="w-3 h-3 bg-accent rounded-full animate-ping mb-4" />
