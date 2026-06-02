@@ -8,6 +8,7 @@ import AmigosDeMerda from '../games/amigos-de-merda/AmigosDeMerda';
 import VerdadeOuDesafio from '../games/verdade-ou-desafio/VerdadeOuDesafio';
 import CartasPodres from '../games/cartas-podres/CartasPodres';
 import Stop from '../games/stop/Stop';
+import CidadeDorme from '../games/cidade-dorme/CidadeDorme';
 
 interface GameRoomProps {
   mode: GameMode;
@@ -37,6 +38,8 @@ const GameRoom: React.FC<GameRoomProps> = ({ mode, config, onExit, onReportScore
       return <CartasPodres config={config} onExit={onExit} {...scoreProps} />;
     case GameMode.STOP:
       return <Stop config={config} onExit={onExit} />;
+    case GameMode.CIDADE_DORME:
+      return <CidadeDorme config={config} onExit={onExit} />;
     default:
       return null;
   }

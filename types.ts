@@ -6,7 +6,8 @@ export enum GameMode {
   AMIGOS_DE_MERDA = 'AMIGOS_DE_MERDA',
   VERDADE_OU_DESAFIO = 'VERDADE_OU_DESAFIO',
   CARTAS_PODRES = 'CARTAS_PODRES',
-  STOP = 'STOP'
+  STOP = 'STOP',
+  CIDADE_DORME = 'CIDADE_DORME'
 }
 
 export interface Player {

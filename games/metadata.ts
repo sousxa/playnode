@@ -69,6 +69,7 @@ export const GAME_CONFIG_SCHEMA: Record<string, GameConfigSchema> = {
   [GameMode.STOP]: {
     rounds: { min: 3, max: 10, default: 5, label: 'Rodadas' },
   },
+  [GameMode.CIDADE_DORME]: {},
 };
 
 export const GAME_TITLES: Record<string, string> = {
@@ -79,4 +80,5 @@ export const GAME_TITLES: Record<string, string> = {
   [GameMode.VERDADE_OU_DESAFIO]: 'Verdade ou Desafio',
   [GameMode.CARTAS_PODRES]: 'Cartas Podres',
   [GameMode.STOP]: 'Stop!',
+  [GameMode.CIDADE_DORME]: 'A Cidade Dorme',
 };

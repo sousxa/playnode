@@ -94,7 +94,7 @@ const App: React.FC = () => {
 
   // Lobby: escolheu um jogo → vai para a tela de configuração.
   const selectGame = (mode: GameMode) => {
-    const min = mode === GameMode.CARTAS_PODRES ? 3 : mode === GameMode.DILEMAS ? 1 : 2;
+    const min = mode === GameMode.CIDADE_DORME ? 4 : mode === GameMode.CARTAS_PODRES ? 3 : mode === GameMode.DILEMAS ? 1 : 2;
     if (players.length < min) {
       toast.error(`Esse jogo precisa de pelo menos ${min} jogadores!`);
       return;
