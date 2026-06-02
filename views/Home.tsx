@@ -103,7 +103,6 @@ const Home: React.FC<HomeProps> = ({ onJoin, initialCode }) => {
                 className={`flex-1 py-2.5 rounded-xl font-display font-bold text-sm flex items-center justify-center gap-2 transition-colors ${mode === 'online' ? 'bg-accent text-white' : 'text-text-secondary'}`}
               >
                 <Wifi size={16} /> Online
-                <span className="text-[10px] font-sans opacity-80">em breve</span>
               </button>
               <button
                 type="button"
