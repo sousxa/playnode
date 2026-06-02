@@ -27,8 +27,12 @@ export function useSyncedReducer<S, A>(
     let hostInitialized = false;
     const unsub = firebaseSyncService.onGameState(roomCode, (gs) => {
       if (gs) {
-        ref.current = gs;
-        setState(gs);
+        // O Firebase descarta objetos/arrays vazios ({}, []). Mesclamos com o
+        // template inicial para restaurar campos vazios (votes, answers, etc.)
+        // e evitar "undefined" que quebra a tela.
+        const merged = { ...init(), ...gs } as S;
+        ref.current = merged;
+        setState(merged);
       } else if (isHost && !hostInitialized) {
         hostInitialized = true;
         const initial = init();

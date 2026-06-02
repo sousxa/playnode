@@ -43,7 +43,7 @@ const GameRoom: React.FC<GameRoomProps> = ({ mode, config, onExit, onReportScore
     case GameMode.CARTAS_PODRES:
       return <CartasPodres config={config} onExit={onExit} {...scoreProps} {...onlineProps} />;
     case GameMode.STOP:
-      return <Stop config={config} onExit={onExit} {...onlineProps} />;
+      return <Stop config={config} onExit={onExit} {...scoreProps} {...onlineProps} />;
     case GameMode.CIDADE_DORME:
       return <CidadeDorme config={config} onExit={onExit} {...onlineProps} />;
     default:
