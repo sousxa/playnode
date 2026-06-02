@@ -32,7 +32,7 @@ export interface CartasState {
 
 export type CartasAction =
   | { type: 'BEGIN' }
-  | { type: 'SUBMIT'; card: string }
+  | { type: 'SUBMIT'; card: string; playerId?: string }
   | { type: 'JUDGE_PICK'; index: number }
   | { type: 'NEXT_ROUND' };
 
@@ -77,19 +77,19 @@ export function reducer(state: CartasState, action: CartasAction): CartasState {
       return { ...state, phase: 'submit', submitIdx: 0, submissions: [] };
 
     case 'SUBMIT': {
-      const playerId = state.submitOrder[state.submitIdx];
-      const submissions = [...state.submissions, { playerId, card: action.card }];
-      // remove a carta jogada da mão e compra uma nova
-      const hand = state.hands[playerId].filter((c) => c !== action.card);
+      // online: vem com playerId (simultâneo). local: usa a ordem (sequencial).
+      const pid = action.playerId ?? state.submitOrder[state.submitIdx];
+      if (state.submissions.some((s) => s.playerId === pid)) return state; // já enviou
+      const submissions = [...state.submissions, { playerId: pid, card: action.card }];
+      const hand = (state.hands[pid] || []).filter((c) => c !== action.card);
       const whiteDeck = [...state.whiteDeck];
       if (whiteDeck.length) hand.push(whiteDeck.shift()!);
-      const hands = { ...state.hands, [playerId]: hand };
-      const nextIdx = state.submitIdx + 1;
-      if (nextIdx >= state.submitOrder.length) {
-        // embaralha as submissões para o juiz ver anônimo
+      const hands = { ...state.hands, [pid]: hand };
+      const allSubmitted = state.submitOrder.every((id) => submissions.some((s) => s.playerId === id));
+      if (allSubmitted) {
         return { ...state, hands, whiteDeck, submissions: shuffle(submissions), phase: 'judge' };
       }
-      return { ...state, hands, whiteDeck, submissions, submitIdx: nextIdx };
+      return { ...state, hands, whiteDeck, submissions, submitIdx: action.playerId ? state.submitIdx : state.submitIdx + 1 };
     }
 
     case 'JUDGE_PICK': {

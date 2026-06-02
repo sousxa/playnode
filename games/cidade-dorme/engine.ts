@@ -29,9 +29,10 @@ export interface CidadeState {
 
 export type CidadeAction =
   | { type: 'NEXT_DISTRIBUTE' }
+  | { type: 'BEGIN_NIGHT' }
   | { type: 'NIGHT_ACTION'; target: string }
   | { type: 'START_DAY' }
-  | { type: 'DAY_VOTE'; target: string }
+  | { type: 'DAY_VOTE'; target: string; voterId?: string }
   | { type: 'NEXT' };
 
 function assignRoles(players: Player[]): Record<string, Role> {
@@ -110,6 +111,10 @@ export function reducer(state: CidadeState, action: CidadeAction): CidadeState {
       return { ...state, distributeIdx: next };
     }
 
+    case 'BEGIN_NIGHT':
+      // Online: todos já viram o papel no próprio celular → anoitece direto.
+      return startNight(state);
+
     case 'NIGHT_ACTION': {
       const role = state.nightQueue[state.nightStepIdx];
       let s = { ...state };
@@ -141,11 +146,12 @@ export function reducer(state: CidadeState, action: CidadeAction): CidadeState {
     }
 
     case 'DAY_VOTE': {
-      const voter = state.dayVoters[state.dayVoterIdx];
+      // online: voto com voterId (simultâneo). local: jogador da vez (sequencial).
+      const voter = action.voterId ?? state.dayVoters[state.dayVoterIdx];
       const dayVotes = { ...state.dayVotes, [voter]: action.target };
-      const nextIdx = state.dayVoterIdx + 1;
-      if (nextIdx < state.dayVoters.length) {
-        return { ...state, dayVotes, dayVoterIdx: nextIdx };
+      const allVoted = state.dayVoters.every((id) => dayVotes[id] !== undefined);
+      if (!allVoted) {
+        return { ...state, dayVotes, dayVoterIdx: action.voterId ? state.dayVoterIdx : state.dayVoterIdx + 1 };
       }
       // apura: mais votado é eliminado
       const tally: Record<string, number> = {};

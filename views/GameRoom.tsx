@@ -39,13 +39,13 @@ const GameRoom: React.FC<GameRoomProps> = ({ mode, config, onExit, onReportScore
     case GameMode.AMIGOS_DE_MERDA:
       return <AmigosDeMerda config={config} onExit={onExit} {...scoreProps} {...onlineProps} />;
     case GameMode.VERDADE_OU_DESAFIO:
-      return <VerdadeOuDesafio config={config} onExit={onExit} />;
+      return <VerdadeOuDesafio config={config} onExit={onExit} {...onlineProps} />;
     case GameMode.CARTAS_PODRES:
-      return <CartasPodres config={config} onExit={onExit} {...scoreProps} />;
+      return <CartasPodres config={config} onExit={onExit} {...scoreProps} {...onlineProps} />;
     case GameMode.STOP:
-      return <Stop config={config} onExit={onExit} />;
+      return <Stop config={config} onExit={onExit} {...onlineProps} />;
     case GameMode.CIDADE_DORME:
-      return <CidadeDorme config={config} onExit={onExit} />;
+      return <CidadeDorme config={config} onExit={onExit} {...onlineProps} />;
     default:
       return null;
   }
