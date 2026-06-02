@@ -1,0 +1,5 @@
+{
+  "name": "PlayNode - Jogos Presenciais",
+  "description": "Uma plataforma mobile-first para jogos em grupo presenciais. Focada em simplicidade, sem login, com interface limpa e mediação por IA para gerar temas e desafios dinâmicos.",
+  "requestFramePermissions": []
+}
