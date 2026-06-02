@@ -1,0 +1,313 @@
+{
+  "version": "1.0",
+  "game": "most_likely",
+  "name": "Amigos de Merda",
+  "description": "Perguntas desconfortáveis para descobrir quem é o pior do grupo.",
+  "rules": {
+    "voting": "single_screen",
+    "maxVotesRule": "playersCount",
+    "winnerRule": "mostVotes"
+  },
+  "questions": [
+    {
+      "id": "amd_001",
+      "text": "Somos os biólogos mais inteligentes do planeta. Quem inventaria um vírus só para lucrar com a cura?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_002",
+      "text": "Quem chamaria o ex para um café e mentiria sobre a vida que está levando, fazendo ela parecer melhor do que é?",
+      "alcoholic": false
+    },
+    {
+      "id": "amd_003",
+      "text": "Acordamos em uma ilha deserta sem nenhum alimento. Quem iria propor canibalismo?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_004",
+      "text": "Quem tem mais chance de ser preso por um crime que não cometeu?",
+      "alcoholic": false
+    },
+    {
+      "id": "amd_005",
+      "text": "Cada um de nós é responsável por uma equipe no trabalho. Quem maltrataria um funcionário?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_006",
+      "text": "Quem tem um brinquedo sexual extremamente perturbador?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_007",
+      "text": "Um de nós compartilha e acredita em fake news. Quem?",
+      "alcoholic": false
+    },
+    {
+      "id": "amd_008",
+      "text": "Estamos no BB. Quem sai com maior rejeição do público?",
+      "alcoholic": false
+    },
+    {
+      "id": "amd_009",
+      "text": "Vazaram todas as nossas conversas de todos os aplicativos. Quem é o primeiro a ser cancelado?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_010",
+      "text": "Quem ri assistindo os jogos paralímpicos?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_011",
+      "text": "Um de nós está sempre atrasado e nos faz esperar. Quem é?",
+      "alcoholic": false
+    },
+    {
+      "id": "amd_012",
+      "text": "Um amigo em comum pede uma doação de sangue. Quem falaria na roda que doa, mas na verdade nem apareceu?",
+      "alcoholic": false
+    },
+    {
+      "id": "amd_013",
+      "text": "Descobriram a fórmula da imortalidade. Para o bem da humanidade, você esconde a fórmula de quem?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_014",
+      "text": "Somos todos apóstolos. Quem de nós é Judas?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_015",
+      "text": "Vamos jogar um jogo novo. Quem demora mais para entender as regras?",
+      "alcoholic": false
+    },
+    {
+      "id": "amd_016",
+      "text": "Alguém da roda morreu e alguém da roda matou. Quem morreu?",
+      "alcoholic": false
+    },
+    {
+      "id": "amd_017",
+      "text": "Alguém da roda morreu e alguém da roda matou. Quem matou?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_018",
+      "text": "Vazaram fotos de uma orgia na cidade. Quem de nós estaria nessas fotos?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_019",
+      "text": "Estamos no apocalipse zumbi. Quem é o primeiro a morrer?",
+      "alcoholic": false
+    },
+    {
+      "id": "amd_020",
+      "text": "Somos todos cúmplices em um crime. Quem nos trairia primeiro e confessaria?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_021",
+      "text": "Quem jamais participaria de uma orgia?",
+      "alcoholic": false
+    },
+    {
+      "id": "amd_022",
+      "text": "Fui assassinado. Quem me matou?",
+      "alcoholic": false
+    },
+    {
+      "id": "amd_023",
+      "text": "Estamos todos em quarentena, contaminados com um vírus mortal e incurável. Quem escaparia para um rolê e iniciaria uma pandemia?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_024",
+      "text": "Um de nós cedeu seu membro íntimo como modelo para a produção de brinquedos sexuais. Quem foi?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_025",
+      "text": "A clonagem humana já é uma realidade. Quem se clona para fazer amor consigo mesmo?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_026",
+      "text": "Somos sequestrados por uma seita sexual sadomasoquista. Quem de nós iria gostar disso?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_027",
+      "text": "Trabalhamos em um fast food. Quem de nós cuspiria no lanche do cliente?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_028",
+      "text": "Vivemos em sociedade pós-colapso ambiental. Quem ainda assim desperdiçaria água?",
+      "alcoholic": false
+    },
+    {
+      "id": "amd_029",
+      "text": "Um de nós nunca mais poderá abraçar e viverá bem com isso. Quem é?",
+      "alcoholic": false
+    },
+    {
+      "id": "amd_030",
+      "text": "Por um milhão de dólares, um de nós venderia o melhor amigo. Quem?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_031",
+      "text": "Um de nós nunca transa com camisinha. Quem?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_032",
+      "text": "Todos saltamos de paraquedas. O paraquedas de quem não abre porque, na explicação do instrutor, estava fazendo outra coisa?",
+      "alcoholic": false
+    },
+    {
+      "id": "amd_033",
+      "text": "Quem de nós se casaria com alguém que ainda nem nasceu?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_034",
+      "text": "Alugamos uma casa na praia e está tudo certo para a viagem. Quem fura no último minuto?",
+      "alcoholic": false
+    },
+    {
+      "id": "amd_035",
+      "text": "Se fôssemos presidentes, cada um de um país, quem seria o primeiro a impor a pena de morte?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_036",
+      "text": "Um de nós tem um filho por aí e não sabe. Quem é?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_037",
+      "text": "Quem jamais você iria querer como chefe?",
+      "alcoholic": false
+    },
+    {
+      "id": "amd_038",
+      "text": "Um de nós tem um crush pesado no Hitler. Quem?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_039",
+      "text": "Acabamos de descobrir um baita segredo. Quem é o primeiro a contá-lo?",
+      "alcoholic": false
+    },
+    {
+      "id": "amd_040",
+      "text": "Atropelamos uma pessoa. Quem dá a ideia de fugir do local?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_041",
+      "text": "Matamos uma pessoa sem querer. Quem dá a ideia de não contar e esconder as evidências?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_042",
+      "text": "Estamos presos em um bunker e o oxigênio está acabando. Quem seria sacrificado primeiro para os outros sobreviverem?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_043",
+      "text": "Quem aqui faria sexo com um robô e depois se vangloriaria disso?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_044",
+      "text": "Precisamos de dinheiro urgente. Quem venderia nudes de outra pessoa da roda sem ela saber?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_045",
+      "text": "Um de nós seria capaz de comer a comida de um morador de rua. Quem?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_046",
+      "text": "Quem escreveria um livro sobre a vida dos amigos sem avisar e colocaria todos os podres?",
+      "alcoholic": false
+    },
+    {
+      "id": "amd_047",
+      "text": "Estamos em uma competição de reality show. Quem formaria aliança com todos e trairia todos?",
+      "alcoholic": false
+    },
+    {
+      "id": "amd_048",
+      "text": "Quem mentiria em um teste de paternidade só para ferrar com a vida de alguém?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_049",
+      "text": "Um de nós descobriu que tem superpoderes. Quem usaria isso para o mal?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_050",
+      "text": "Quem fingiria ter uma doença grave só para receber atenção?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_051",
+      "text": "Ganhamos na loteria juntos. Quem pegaria o bilhete e fugiria com tudo?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_052",
+      "text": "Quem seria pego tendo relações com um objeto bizarro em público?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_053",
+      "text": "Um de nós seria o melhor traficante de drogas. Quem?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_054",
+      "text": "Quem criaria uma conta fake só para stalkear e falar mal dos amigos?",
+      "alcoholic": false
+    },
+    {
+      "id": "amd_055",
+      "text": "Somos todos serial killers. Quem teria o maior número de vítimas?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_056",
+      "text": "Quem fingiria ser pobre para não pagar a conta no bar?",
+      "alcoholic": false
+    },
+    {
+      "id": "amd_057",
+      "text": "Um de nós roubaria dinheiro da vaquinha de uma criança doente. Quem?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_058",
+      "text": "Quem transaria com o(a) parceiro(a) de um amigo da roda e nunca contaria?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_059",
+      "text": "Todos viramos políticos. Quem seria o primeiro a se envolver em esquema de corrupção?",
+      "alcoholic": true
+    },
+    {
+      "id": "amd_060",
+      "text": "Quem usaria as informações que sabe sobre os amigos para chantagear e conseguir o que quer?",
+      "alcoholic": true
+    }
+  ]
+}

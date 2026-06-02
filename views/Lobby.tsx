@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { VenetianMask, Drama, Flame, Link2, Check, ChevronRight, Wifi } from 'lucide-react';
+import { VenetianMask, Drama, Flame, Link2, Check, ChevronRight, Wifi, Skull, HeartCrack } from 'lucide-react';
 import SingleDeviceMode from '../components/SingleDeviceMode';
 import ThemeToggle from '../components/ThemeToggle';
 import { GameMode } from '../types';
@@ -17,6 +17,8 @@ const GAMES = [
   { mode: GameMode.IMPOSTOR, title: 'O Impostor', desc: 'Um não sabe a palavra', Icon: VenetianMask, color: 'text-danger', bg: 'bg-danger/15' },
   { mode: GameMode.QUEM_SOU_EU, title: 'Quem Sou Eu?', desc: 'Adivinhe seu personagem', Icon: Drama, color: 'text-warning', bg: 'bg-warning/15' },
   { mode: GameMode.DILEMAS, title: 'Dilemas', desc: 'Votação polêmica', Icon: Flame, color: 'text-accent', bg: 'bg-accent/15' },
+  { mode: GameMode.AMIGOS_DE_MERDA, title: 'Amigos de Merda', desc: 'Quem é mais provável…', Icon: Skull, color: 'text-danger', bg: 'bg-danger/15' },
+  { mode: GameMode.VERDADE_OU_DESAFIO, title: 'Verdade ou Desafio', desc: 'Clássico ousado', Icon: HeartCrack, color: 'text-warning', bg: 'bg-warning/15' },
 ];
 
 const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, onlineMode, onSelectGame }) => {

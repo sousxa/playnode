@@ -1,0 +1,787 @@
+{
+  "version": "1.0",
+  "game": "truth_or_dare",
+  "name": "Verdade ou Desafio",
+  "description": "Perguntas constrangedoras e desafios ousados. Cuidado, tem casal na roda!",
+  "truths": [
+    {
+      "id": "vd_t_001",
+      "text": "Qual foi a mentira mais absurda que você já contou para escapar de um encontro?",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_002",
+      "text": "Você já fingiu um orgasmo? Quantas vezes?",
+      "intensity": "medio",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_003",
+      "text": "Qual pessoa dessa roda você já imaginou pelado(a)?",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_004",
+      "text": "Você já deu ghost em alguém sem motivo? Por quê?",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_005",
+      "text": "Qual foi o lugar mais bizarro onde você já transou?",
+      "intensity": "medio",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_006",
+      "text": "Você já traiu alguém? Conte os detalhes.",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_007",
+      "text": "Qual é o seu fetiche mais estranho que ninguém sabe?",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_008",
+      "text": "Você já quis ficar com alguém comprometido dessa roda?",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_009",
+      "text": "Qual foi a coisa mais nojenta que você já fez bêbado?",
+      "intensity": "medio",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_010",
+      "text": "Você já mandou nudes para a pessoa errada?",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_011",
+      "text": "Qual pessoa da roda você nunca ficaria nem se fosse a última pessoa do planeta?",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_012",
+      "text": "Você já mentiu sobre seu número de parceiros sexuais? Qual o número real?",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_013",
+      "text": "Você já teve um crush secreto em alguém da família de um amigo?",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_014",
+      "text": "Qual foi a maior merda que você já falou de alguém pelas costas?",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_015",
+      "text": "Você já chorou depois do sexo? Por quê?",
+      "intensity": "medio",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_016",
+      "text": "Se pudesse trocar de vida com alguém da roda, quem seria e por quê?",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_017",
+      "text": "Você já fez sexo pensando em outra pessoa? Quem?",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_018",
+      "text": "Qual foi o apelido mais ridículo que você já ganhou e por quê?",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_019",
+      "text": "Você já stalkeou o ex nas redes sociais? Quantas vezes por dia?",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_020",
+      "text": "Qual pessoa da roda você acha que mentiria melhor num detector de mentiras?",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_021",
+      "text": "Você já teve que inventar uma desculpa esfarrapada para não transar?",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_022",
+      "text": "Qual foi a vez que você passou mais vergonha na frente de um crush?",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_023",
+      "text": "Você já fez algo sexual em troca de algum favor?",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_024",
+      "text": "Se tivesse que escolher entre transar com seu ex ou ficar celibatário por 1 ano, o que escolheria?",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_025",
+      "text": "Você já mentiu sobre estar solteiro para pegar alguém?",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_026",
+      "text": "Qual foi o pior presente que você já ganhou e fingiu que gostou?",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_027",
+      "text": "Você já teve vontade de sair no meio do sexo? Por quê?",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_028",
+      "text": "Qual casal da roda você acha que não vai durar 6 meses?",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_029",
+      "text": "Você já fez algo ilegal e nunca contou pra ninguém?",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_030",
+      "text": "Qual pessoa da roda você levaria para uma ilha deserta?",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_031",
+      "text": "Você já fingiu gostar de algo na cama só pra agradar o parceiro?",
+      "intensity": "medio",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_032",
+      "text": "Se pudesse apagar um momento constrangedor da sua vida, qual seria?",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_033",
+      "text": "Você já teve um sonho erótico com alguém dessa roda? Quem?",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_034",
+      "text": "Qual foi a desculpa mais criativa que você usou para terminar um relacionamento?",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_035",
+      "text": "Você já roubou algo de alguém e nunca devolveu?",
+      "intensity": "medio",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_036",
+      "text": "Se seu parceiro traísse você com alguém da roda, quem doeria mais?",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_037",
+      "text": "Você já mentiu sobre seu emprego ou salário para impressionar alguém?",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_038",
+      "text": "Qual é a coisa mais vergonhosa no seu histórico de pesquisa?",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_039",
+      "text": "Você já deu em cima do crush de um amigo?",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_040",
+      "text": "Se tivesse que escolher entre perder o celular ou a carteira, o que seria pior?",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_041",
+      "text": "Você já teve que mentir para sair de um date horrível?",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_042",
+      "text": "Qual pessoa da roda tem o maior potencial para virar serial killer?",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_043",
+      "text": "Você já transou sem tomar banho depois da academia?",
+      "intensity": "medio",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_044",
+      "text": "Se pudesse ler a mente de alguém da roda por 1 hora, quem seria?",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_045",
+      "text": "Você já teve um caso com alguém muito mais velho ou mais novo? Quantos anos de diferença?",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_046",
+      "text": "Qual foi a maior furada que você já deu em um amigo?",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_047",
+      "text": "Você já fingiu estar doente para não ir em algum compromisso?",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_048",
+      "text": "Se tivesse que ficar com alguém da roda agora, quem seria?",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_049",
+      "text": "Você já fez algo sexual em público e quase foi pego?",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_050",
+      "text": "Qual rede social você mais usa para stalkear pessoas?",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_051",
+      "text": "Você já teve inveja de alguém da roda? De quê?",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_052",
+      "text": "Se seu parceiro olhasse seu celular agora, o que ele descobriria?",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_053",
+      "text": "Você já fez sexo com alguém só porque estava carente?",
+      "intensity": "medio",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_054",
+      "text": "Qual pessoa da roda você acha que seria péssima na cama?",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_055",
+      "text": "Você já pegou alguém só para dar ciúmes em outra pessoa?",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_056",
+      "text": "Qual foi a maior besteira que você fez por amor?",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_057",
+      "text": "Se pudesse trocar de parceiro com alguém da roda, quem seria?",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_t_058",
+      "text": "Você já deixou alguém no vácuo de propósito? Por quanto tempo?",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_059",
+      "text": "Qual foi o pior beijo da sua vida?",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_t_060",
+      "text": "Você já pagou para ter relações sexuais?",
+      "intensity": "pesado",
+      "alcoholic": true
+    }
+  ],
+  "dares": [
+    {
+      "id": "vd_d_001",
+      "text": "Mande um áudio de 1 minuto para seu ex dizendo que sente falta.",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_002",
+      "text": "Poste uma foto constrangedora sua nos Stories e deixe por 10 minutos.",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_003",
+      "text": "Deixe a pessoa da sua esquerda ler suas últimas 5 conversas do WhatsApp.",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_004",
+      "text": "Dance uma música sensual para a pessoa da sua direita.",
+      "intensity": "medio",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_005",
+      "text": "Ligue para sua mãe e diga que está pensando em fazer uma tatuagem gigante no rosto.",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_006",
+      "text": "Deixe alguém da roda escolher seu próximo post no Instagram.",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_007",
+      "text": "Faça uma ligação e declare seu amor para a última pessoa que você deu match no Tinder.",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_008",
+      "text": "Mostre o último print que você enviou no grupo de fofoca.",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_009",
+      "text": "Fique de olhos vendados por 3 rodadas.",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_010",
+      "text": "Beije a mão de cada pessoa da roda de forma dramática.",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_011",
+      "text": "Envie 'preciso te falar uma coisa séria' para 3 contatos aleatórios e não responda por 10 minutos.",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_012",
+      "text": "Imite a pessoa mais irritante que você conhece por 2 minutos.",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_013",
+      "text": "Deixe alguém postar o que quiser no seu story por você.",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_014",
+      "text": "Cante uma música de amor olhando nos olhos de alguém da roda.",
+      "intensity": "medio",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_015",
+      "text": "Fale com sotaque estrangeiro até sua próxima rodada.",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_016",
+      "text": "Mostre as 3 últimas fotos da sua galeria.",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_017",
+      "text": "Faça 20 flexões. Se não conseguir, beba uma dose.",
+      "intensity": "medio",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_018",
+      "text": "Deixe a pessoa da sua direita mexer no seu celular por 2 minutos.",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_019",
+      "text": "Conte a piada mais sem graça que você conhece com a maior seriedade possível.",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_020",
+      "text": "Grave um vídeo cantando parabéns e mande para alguém aleatório da sua agenda.",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_021",
+      "text": "Mostre seu histórico de busca do navegador da última semana.",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_022",
+      "text": "Fique sem celular por 20 minutos.",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_023",
+      "text": "Deixe alguém da roda escrever algo na sua testa com caneta e fique assim por 30 minutos.",
+      "intensity": "medio",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_024",
+      "text": "Faça uma declaração de amor para o objeto mais próximo de você.",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_025",
+      "text": "Mande mensagem para 5 contatos aleatórios perguntando 'você tá com raiva de mim?'",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_026",
+      "text": "Troque de roupa com alguém da roda por 15 minutos.",
+      "intensity": "medio",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_027",
+      "text": "Imite cada pessoa da roda por 30 segundos.",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_028",
+      "text": "Deixe alguém redesenhar sua sobrancelha com lápis de olho.",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_029",
+      "text": "Fale apenas em perguntas até a sua próxima vez.",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_030",
+      "text": "Coma alguma coisa que a roda escolher de uma forma sensual.",
+      "intensity": "medio",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_031",
+      "text": "Mostre a última conversa que você teve com seu crush.",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_032",
+      "text": "Fique de quatro e lata 3 vezes como um cachorro.",
+      "intensity": "leve",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_033",
+      "text": "Deixe alguém ler suas notas do celular em voz alta.",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_034",
+      "text": "Faça uma dancinha de TikTok escolhida pela roda.",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_035",
+      "text": "Deixe seu celular desbloqueado com alguém da roda por 5 minutos.",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_036",
+      "text": "Ligue para a pizza e peça desculpas chorando por algo que você nem fez.",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_037",
+      "text": "Deixe alguém escolher seu status do WhatsApp e deixe por 24h.",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_038",
+      "text": "Fique 10 minutos sem piscar. Se piscar, beba uma dose.",
+      "intensity": "medio",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_039",
+      "text": "Mostre seus contatos favoritos/fixados do WhatsApp.",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_040",
+      "text": "Faça uma massagem de 2 minutos na pessoa à sua esquerda.",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_041",
+      "text": "Abra seu Spotify e mostre as últimas músicas que você ouviu.",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_042",
+      "text": "Ande de costas até sua próxima rodada.",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_043",
+      "text": "Conte seu maior segredo sussurrando no ouvido de cada pessoa da roda.",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_044",
+      "text": "Poste uma foto feia sua e marque 5 pessoas.",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_045",
+      "text": "Fique em silêncio absoluto por 10 minutos. Se falar, bebe.",
+      "intensity": "medio",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_046",
+      "text": "Deixe alguém postar uma foto sua no Instagram com a legenda que quiser.",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_047",
+      "text": "Fale como um robô até sua próxima rodada.",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_048",
+      "text": "Mostre os 5 últimos vídeos que você assistiu no YouTube.",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_049",
+      "text": "Gire 10 vezes no mesmo lugar e tente andar em linha reta.",
+      "intensity": "leve",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_050",
+      "text": "Deixe a roda ver sua DM do Instagram.",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_051",
+      "text": "Fique de joelhos e peça algo em casamento para alguém da roda.",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_052",
+      "text": "Chame alguém aleatório do seu WhatsApp e declare seu amor.",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_053",
+      "text": "Faça 10 polichinelos e 10 agachamentos.",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_054",
+      "text": "Deixe alguém escolher uma roupa do seu armário virtualmente e você tem que usar na próxima vez que sair.",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_055",
+      "text": "Mostre a última compra online que você fez.",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_056",
+      "text": "Fique numa pose de yoga desconfortável por 3 minutos.",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_057",
+      "text": "Mande áudio de 3 minutos falando sobre um assunto aleatório escolhido pela roda.",
+      "intensity": "medio",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_058",
+      "text": "Deixe alguém escrever uma bio nova pro seu Instagram e mantenha por 24h.",
+      "intensity": "pesado",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_d_059",
+      "text": "Finja que está em uma entrevista de emprego e responda perguntas da roda.",
+      "intensity": "leve",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_d_060",
+      "text": "Mostre seu álbum de fotos ocultas do celular.",
+      "intensity": "pesado",
+      "alcoholic": true
+    }
+  ],
+  "forfeits": [
+    {
+      "id": "vd_f_001",
+      "text": "Imitar um animal por 30 segundos",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_f_002",
+      "text": "Fazer 10 polichinelos agora",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_f_003",
+      "text": "Dançar por 30 segundos sem música",
+      "alcoholic": false
+    },
+    {
+      "id": "vd_f_101",
+      "text": "Tomar um body shot de alguém escolhido pela roda.",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_f_102",
+      "text": "Virar um shot sem usar as mãos.",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_f_103",
+      "text": "Tomar 2 shots e confessar com quem da roda você faria um ménage.",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_f_104",
+      "text": "Misturar 3 bebidas diferentes do bar e tomar um shot do resultado.",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_f_105",
+      "text": "Sentar no colo de alguém e beber do copo da pessoa (se a pessoa deixar, senão toma 2 shots).",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_f_106",
+      "text": "Tomar 1 shot por cada pessoa que você já deitou na cama (ou bebe meia garrafa logo).",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_f_107",
+      "text": "Fazer uma dança no colo sensual de 15 segundos em alguém enquanto vira um shot.",
+      "alcoholic": true
+    },
+    {
+      "id": "vd_f_108",
+      "text": "Tomar o shot no umbigo de alguém da roda.",
+      "alcoholic": true
+    }
+  ]
+}

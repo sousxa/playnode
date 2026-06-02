@@ -1,6 +1,8 @@
 import impostorJson from './impostor.json';
 import whoAmIJson from './quemsoueu.json';
 import dilemmasJson from './dilemmas.json';
+import amigosJson from './amigosdemerda.json';
+import truthDareJson from './verdadeoudesafio.json';
 
 // ── Impostor ──
 export interface ImpostorItem {
@@ -51,6 +53,35 @@ export interface DilemmasContent {
   items: DilemmaItem[];
 }
 
+// ── Amigos de Merda (Most Likely) ──
+export interface MostLikelyItem {
+  id: string;
+  text: string;
+  alcoholic: boolean;
+}
+export interface MostLikelyContent {
+  game: string;
+  version: string;
+  questions: MostLikelyItem[];
+}
+
+// ── Verdade ou Desafio ──
+export type Intensity = 'leve' | 'medio' | 'pesado';
+export interface TruthDareItem {
+  id: string;
+  text: string;
+  intensity: Intensity;
+  alcoholic: boolean;
+}
+export interface TruthDareContent {
+  game: string;
+  version: string;
+  truths: TruthDareItem[];
+  dares: TruthDareItem[];
+}
+
 export const impostorContent = impostorJson as ImpostorContent;
 export const whoAmIContent = whoAmIJson as WhoAmIContent;
 export const dilemmasContent = dilemmasJson as DilemmasContent;
+export const amigosContent = amigosJson as MostLikelyContent;
+export const truthDareContent = truthDareJson as TruthDareContent;

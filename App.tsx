@@ -97,6 +97,7 @@ const App: React.FC = () => {
       rounds: extras.rounds,
       categoryId: extras.categoryId,
       impostorCount: extras.impostorCount,
+      intensityLevel: extras.intensityLevel,
     };
     setActiveGame({ mode: configuringGame, config });
     setConfiguringGame(null);

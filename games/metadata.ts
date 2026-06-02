@@ -37,6 +37,8 @@ export interface GameConfigSchema {
   impostorCount?: boolean;
   /** Tem modo alcoólico. */
   alcoholic?: boolean;
+  /** Seletor de intensidade (leve/médio/pesado). */
+  intensity?: boolean;
 }
 
 export const GAME_CONFIG_SCHEMA: Record<string, GameConfigSchema> = {
@@ -52,10 +54,21 @@ export const GAME_CONFIG_SCHEMA: Record<string, GameConfigSchema> = {
     rounds: { min: 3, max: 12, default: 6, label: 'Dilemas' },
     alcoholic: true,
   },
+  [GameMode.AMIGOS_DE_MERDA]: {
+    rounds: { min: 3, max: 15, default: 6, label: 'Perguntas' },
+    alcoholic: true,
+  },
+  [GameMode.VERDADE_OU_DESAFIO]: {
+    rounds: { min: 4, max: 20, default: 10, label: 'Rodadas' },
+    intensity: true,
+    alcoholic: true,
+  },
 };
 
 export const GAME_TITLES: Record<string, string> = {
   [GameMode.IMPOSTOR]: 'O Impostor',
   [GameMode.QUEM_SOU_EU]: 'Quem Sou Eu?',
   [GameMode.DILEMAS]: 'Dilemas',
+  [GameMode.AMIGOS_DE_MERDA]: 'Amigos de Merda',
+  [GameMode.VERDADE_OU_DESAFIO]: 'Verdade ou Desafio',
 };

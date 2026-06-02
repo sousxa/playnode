@@ -4,11 +4,14 @@ import Button from '../components/Button';
 import { GameMode } from '../types';
 import { GAME_CONFIG_SCHEMA, GAME_TITLES } from '../games/metadata';
 
+import type { IntensityLevel } from '../engine/types';
+
 export interface ConfigExtras {
   categoryId: string;
   rounds?: number;
   impostorCount?: number;
   alcoholicMode: boolean;
+  intensityLevel?: IntensityLevel;
 }
 
 interface GameConfigProps {
@@ -43,6 +46,7 @@ const GameConfig: React.FC<GameConfigProps> = ({ mode, playerCount, onBack, onSt
   const [rounds, setRounds] = useState(schema.rounds?.default ?? 3);
   const [impostorCount, setImpostorCount] = useState(playerCount >= 7 ? 2 : 1);
   const [alcoholic, setAlcoholic] = useState(false);
+  const [intensity, setIntensity] = useState<IntensityLevel>('medio');
 
   return (
     <div className="page-wrapper p-5 space-y-5">
@@ -61,6 +65,23 @@ const GameConfig: React.FC<GameConfigProps> = ({ mode, playerCount, onBack, onSt
             <CatChip active={categoryId === 'all'} onClick={() => setCategoryId('all')} icon="🎲" label="Misturar" />
             {schema.categories.map((c) => (
               <CatChip key={c.id} active={categoryId === c.id} onClick={() => setCategoryId(c.id)} icon={c.icon} label={c.label} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {schema.intensity && (
+        <section className="space-y-2">
+          <h3 className="font-display font-bold text-text-secondary ml-1">Intensidade</h3>
+          <div className="flex gap-2">
+            {(['leve', 'medio', 'pesado'] as IntensityLevel[]).map((lvl) => (
+              <button
+                key={lvl}
+                onClick={() => setIntensity(lvl)}
+                className={`flex-1 py-3 rounded-2xl font-display font-bold text-sm capitalize border transition-colors ${intensity === lvl ? 'bg-accent text-white border-accent' : 'bg-surface text-text-secondary border-line'}`}
+              >
+                {lvl === 'medio' ? 'Médio' : lvl}
+              </button>
             ))}
           </div>
         </section>
@@ -89,7 +110,7 @@ const GameConfig: React.FC<GameConfigProps> = ({ mode, playerCount, onBack, onSt
         </button>
       )}
 
-      <Button onClick={() => onStart({ categoryId, rounds, impostorCount, alcoholicMode: alcoholic })}>
+      <Button onClick={() => onStart({ categoryId, rounds, impostorCount, alcoholicMode: alcoholic, intensityLevel: intensity })}>
         Começar! 🎬
       </Button>
     </div>

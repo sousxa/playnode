@@ -4,6 +4,8 @@ import type { GameConfig } from '../engine/types';
 import Impostor from '../games/impostor/Impostor';
 import QuemSouEu from '../games/quem-sou-eu/QuemSouEu';
 import Dilemas from '../games/dilemas/Dilemas';
+import AmigosDeMerda from '../games/amigos-de-merda/AmigosDeMerda';
+import VerdadeOuDesafio from '../games/verdade-ou-desafio/VerdadeOuDesafio';
 
 interface GameRoomProps {
   mode: GameMode;
@@ -20,6 +22,10 @@ const GameRoom: React.FC<GameRoomProps> = ({ mode, config, onExit }) => {
       return <QuemSouEu config={config} onExit={onExit} />;
     case GameMode.DILEMAS:
       return <Dilemas config={config} onExit={onExit} />;
+    case GameMode.AMIGOS_DE_MERDA:
+      return <AmigosDeMerda config={config} onExit={onExit} />;
+    case GameMode.VERDADE_OU_DESAFIO:
+      return <VerdadeOuDesafio config={config} onExit={onExit} />;
     default:
       return null;
   }

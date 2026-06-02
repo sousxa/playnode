@@ -1,0 +1,1154 @@
+{
+  "version": "1.0",
+  "game": "fdp",
+  "blackCards": [
+    {
+      "id": "fdp_b_001",
+      "text": "Depois de beber demais, ____ virou o assunto da noite.",
+      "pick": 1,
+      "penalty": {
+        "shots": 1,
+        "description": "Tome 1 gole"
+      }
+    },
+    {
+      "id": "fdp_b_002",
+      "text": "Nada estraga mais um relacionamento do que ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_003",
+      "text": "O maior erro da humanidade foi ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_004",
+      "text": "Minha maior habilidade social é ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_005",
+      "text": "____ deveria ser crime.",
+      "pick": 1,
+      "penalty": {
+        "shots": 1,
+        "description": "Vire 1 shot"
+      }
+    },
+    {
+      "id": "fdp_b_006",
+      "text": "A Netflix acaba de lançar um documentário sobre ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_007",
+      "text": "Perdi meu emprego por causa de ____.",
+      "pick": 1,
+      "penalty": {
+        "shots": 1,
+        "description": "Beba 1 golinho"
+      }
+    },
+    {
+      "id": "fdp_b_008",
+      "text": "Minha terapeuta ficou sem palavras quando contei sobre ____.",
+      "pick": 1,
+      "penalty": {
+        "shots": 1,
+        "description": "Mande 1 gole pra dentro"
+      }
+    },
+    {
+      "id": "fdp_b_009",
+      "text": "O segredo para uma festa inesquecível é ____.",
+      "pick": 1,
+      "penalty": {
+        "shots": 1,
+        "description": "Tome 1 dose"
+      }
+    },
+    {
+      "id": "fdp_b_010",
+      "text": "Fui bloqueado no WhatsApp por causa de ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_011",
+      "text": "A polícia me parou e encontrou ____ no porta-malas.",
+      "pick": 1,
+      "penalty": {
+        "shots": 2,
+        "description": "Tome 2 goles"
+      }
+    },
+    {
+      "id": "fdp_b_012",
+      "text": "Minha mãe descobriu ____ no meu histórico de navegação.",
+      "pick": 1,
+      "penalty": {
+        "shots": 1,
+        "description": "Beba 1 golão"
+      }
+    },
+    {
+      "id": "fdp_b_013",
+      "text": "O que realmente acontece na casa do Boninho?",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_014",
+      "text": "Fui expulso da igreja por ____.",
+      "pick": 1,
+      "penalty": {
+        "shots": 2,
+        "description": "Vire 2 shots seguidos"
+      }
+    },
+    {
+      "id": "fdp_b_015",
+      "text": "Durante a pandemia, descobri que sou viciado em ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_016",
+      "text": "Minha conta do Instagram foi deletada por postar ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_017",
+      "text": "O verdadeiro motivo do divórcio foi ____.",
+      "pick": 1,
+      "penalty": {
+        "shots": 1,
+        "description": "Vire 1 golinho"
+      }
+    },
+    {
+      "id": "fdp_b_018",
+      "text": "Fui parar no hospital depois de tentar ____.",
+      "pick": 1,
+      "penalty": {
+        "shots": 2,
+        "description": "Beba 2 doses sem parar"
+      }
+    },
+    {
+      "id": "fdp_b_019",
+      "text": "A melhor forma de arruinar um casamento é ____.",
+      "pick": 1,
+      "penalty": {
+        "shots": 1,
+        "description": "1 gole obrigatório"
+      }
+    },
+    {
+      "id": "fdp_b_020",
+      "text": "Finalmente entendi o significado de ____ aos 30 anos.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_021",
+      "text": "Se eu pudesse voltar no tempo, não teria ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_022",
+      "text": "Fui cancelado no Twitter por defender ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_023",
+      "text": "O Datena jogou a cadeira por causa de ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_024",
+      "text": "Meu maior medo é ser pego fazendo ____.",
+      "pick": 1,
+      "penalty": {
+        "shots": 1,
+        "description": "Beba 1 shot na lata"
+      }
+    },
+    {
+      "id": "fdp_b_025",
+      "text": "Perdi todos os meus amigos depois de ____.",
+      "pick": 1,
+      "penalty": {
+        "shots": 1,
+        "description": "Tome 1 gole sem reclamar"
+      }
+    },
+    {
+      "id": "fdp_b_026",
+      "text": "A verdadeira razão pela qual o Brasil não vai pra frente é ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_027",
+      "text": "Fui preso na alfândega tentando trazer ____.",
+      "pick": 1,
+      "penalty": {
+        "shots": 2,
+        "description": "Mande 2 goles pra dentro"
+      }
+    },
+    {
+      "id": "fdp_b_028",
+      "text": "O novo ministério do governo vai cuidar de ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_029",
+      "text": "Tomei ghost depois de mandar foto de ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_030",
+      "text": "A ciência acabou de provar que ____ causa câncer.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_031",
+      "text": "No Porta dos Fundos, Jesus voltou pra acabar com ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_032",
+      "text": "Meu psiquiatra aumentou a dose depois que contei sobre ____.",
+      "pick": 1,
+      "penalty": {
+        "shots": 1,
+        "description": "Tome 1 gole"
+      }
+    },
+    {
+      "id": "fdp_b_033",
+      "text": "Levei um processo por ____.",
+      "pick": 1,
+      "penalty": {
+        "shots": 1,
+        "description": "Vire 1 shot"
+      }
+    },
+    {
+      "id": "fdp_b_034",
+      "text": "A única coisa que me faz sentir vivo é ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_035",
+      "text": "Galvão Bueno se aposentou depois de narrar ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_036",
+      "text": "Acordo todos os dias pensando em ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_037",
+      "text": "Fui ao INSS pedir afastamento por ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_038",
+      "text": "Meu Uber deu 1 estrela porque ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_039",
+      "text": "O BBB deste ano vai ter como prova ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_040",
+      "text": "Quebrei o recorde mundial de ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_041",
+      "text": "Minha família fez uma intervenção por causa de ____.",
+      "pick": 1,
+      "penalty": {
+        "shots": 2,
+        "description": "Beba 2 golões generosos"
+      }
+    },
+    {
+      "id": "fdp_b_042",
+      "text": "Fui ao Red Nose pra ver ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_043",
+      "text": "Descobri que meu parceiro tem fetiche em ____.",
+      "pick": 1,
+      "penalty": {
+        "shots": 1,
+        "description": "Beba 1 golinho"
+      }
+    },
+    {
+      "id": "fdp_b_044",
+      "text": "O padre benzeu a casa depois de ver ____.",
+      "pick": 1,
+      "penalty": {
+        "shots": 1,
+        "description": "Mande 1 gole pra dentro"
+      }
+    },
+    {
+      "id": "fdp_b_045",
+      "text": "Hoje no Fantástico: a verdade sobre ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_046",
+      "text": "Fui pro hospital depois de enfiar ____ onde não devia.",
+      "pick": 1,
+      "penalty": {
+        "shots": 3,
+        "description": "Tome 3 goles de uma vez"
+      }
+    },
+    {
+      "id": "fdp_b_047",
+      "text": "A treta no grupo da família começou por causa de ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_048",
+      "text": "William Bonner não conseguiu segurar o riso ao noticiar ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_049",
+      "text": "Fui demitido depois que vazou que faço ____ no almocinho.",
+      "pick": 1,
+      "penalty": {
+        "shots": 1,
+        "description": "Tome 1 dose"
+      }
+    },
+    {
+      "id": "fdp_b_050",
+      "text": "Disseram que eu pareço o capeta quando estou ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_051",
+      "text": "O Faustão voltou à TV só pra falar sobre ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_052",
+      "text": "A pior parte de ter 30 anos é ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_053",
+      "text": "Meu chefe me chamou no RH pra falar sobre ____.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_054",
+      "text": "Descobri o fetiche do meu pai: ____.",
+      "pick": 1,
+      "penalty": {
+        "shots": 2,
+        "description": "Vire 2 shots de uma vez"
+      }
+    },
+    {
+      "id": "fdp_b_055",
+      "text": "A NASA descobriu ____ em Marte.",
+      "pick": 1,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_056",
+      "text": "Só aceito ____ porque vem junto com ____.",
+      "pick": 2,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_057",
+      "text": "Vida de solteiro é ____ combinado com ____.",
+      "pick": 2,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_058",
+      "text": "O pior conselho que já recebi foi misturar ____ com ____.",
+      "pick": 2,
+      "penalty": {
+        "shots": 1,
+        "description": "Beba 1 golão"
+      }
+    },
+    {
+      "id": "fdp_b_059",
+      "text": "Se eu fosse presidente, legalizaria ____ e proibiria ____.",
+      "pick": 2,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_060",
+      "text": "Entrei no Big Brother Brasil e fui cancelado por juntar ____ com ____.",
+      "pick": 2,
+      "penalty": {
+        "shots": 1,
+        "description": "Vire 1 golinho"
+      }
+    },
+    {
+      "id": "fdp_b_061",
+      "text": "A combinação perfeita para estragar a vida é ____ seguido de ____.",
+      "pick": 2,
+      "penalty": {
+        "shots": 2,
+        "description": "2 goles na fuça"
+      }
+    },
+    {
+      "id": "fdp_b_062",
+      "text": "Minha mãe me pegou fazendo ____ enquanto fazia ____.",
+      "pick": 2,
+      "penalty": {
+        "shots": 3,
+        "description": "Vire 3 shots — boa sorte"
+      }
+    },
+    {
+      "id": "fdp_b_063",
+      "text": "Descobri que meu crush gosta de ____ e ____. Tchau!",
+      "pick": 2,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_064",
+      "text": "A festa estava ótima até alguém juntar ____ com ____.",
+      "pick": 2,
+      "penalty": {
+        "shots": 1,
+        "description": "1 gole obrigatório"
+      }
+    },
+    {
+      "id": "fdp_b_065",
+      "text": "Fim de semana perfeito: ____ na sexta e ____ no domingo.",
+      "pick": 2,
+      "penalty": {
+        "shots": 1,
+        "description": "Beba 1 shot na lata"
+      }
+    },
+    {
+      "id": "fdp_b_066",
+      "text": "Levei fora porque confundi ____ com ____.",
+      "pick": 2,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_067",
+      "text": "No meu Tinder eu coloquei que curto ____ e ____.",
+      "pick": 2,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_068",
+      "text": "A Netflix cancelou a série por ter uma cena de ____ com ____.",
+      "pick": 2,
+      "penalty": {
+        "shots": 1,
+        "description": "Tome 1 gole sem reclamar"
+      }
+    },
+    {
+      "id": "fdp_b_069",
+      "text": "Fui demitido por misturar ____ com ____ no horário de trabalho.",
+      "pick": 2,
+      "penalty": {
+        "shots": 1,
+        "description": "Tome 1 gole"
+      }
+    },
+    {
+      "id": "fdp_b_070",
+      "text": "Meu psicólogo disse que preciso escolher entre ____ e ____.",
+      "pick": 2,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_071",
+      "text": "A receita do sucesso é 50% de ____ e 50% de ____.",
+      "pick": 2,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_072",
+      "text": "Eu trocaria ____ por ____ sem pensar duas vezes.",
+      "pick": 2,
+      "penalty": null
+    },
+    {
+      "id": "fdp_b_073",
+      "text": "A diferença entre ____ e ____ é que um deles é crime.",
+      "pick": 2,
+      "penalty": {
+        "shots": 2,
+        "description": "Tome 2 goladas"
+      }
+    },
+    {
+      "id": "fdp_b_074",
+      "text": "Quando você junta ____, ____ e ____, o resultado é um desastre.",
+      "pick": 3,
+      "penalty": {
+        "shots": 3,
+        "description": "Beba 3 doses sem respirar"
+      }
+    },
+    {
+      "id": "fdp_b_075",
+      "text": "Minha rotina matinal: ____, depois ____ e por último ____.",
+      "pick": 3,
+      "penalty": null
+    }
+  ],
+  "whiteCards": [
+    {
+      "id": "fdp_w_001",
+      "text": "Mentir olhando nos olhos"
+    },
+    {
+      "id": "fdp_w_002",
+      "text": "Um ex aparecendo bêbado no rolê"
+    },
+    {
+      "id": "fdp_w_003",
+      "text": "Uma orgia mal planejada"
+    },
+    {
+      "id": "fdp_w_004",
+      "text": "Um pedido de desculpas falso"
+    },
+    {
+      "id": "fdp_w_005",
+      "text": "Fingir empatia por conveniência"
+    },
+    {
+      "id": "fdp_w_006",
+      "text": "Uma decisão tomada completamente bêbado"
+    },
+    {
+      "id": "fdp_w_007",
+      "text": "Dar ghosting em todo mundo"
+    },
+    {
+      "id": "fdp_w_008",
+      "text": "Comer pastel de feira ressacado às 6h da manhã"
+    },
+    {
+      "id": "fdp_w_009",
+      "text": "Stalker profissional no Instagram"
+    },
+    {
+      "id": "fdp_w_010",
+      "text": "Chorar no banheiro do trabalho"
+    },
+    {
+      "id": "fdp_w_011",
+      "text": "Um fetiche bizarro que ninguém pode saber"
+    },
+    {
+      "id": "fdp_w_012",
+      "text": "Mandar nudes pra pessoa errada"
+    },
+    {
+      "id": "fdp_w_013",
+      "text": "Crise existencial às 3h da manhã"
+    },
+    {
+      "id": "fdp_w_014",
+      "text": "Dar em cima do primo no Natal"
+    },
+    {
+      "id": "fdp_w_015",
+      "text": "Fingir que está bem quando tá tudo uma merda"
+    },
+    {
+      "id": "fdp_w_016",
+      "text": "Voltar com o ex pela quarta vez"
+    },
+    {
+      "id": "fdp_w_017",
+      "text": "Memes de tiozão do pavê"
+    },
+    {
+      "id": "fdp_w_018",
+      "text": "Rachadinha no cu dos outros é refresco"
+    },
+    {
+      "id": "fdp_w_019",
+      "text": "Comer no Giraffas porque não tem dinheiro"
+    },
+    {
+      "id": "fdp_w_020",
+      "text": "Vender nudes no Privacy"
+    },
+    {
+      "id": "fdp_w_021",
+      "text": "Um paredão falso do BBB"
+    },
+    {
+      "id": "fdp_w_022",
+      "text": "Gado demais da conta"
+    },
+    {
+      "id": "fdp_w_023",
+      "text": "Pagar de coach quântico no Instagram"
+    },
+    {
+      "id": "fdp_w_024",
+      "text": "Talarico de carteirinha"
+    },
+    {
+      "id": "fdp_w_025",
+      "text": "Uma suruba gospel"
+    },
+    {
+      "id": "fdp_w_026",
+      "text": "Boleto vencido e conta no vermelho"
+    },
+    {
+      "id": "fdp_w_027",
+      "text": "Comer miojo todo dia pra sobreviver"
+    },
+    {
+      "id": "fdp_w_028",
+      "text": "Tomar uma dessa de Skol Beats"
+    },
+    {
+      "id": "fdp_w_029",
+      "text": "Passar vergonha no Stories"
+    },
+    {
+      "id": "fdp_w_030",
+      "text": "Ir no motel sozinho"
+    },
+    {
+      "id": "fdp_w_031",
+      "text": "Tomar pinga com energético"
+    },
+    {
+      "id": "fdp_w_032",
+      "text": "Casamento por interesse financeiro"
+    },
+    {
+      "id": "fdp_w_033",
+      "text": "Fazer Pix pro golpista achando que era real"
+    },
+    {
+      "id": "fdp_w_034",
+      "text": "Entrar numa pirâmide financeira"
+    },
+    {
+      "id": "fdp_w_035",
+      "text": "Dar golpe do baú"
+    },
+    {
+      "id": "fdp_w_036",
+      "text": "Comer travesti sem saber"
+    },
+    {
+      "id": "fdp_w_037",
+      "text": "Pagar mico no pagode"
+    },
+    {
+      "id": "fdp_w_038",
+      "text": "Mandar áudio de 10 minutos no WhatsApp"
+    },
+    {
+      "id": "fdp_w_039",
+      "text": "Fazer pegadinha de mau gosto"
+    },
+    {
+      "id": "fdp_w_040",
+      "text": "Trair no carnaval e achar que tá valendo"
+    },
+    {
+      "id": "fdp_w_041",
+      "text": "Usar calcinha da irmã"
+    },
+    {
+      "id": "fdp_w_042",
+      "text": "Vomitar na Uber e fingir que não foi você"
+    },
+    {
+      "id": "fdp_w_043",
+      "text": "Pedir dinheiro emprestado e nunca pagar"
+    },
+    {
+      "id": "fdp_w_044",
+      "text": "Falar mal dos amigos pelas costas"
+    },
+    {
+      "id": "fdp_w_045",
+      "text": "Fumar maconha no banheiro da avó"
+    },
+    {
+      "id": "fdp_w_046",
+      "text": "Transar com o Uber/Ifood"
+    },
+    {
+      "id": "fdp_w_047",
+      "text": "Virar meme e todo mundo compartilhar"
+    },
+    {
+      "id": "fdp_w_048",
+      "text": "Dar PT e acordar em outro estado"
+    },
+    {
+      "id": "fdp_w_049",
+      "text": "Tomar cerveja quente porque acabou o gelo"
+    },
+    {
+      "id": "fdp_w_050",
+      "text": "Cagar no banheiro da sogra no primeiro encontro"
+    },
+    {
+      "id": "fdp_w_051",
+      "text": "Assistir pornô Gospel"
+    },
+    {
+      "id": "fdp_w_052",
+      "text": "Dar exposed no Twitter"
+    },
+    {
+      "id": "fdp_w_053",
+      "text": "Fazer live no Instagram chorando"
+    },
+    {
+      "id": "fdp_w_054",
+      "text": "Comprar diploma falso"
+    },
+    {
+      "id": "fdp_w_055",
+      "text": "Receber do Bolsa Família sendo rico"
+    },
+    {
+      "id": "fdp_w_056",
+      "text": "Dar chilique em público"
+    },
+    {
+      "id": "fdp_w_057",
+      "text": "Transar no banheiro do avião"
+    },
+    {
+      "id": "fdp_w_058",
+      "text": "Chupar manga com farinha de mandioca"
+    },
+    {
+      "id": "fdp_w_059",
+      "text": "Dar uma de hétero top quando é bichinha assumida"
+    },
+    {
+      "id": "fdp_w_060",
+      "text": "Postar textão mimimi no Facebook"
+    },
+    {
+      "id": "fdp_w_061",
+      "text": "Comer o cu de quem tá lendo"
+    },
+    {
+      "id": "fdp_w_062",
+      "text": "Enfiar o dedo no cu e cheirar"
+    },
+    {
+      "id": "fdp_w_063",
+      "text": "Soltar pum na cara do parceiro durante o sexo"
+    },
+    {
+      "id": "fdp_w_064",
+      "text": "Punheta coletiva no vestiário"
+    },
+    {
+      "id": "fdp_w_065",
+      "text": "Cagar na praia e culpar o cachorro"
+    },
+    {
+      "id": "fdp_w_066",
+      "text": "Lamber o sovaco suado do crush"
+    },
+    {
+      "id": "fdp_w_067",
+      "text": "Meter o dedo na bunda durante o exame de próstata e gostar"
+    },
+    {
+      "id": "fdp_w_068",
+      "text": "Bater bronha pensando na ex da mãe"
+    },
+    {
+      "id": "fdp_w_069",
+      "text": "Chupar os dedos depois de coçar a bola"
+    },
+    {
+      "id": "fdp_w_070",
+      "text": "Mijar no chuveiro enquanto o parceiro tá embaixo"
+    },
+    {
+      "id": "fdp_w_071",
+      "text": "Golden shower no motel"
+    },
+    {
+      "id": "fdp_w_072",
+      "text": "Comer cocô de cachorro por 5 mil reais"
+    },
+    {
+      "id": "fdp_w_073",
+      "text": "Transar com a almofada do sofá da vó"
+    },
+    {
+      "id": "fdp_w_074",
+      "text": "Enfiar uma garrafa de Coca-Cola no ânus"
+    },
+    {
+      "id": "fdp_w_075",
+      "text": "Dar língua no ânus de desconhecido no banheiro da balada"
+    },
+    {
+      "id": "fdp_w_076",
+      "text": "Bater punheta com a mão esquerda pra sentir que é outra pessoa"
+    },
+    {
+      "id": "fdp_w_077",
+      "text": "Sexo anal sem lubrificante"
+    },
+    {
+      "id": "fdp_w_078",
+      "text": "Comer a amiga da mãe no velório do pai"
+    },
+    {
+      "id": "fdp_w_079",
+      "text": "Meter viagra no drink do vovô"
+    },
+    {
+      "id": "fdp_w_080",
+      "text": "Incesto entre primos de segundo grau"
+    },
+    {
+      "id": "fdp_w_081",
+      "text": "Chupar o pau do padre na confissão"
+    },
+    {
+      "id": "fdp_w_082",
+      "text": "Fazer strip-tease no velório"
+    },
+    {
+      "id": "fdp_w_083",
+      "text": "Transar com cadáver no necrotério"
+    },
+    {
+      "id": "fdp_w_084",
+      "text": "Zoofilia com galinha caipira"
+    },
+    {
+      "id": "fdp_w_085",
+      "text": "Dar pro mendigo em troca de crack"
+    },
+    {
+      "id": "fdp_w_086",
+      "text": "Masturbar um cavalo por aposta"
+    },
+    {
+      "id": "fdp_w_087",
+      "text": "Bukkake no churrasco de família"
+    },
+    {
+      "id": "fdp_w_088",
+      "text": "Fisting anal até o cotovelo"
+    },
+    {
+      "id": "fdp_w_089",
+      "text": "Lamber suor de saco escrotal"
+    },
+    {
+      "id": "fdp_w_090",
+      "text": "Coprofagia recreativa"
+    },
+    {
+      "id": "fdp_w_091",
+      "text": "Colocar ovo de codorna no cu"
+    },
+    {
+      "id": "fdp_w_092",
+      "text": "Estrupar a boneca inflável do primo"
+    },
+    {
+      "id": "fdp_w_093",
+      "text": "Gang bang no estacionamento do Carrefour"
+    },
+    {
+      "id": "fdp_w_094",
+      "text": "Chupar hemorroida alheia"
+    },
+    {
+      "id": "fdp_w_095",
+      "text": "Raspar o saco com gilete enferrujada"
+    },
+    {
+      "id": "fdp_w_096",
+      "text": "Beber mijo de grávida"
+    },
+    {
+      "id": "fdp_w_097",
+      "text": "Cheirar calcinha usada da vizinha"
+    },
+    {
+      "id": "fdp_w_098",
+      "text": "Meter o dedo no nariz e limpar na cortina"
+    },
+    {
+      "id": "fdp_w_099",
+      "text": "Arrotar na boca do beijo"
+    },
+    {
+      "id": "fdp_w_100",
+      "text": "Lamber o assento do ônibus"
+    },
+    {
+      "id": "fdp_w_101",
+      "text": "Cheirar pó de pica de morto"
+    },
+    {
+      "id": "fdp_w_102",
+      "text": "Enfiar besouro no cu"
+    },
+    {
+      "id": "fdp_w_103",
+      "text": "Pagar boquete em troca de lanche do McDonald's"
+    },
+    {
+      "id": "fdp_w_104",
+      "text": "Tomar banho de porra"
+    },
+    {
+      "id": "fdp_w_105",
+      "text": "Comer pizza de esperma"
+    },
+    {
+      "id": "fdp_w_106",
+      "text": "Dar pro traficante pra quitar a dívida"
+    },
+    {
+      "id": "fdp_w_107",
+      "text": "Sexo grupal com homeless"
+    },
+    {
+      "id": "fdp_w_108",
+      "text": "Chupar cú de travesti no banheiro público"
+    },
+    {
+      "id": "fdp_w_109",
+      "text": "Gozar na cara da sogra"
+    },
+    {
+      "id": "fdp_w_110",
+      "text": "Meter o pé na vagina"
+    },
+    {
+      "id": "fdp_w_111",
+      "text": "Fazer sexo com boneca Real Doll na frente da família"
+    },
+    {
+      "id": "fdp_w_112",
+      "text": "Cunete surpresa no primeiro encontro"
+    },
+    {
+      "id": "fdp_w_113",
+      "text": "Peido vaginal durante o orgasmo"
+    },
+    {
+      "id": "fdp_w_114",
+      "text": "Gozar em 30 segundos e fingir que foi bom"
+    },
+    {
+      "id": "fdp_w_115",
+      "text": "Usar camisinha furada de propósito"
+    },
+    {
+      "id": "fdp_w_116",
+      "text": "Dar o cuspe como lubrificante"
+    },
+    {
+      "id": "fdp_w_117",
+      "text": "Transar com DST e não avisar"
+    },
+    {
+      "id": "fdp_w_118",
+      "text": "Bater punheta no uber pool"
+    },
+    {
+      "id": "fdp_w_119",
+      "text": "Pagar de machão mas gostar de dedada no cu"
+    },
+    {
+      "id": "fdp_w_120",
+      "text": "Dar ghosting depois de comer o cu da pessoa"
+    },
+    {
+      "id": "fdp_w_121",
+      "text": "Racismo estrutural"
+    },
+    {
+      "id": "fdp_w_122",
+      "text": "Homofobia enrustida"
+    },
+    {
+      "id": "fdp_w_123",
+      "text": "Machismo escroto"
+    },
+    {
+      "id": "fdp_w_124",
+      "text": "Feminazi de internet"
+    },
+    {
+      "id": "fdp_w_125",
+      "text": "Cancelamento em massa no Twitter"
+    },
+    {
+      "id": "fdp_w_126",
+      "text": "Terraplanismo convicto"
+    },
+    {
+      "id": "fdp_w_127",
+      "text": "Antivax genocida"
+    },
+    {
+      "id": "fdp_w_128",
+      "text": "Pedofilia"
+    },
+    {
+      "id": "fdp_w_129",
+      "text": "Estupro corretivo"
+    },
+    {
+      "id": "fdp_w_130",
+      "text": "Genocídio indígena"
+    },
+    {
+      "id": "fdp_w_131",
+      "text": "Tráfico de órgãos"
+    },
+    {
+      "id": "fdp_w_132",
+      "text": "Canibalismo consensual"
+    },
+    {
+      "id": "fdp_w_133",
+      "text": "Sacrifício humano em ritual satânico"
+    },
+    {
+      "id": "fdp_w_134",
+      "text": "Tortura com bateria de carro"
+    },
+    {
+      "id": "fdp_w_135",
+      "text": "Tráfico de crianças"
+    },
+    {
+      "id": "fdp_w_136",
+      "text": "Sequestro relâmpago que deu errado"
+    },
+    {
+      "id": "fdp_w_137",
+      "text": "Abuso sexual infantil"
+    },
+    {
+      "id": "fdp_w_138",
+      "text": "Aborto ilegal no fundo do açougue"
+    },
+    {
+      "id": "fdp_w_139",
+      "text": "Esfaquear mendigo por diversão"
+    },
+    {
+      "id": "fdp_w_140",
+      "text": "Atropelar e fugir na madrugada"
+    },
+    {
+      "id": "fdp_w_141",
+      "text": "Espancar gay na rua"
+    },
+    {
+      "id": "fdp_w_142",
+      "text": "Violência doméstica todo final de semana"
+    },
+    {
+      "id": "fdp_w_143",
+      "text": "Dar surra de chicote no escravo sexual"
+    },
+    {
+      "id": "fdp_w_144",
+      "text": "Afogamento recreativo"
+    },
+    {
+      "id": "fdp_w_145",
+      "text": "Nazismo festivo"
+    },
+    {
+      "id": "fdp_w_146",
+      "text": "Apologia ao Holocausto"
+    },
+    {
+      "id": "fdp_w_147",
+      "text": "Queimar mendigo vivo"
+    },
+    {
+      "id": "fdp_w_148",
+      "text": "Milícia matando favelado"
+    },
+    {
+      "id": "fdp_w_149",
+      "text": "Chacina na favela"
+    },
+    {
+      "id": "fdp_w_150",
+      "text": "Feminicídio justificado"
+    }
+  ]
+}
