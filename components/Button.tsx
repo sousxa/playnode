@@ -10,27 +10,34 @@ interface ButtonProps {
   type?: 'button' | 'submit';
 }
 
-const Button: React.FC<ButtonProps> = ({ 
-  onClick, 
-  children, 
-  variant = 'primary', 
-  className = '', 
+const Button: React.FC<ButtonProps> = ({
+  onClick,
+  children,
+  variant = 'primary',
+  className = '',
   disabled = false,
   type = 'button'
 }) => {
-  const baseStyles = "w-full py-5 px-6 rounded-3xl font-bold text-xl transition-all active:scale-95 flex items-center justify-center gap-3 disabled:opacity-50 disabled:active:scale-100";
-  
+  // Estética arcade: fonte pixel, borda preta grossa, sombra "dura" deslocada
+  // e o botão "afunda" ao pressionar (translate + sombra some).
+  const baseStyles =
+    "w-full py-4 px-5 font-pixel text-xs sm:text-sm uppercase tracking-wide " +
+    "border-4 border-black shadow-hard transition-all duration-75 " +
+    "flex items-center justify-center gap-3 " +
+    "active:translate-x-[4px] active:translate-y-[4px] active:shadow-none " +
+    "disabled:opacity-40 disabled:active:translate-x-0 disabled:active:translate-y-0 disabled:active:shadow-hard disabled:cursor-not-allowed";
+
   const variants = {
-    primary: "bg-indigo-600 text-white shadow-lg shadow-indigo-200",
-    secondary: "bg-white text-indigo-600 border-2 border-indigo-100 shadow-sm",
-    danger: "bg-rose-500 text-white shadow-lg shadow-rose-200",
-    ghost: "bg-transparent text-slate-500 hover:bg-slate-100"
+    primary: "bg-arcade-yellow text-black",
+    secondary: "bg-arcade-cyan text-black",
+    danger: "bg-arcade-pink text-white",
+    ghost: "bg-arcade-panel2 text-arcade-cyan border-arcade-line shadow-none active:translate-x-0 active:translate-y-0",
   };
 
   return (
-    <button 
+    <button
       type={type}
-      onClick={onClick} 
+      onClick={onClick}
       disabled={disabled}
       className={`${baseStyles} ${variants[variant]} ${className}`}
     >

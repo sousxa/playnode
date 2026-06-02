@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Button from './Button';
 import { localStorageSyncService } from '../services/localStorageSync';
 
 interface SingleDeviceModeProps {
@@ -46,20 +45,20 @@ const SingleDeviceMode: React.FC<SingleDeviceModeProps> = ({
   }
 
   return (
-    <div className="space-y-4 p-4 bg-indigo-50 rounded-xl border-2 border-dashed border-indigo-300">
-      <div className="space-y-2">
-        <h3 className="text-sm font-bold text-indigo-950 uppercase tracking-widest">
-          📱 Modo Single Device
+    <div className="space-y-3 p-4 bg-arcade-panel2 border-4 border-arcade-line">
+      <div>
+        <h3 className="font-pixel text-[10px] text-arcade-yellow glow-yellow mb-1">
+          📱 MESMO APARELHO
         </h3>
-        <p className="text-xs text-indigo-600">
-          Você está em modo local. Adicione jogadores manualmente.
+        <p className="font-retro text-lg text-arcade-cyan leading-tight">
+          adicione amigos que vão jogar neste celular
         </p>
       </div>
 
       <div className="flex gap-2">
         <input
           type="text"
-          placeholder="Nome do jogador..."
+          placeholder="nome..."
           value={newPlayerName}
           onChange={(e) => setNewPlayerName(e.target.value)}
           onKeyPress={(e) => {
@@ -68,20 +67,15 @@ const SingleDeviceMode: React.FC<SingleDeviceModeProps> = ({
             }
           }}
           disabled={isAdding}
-          className="flex-1 px-3 py-2 border border-indigo-200 rounded-lg text-sm focus:outline-none focus:border-indigo-500"
+          className="flex-1 min-w-0 px-3 py-2 bg-arcade-bg border-4 border-black text-arcade-cyan font-retro text-xl placeholder:text-arcade-line outline-none focus:border-arcade-cyan"
         />
-        <Button
+        <button
           onClick={handleAddPlayer}
           disabled={!newPlayerName.trim() || isAdding}
-          variant="secondary"
-          className="text-sm px-4"
+          className="shrink-0 font-pixel text-[10px] px-4 bg-arcade-green text-black border-4 border-black shadow-hard active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all disabled:opacity-40"
         >
-          Adicionar
-        </Button>
-      </div>
-
-      <div className="text-xs text-indigo-600 text-center">
-        {players.length} jogador{players.length !== 1 ? 'es' : ''} adicionado{players.length !== 1 ? 's' : ''}
+          + ADD
+        </button>
       </div>
     </div>
   );
