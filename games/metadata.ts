@@ -66,6 +66,9 @@ export const GAME_CONFIG_SCHEMA: Record<string, GameConfigSchema> = {
   [GameMode.CARTAS_PODRES]: {
     rounds: { min: 3, max: 15, default: 8, label: 'Rodadas' },
   },
+  [GameMode.STOP]: {
+    rounds: { min: 3, max: 10, default: 5, label: 'Rodadas' },
+  },
 };
 
 export const GAME_TITLES: Record<string, string> = {
@@ -75,4 +78,5 @@ export const GAME_TITLES: Record<string, string> = {
   [GameMode.AMIGOS_DE_MERDA]: 'Amigos de Merda',
   [GameMode.VERDADE_OU_DESAFIO]: 'Verdade ou Desafio',
   [GameMode.CARTAS_PODRES]: 'Cartas Podres',
+  [GameMode.STOP]: 'Stop!',
 };

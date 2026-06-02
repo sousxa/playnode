@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { VenetianMask, Drama, Flame, Link2, Check, ChevronRight, Wifi, Skull, HeartCrack, Trophy, Layers } from 'lucide-react';
+import { VenetianMask, Drama, Flame, Link2, Check, ChevronRight, Wifi, Skull, HeartCrack, Trophy, Layers, Timer } from 'lucide-react';
 import SingleDeviceMode from '../components/SingleDeviceMode';
 import ThemeToggle from '../components/ThemeToggle';
 import { GameMode } from '../types';
@@ -22,6 +22,7 @@ const GAMES = [
   { mode: GameMode.AMIGOS_DE_MERDA, title: 'Amigos de Merda', desc: 'Quem é mais provável…', Icon: Skull, color: 'text-danger', bg: 'bg-danger/15' },
   { mode: GameMode.VERDADE_OU_DESAFIO, title: 'Verdade ou Desafio', desc: 'Clássico ousado', Icon: HeartCrack, color: 'text-warning', bg: 'bg-warning/15' },
   { mode: GameMode.CARTAS_PODRES, title: 'Cartas Podres', desc: 'Complete a frase mais podre', Icon: Layers, color: 'text-accent', bg: 'bg-accent/15' },
+  { mode: GameMode.STOP, title: 'Stop! / Adedonha', desc: 'Letra, categorias e correria', Icon: Timer, color: 'text-success', bg: 'bg-success/15' },
 ];
 
 const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, onlineMode, hasRanking, onSelectGame, onShowRanking }) => {
