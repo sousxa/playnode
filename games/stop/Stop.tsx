@@ -5,7 +5,7 @@ import Button from '../../components/Button';
 import GameHeader from '../shared/GameHeader';
 import type { GameConfig } from '../../engine/types';
 import { useSyncedReducer } from '../../hooks/useSyncedReducer';
-import { initGame, reducer } from './engine';
+import { initGame, reducer, isAnswerValid } from './engine';
 
 interface Props {
   config: GameConfig;
@@ -292,7 +292,7 @@ const Stop: React.FC<Props> = ({ config, onExit, onReportScores, onRanking, onli
             Categoria {state.reviewIdx + 1}/{state.categories.length} · letra <b className="text-accent">{state.letter}</b>
           </p>
           <h2 className="font-display font-extrabold text-2xl text-text-primary">{cat}</h2>
-          <p className="font-sans text-text-secondary text-xs mt-1">Toque pra validar (verde = vale, vermelho = não vale)</p>
+          <p className="font-sans text-text-secondary text-xs mt-1">Vote nas que valem — a maioria decide (verde = vale)</p>
         </div>
 
         <AnimatePresence mode="wait">
@@ -306,31 +306,44 @@ const Stop: React.FC<Props> = ({ config, onExit, onReportScores, onRanking, onli
           >
             {state.players.map((p) => {
               const raw = (state.answers[p.id]?.[cat] ?? '').trim();
-              const ok = !!state.valid[cat]?.[p.id];
               const empty = raw.length === 0;
+              const ok = isAnswerValid(state, cat, p.id); // maioria atual
+              const approvals = Object.keys(state.votes[cat]?.[p.id] ?? {}).length;
+              const others = state.players.length - 1;
+              const iVoted = !!state.votes[cat]?.[p.id]?.[me];
+              const mine = p.id === me;
               return (
-                <button
+                <div
                   key={p.id}
-                  disabled={empty}
-                  onClick={() => dispatch({ type: 'TOGGLE_VALID', category: cat, ownerId: p.id })}
-                  className={`w-full flex items-center justify-between rounded-2xl px-4 py-3 border-2 transition-colors text-left ${
-                    empty
-                      ? 'bg-surface border-line opacity-60'
-                      : ok
-                      ? 'bg-success/15 border-success'
-                      : 'bg-danger/10 border-danger/60'
+                  className={`flex items-center justify-between gap-2 rounded-2xl px-4 py-3 border-2 transition-colors ${
+                    empty ? 'bg-surface border-line opacity-60' : ok ? 'bg-success/15 border-success' : 'bg-danger/10 border-danger/60'
                   }`}
                 >
                   <span className="min-w-0">
-                    <span className="block font-sans text-xs text-text-muted">{p.name}</span>
+                    <span className="block font-sans text-xs text-text-muted">{p.name}{mine && ' (você)'}</span>
                     <span className="block font-display font-bold text-text-primary overflow-wrap-anywhere">{empty ? '— (em branco)' : raw}</span>
                   </span>
-                  {!empty && (
-                    <span className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${ok ? 'bg-success text-white' : 'bg-danger/80 text-white'}`}>
-                      {ok ? <Check size={18} /> : <X size={18} />}
-                    </span>
-                  )}
-                </button>
+                  <span className="shrink-0 flex items-center gap-2">
+                    {!empty && others > 0 && (
+                      <span className={`font-display font-bold text-sm ${ok ? 'text-success' : 'text-text-muted'}`}>{approvals}/{others}</span>
+                    )}
+                    {empty ? null : mine ? (
+                      <span className={`w-9 h-9 rounded-full flex items-center justify-center ${ok ? 'bg-success text-white' : 'bg-danger/80 text-white'}`}>
+                        {ok ? <Check size={18} /> : <X size={18} />}
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => dispatch({ type: 'VOTE', category: cat, ownerId: p.id, voterId: me })}
+                        aria-label="Votar que vale"
+                        className={`w-9 h-9 rounded-full flex items-center justify-center transition-transform active:scale-90 ${
+                          iVoted ? 'bg-success text-white' : 'bg-surface-2 text-text-muted border-2 border-line'
+                        }`}
+                      >
+                        <Check size={18} />
+                      </button>
+                    )}
+                  </span>
+                </div>
               );
             })}
           </motion.div>

@@ -33,8 +33,8 @@ export interface StopState {
   stoppedBy: string | null;
   /** Online: índice da categoria em revisão/votação. */
   reviewIdx: number;
-  /** Online: validações por votação (categoria -> ownerId -> vale?). Verde = vale. */
-  valid: Record<string, Record<string, boolean>>;
+  /** Online: votos de validade (categoria -> dono da resposta -> votante -> aprovou). */
+  votes: Record<string, Record<string, Record<string, boolean>>>;
   /** Pontos acumulados na sessão (playerId -> total). */
   scores: Record<string, number>;
   /** Pontos só desta rodada (calculado ao fechar a revisão). */
@@ -46,7 +46,7 @@ export type StopAction =
   | { type: 'STOP' } // local (mesmo aparelho): vai direto pra revisão simples
   | { type: 'CALL_STOP'; playerId: string; answers: Record<string, string> } // online: alguém chamou STOP
   | { type: 'SUBMIT'; playerId: string; answers: Record<string, string> }
-  | { type: 'TOGGLE_VALID'; category: string; ownerId: string }
+  | { type: 'VOTE'; category: string; ownerId: string; voterId: string }
   | { type: 'REVIEW_NEXT' }
   | { type: 'NEXT' };
 
@@ -70,21 +70,34 @@ export function initGame(config: GameConfig): StopState {
     answers: {},
     stoppedBy: null,
     reviewIdx: 0,
-    valid: {},
+    votes: {},
     scores,
     roundScores: {},
   };
 }
 
-/** Calcula os pontos desta rodada a partir das respostas + validações. */
+/**
+ * Uma resposta vale se NÃO for vazia e tiver a aprovação da MAIORIA dos outros
+ * jogadores (pelo menos metade dos demais aprova; o dono não vota na própria).
+ */
+export function isAnswerValid(state: StopState, cat: string, ownerId: string): boolean {
+  const raw = (state.answers[ownerId]?.[cat] ?? '').trim();
+  if (!raw) return false;
+  const others = state.players.length - 1;
+  if (others <= 0) return true; // só 1 jogador: vale
+  const approvals = Object.keys(state.votes[cat]?.[ownerId] ?? {}).length;
+  return approvals * 2 >= others; // metade ou mais dos outros aprovou
+}
+
+/** Calcula os pontos desta rodada a partir das respostas + votação de maioria. */
 export function computeRoundScores(state: StopState): Record<string, number> {
   const out: Record<string, number> = {};
   for (const p of state.players) out[p.id] = 0;
   for (const cat of state.categories) {
-    // só contam as respostas marcadas como válidas (verde) e não-vazias
+    // só contam as respostas validadas pela maioria e não-vazias
     const entries = state.players
       .map((p) => ({ id: p.id, raw: (state.answers[p.id]?.[cat] ?? '').trim() }))
-      .filter((e) => e.raw.length > 0 && !!state.valid[cat]?.[e.id]);
+      .filter((e) => isAnswerValid(state, cat, e.id));
     const counts: Record<string, number> = {};
     for (const e of entries) {
       const norm = e.raw.toLowerCase();
@@ -110,7 +123,7 @@ export function reducer(state: StopState, action: StopAction): StopState {
         answers: {},
         stoppedBy: null,
         reviewIdx: 0,
-        valid: {},
+        votes: {},
         roundScores: {},
       };
     }
@@ -127,10 +140,13 @@ export function reducer(state: StopState, action: StopAction): StopState {
       const allIn = state.players.every((p) => answers[p.id] !== undefined);
       return { ...state, answers, phase: allIn ? 'review' : state.phase, reviewIdx: allIn ? 0 : state.reviewIdx };
     }
-    case 'TOGGLE_VALID': {
-      const cat = { ...(state.valid[action.category] ?? {}) };
-      cat[action.ownerId] = !cat[action.ownerId];
-      return { ...state, valid: { ...state.valid, [action.category]: cat } };
+    case 'VOTE': {
+      const cat = { ...(state.votes[action.category] ?? {}) };
+      const owner = { ...(cat[action.ownerId] ?? {}) };
+      if (owner[action.voterId]) delete owner[action.voterId];
+      else owner[action.voterId] = true;
+      cat[action.ownerId] = owner;
+      return { ...state, votes: { ...state.votes, [action.category]: cat } };
     }
     case 'REVIEW_NEXT': {
       if (state.reviewIdx + 1 < state.categories.length) {
@@ -152,7 +168,7 @@ export function reducer(state: StopState, action: StopAction): StopState {
         answers: {},
         stoppedBy: null,
         reviewIdx: 0,
-        valid: {},
+        votes: {},
         roundScores: {},
       };
     }

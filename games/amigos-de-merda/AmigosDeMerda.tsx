@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { EyeOff, Skull } from 'lucide-react';
 import Button from '../../components/Button';
 import GameHeader from '../shared/GameHeader';
@@ -30,7 +30,20 @@ const AmigosDeMerda: React.FC<Props> = ({ config, onExit, onReportScores, onRank
   const wrap = (children: React.ReactNode, header = true) => (
     <div className="page-wrapper flex flex-col p-5">
       {header && state && <GameHeader title="Amigos de Merda" round={state.currentIdx + 1} totalRounds={state.questions.length} onExit={onExit} />}
-      <div className="flex-1 flex flex-col justify-center w-full max-w-md mx-auto">{children}</div>
+      <div className="flex-1 flex flex-col w-full max-w-md mx-auto">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={state ? `${state.phase}-${state.currentIdx}` : 'loading'}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.26, ease: 'easeOut' }}
+            className="flex-1 flex flex-col justify-center"
+          >
+            {children}
+          </motion.div>
+        </AnimatePresence>
+      </div>
     </div>
   );
 

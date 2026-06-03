@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { Crown, Eye } from 'lucide-react';
 import Button from '../../components/Button';
@@ -50,7 +51,20 @@ const CartasPodres: React.FC<Props> = ({ config, onExit, onReportScores, onRanki
   const wrap = (children: React.ReactNode, header = true) => (
     <div className="page-wrapper flex flex-col p-5">
       {header && state && <GameHeader title="Cartas Podres" round={state.round} totalRounds={state.totalRounds} onExit={onExit} />}
-      <div className="flex-1 flex flex-col justify-center w-full max-w-md mx-auto">{children}</div>
+      <div className="flex-1 flex flex-col w-full max-w-md mx-auto">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={state ? `${state.phase}-${state.round}-${state.submitIdx}` : 'loading'}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.26, ease: 'easeOut' }}
+            className="flex-1 flex flex-col justify-center"
+          >
+            {children}
+          </motion.div>
+        </AnimatePresence>
+      </div>
     </div>
   );
 

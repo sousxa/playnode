@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Moon, Sun, Eye } from 'lucide-react';
 import Button from '../../components/Button';
 import GameHeader from '../shared/GameHeader';
@@ -44,7 +45,20 @@ const CidadeDorme: React.FC<Props> = ({ config, onExit, online, roomCode, player
   const wrap = (children: React.ReactNode, header = true) => (
     <div className="page-wrapper flex flex-col p-5">
       {header && state && <GameHeader title="A Cidade Dorme" round={state.dayNumber} totalRounds={state.dayNumber} onExit={onExit} />}
-      <div className="flex-1 flex flex-col justify-center w-full max-w-md mx-auto">{children}</div>
+      <div className="flex-1 flex flex-col w-full max-w-md mx-auto">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={state ? `${state.phase}-${state.dayNumber}-${state.distributeIdx}-${state.nightStepIdx}-${state.dayVoterIdx}` : 'loading'}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.26, ease: 'easeOut' }}
+            className="flex-1 flex flex-col justify-center"
+          >
+            {children}
+          </motion.div>
+        </AnimatePresence>
+      </div>
     </div>
   );
 
