@@ -165,9 +165,13 @@ class FirebaseSyncService {
 
   addLocalPlayer(code: string, playerId: string, playerName: string): void {
     if (!db) return;
-    set(ref(db, `rooms/${code}/players/${playerId}`), {
+    const pRef = ref(db, `rooms/${code}/players/${playerId}`);
+    set(pRef, {
       id: playerId, name: playerName, isActive: true, hasActedThisTurn: false, joinedAt: Date.now(),
     });
+    // Jogadores locais somem junto com quem os adicionou (host) ao cair a conexão,
+    // pra não ficarem presos na sala e impedirem a limpeza.
+    try { onDisconnect(pRef).remove(); } catch {}
   }
 
   removeLocalPlayer(code: string, playerId: string): void {

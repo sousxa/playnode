@@ -12,7 +12,7 @@ import { GameMode } from './types';
 import type { GameConfig as EngineConfig } from './engine/types';
 import { localStorageSyncService } from './services/localStorageSync';
 import { firebaseSyncService } from './services/firebaseSync';
-import { firebaseEnabled } from './services/firebase';
+import { firebaseEnabled, authReady } from './services/firebase';
 
 const AGE_KEY = 'catdecks-age-ok';
 
@@ -27,13 +27,25 @@ const ONLINE_GAMES = new Set<GameMode>([
 type SyncService = typeof localStorageSyncService | typeof firebaseSyncService;
 
 const App: React.FC = () => {
-  const [playerId] = useState(() => {
+  // Identidade local (fallback p/ modo offline / mesmo aparelho).
+  const [localId] = useState(() => {
     const stored = localStorage.getItem('pnode_pid');
     if (stored) return stored;
     const newId = `player_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     localStorage.setItem('pnode_pid', newId);
     return newId;
   });
+  // Login anônimo: quando pronto, o uid do Firebase vira a identidade online.
+  const [authUid, setAuthUid] = useState<string | null>(null);
+  const [authResolved, setAuthResolved] = useState<boolean>(!firebaseEnabled);
+  useEffect(() => {
+    if (!firebaseEnabled) return;
+    let alive = true;
+    authReady.then((uid) => { if (alive) { setAuthUid(uid); setAuthResolved(true); } });
+    return () => { alive = false; };
+  }, []);
+  // No online a identidade é o uid do Firebase; offline cai pro id local.
+  const playerId = authUid ?? localId;
 
   const [ageOk, setAgeOk] = useState(() => localStorage.getItem(AGE_KEY) === '1');
   const [userName, setUserName] = useState('');
@@ -116,15 +128,18 @@ const App: React.FC = () => {
   }, [playerId]);
 
   const handleStartSession = async (name: string, code?: string, mode?: 'online' | 'local') => {
-    const useOnline = (mode ?? 'online') === 'online' && firebaseEnabled;
+    const wantsOnline = (mode ?? 'online') === 'online';
+    const useOnline = wantsOnline && firebaseEnabled && !!authUid;
     const sync = useOnline ? firebaseSyncService : localStorageSyncService;
     syncRef.current = sync;
     setUserName(name);
     setRoomMode(useOnline ? 'online' : 'local');
     setSessionScores({});
 
-    if ((mode ?? 'online') === 'online' && !firebaseEnabled) {
+    if (wantsOnline && !firebaseEnabled) {
       toast('Online indisponível (config Firebase faltando) — jogando no mesmo aparelho.');
+    } else if (wantsOnline && !authUid) {
+      toast('Não foi possível autenticar com o servidor — jogando no mesmo aparelho.');
     }
 
     try {
@@ -211,7 +226,14 @@ const App: React.FC = () => {
 
   // ── Render ──
   let screen: React.ReactNode;
-  if (!ageOk) {
+  if (!authResolved) {
+    screen = (
+      <div className="page-wrapper flex flex-col items-center justify-center gap-4 text-center p-8">
+        <div className="text-5xl animate-bounce">🐱</div>
+        <p className="font-display font-bold text-text-secondary">Conectando ao servidor…</p>
+      </div>
+    );
+  } else if (!ageOk) {
     screen = <AgeGate onConfirm={confirmAge} />;
   } else if (!userName || !hasRoomState) {
     screen = <Home onJoin={handleStartSession} initialCode={initialRoomFromUrl || undefined} />;
@@ -255,7 +277,9 @@ const App: React.FC = () => {
     );
   }
 
-  const screenKey = !ageOk
+  const screenKey = !authResolved
+    ? 'splash'
+    : !ageOk
     ? 'age'
     : !userName || !hasRoomState
     ? 'home'
