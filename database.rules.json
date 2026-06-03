@@ -1,0 +1,26 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "rooms": {
+      ".read": true,
+      ".write": true,
+      ".indexOn": ["updatedAt"],
+      "$code": {
+        "code": { ".validate": "newData.isString() && newData.val().length <= 8" },
+        "status": { ".validate": "newData.isString() && (newData.val() == 'LOBBY' || newData.val() == 'PLAYING' || newData.val() == 'FINISHED')" },
+        "players": {
+          "$pid": {
+            "name": { ".validate": "newData.isString() && newData.val().length <= 40" }
+          }
+        },
+        "reactions": {
+          "$rid": {
+            "type": { ".validate": "newData.isString() && newData.val().length <= 24" },
+            "fromName": { ".validate": "newData.isString() && newData.val().length <= 40" }
+          }
+        }
+      }
+    }
+  }
+}

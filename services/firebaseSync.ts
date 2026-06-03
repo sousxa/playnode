@@ -6,7 +6,7 @@
  * Jogadores ficam num MAPA (/rooms/<CODE>/players/<playerId>) para evitar
  * corrida quando vários entram ao mesmo tempo; o listener converte em array.
  */
-import { ref, set, get, update, onValue, off, onDisconnect, push, onChildAdded, runTransaction } from 'firebase/database';
+import { ref, set, get, update, onValue, off, onDisconnect, push, onChildAdded, runTransaction, query, orderByChild, endAt } from 'firebase/database';
 import { db } from './firebase';
 import type { GameMode } from '../types';
 
@@ -56,6 +56,34 @@ class FirebaseSyncService {
     onDisconnect(ref(db, `rooms/${code}/players/${playerId}`)).remove();
   }
 
+  /**
+   * Varre e apaga salas "fantasma": as antigas (updatedAt > 2h) que ficaram
+   * vazias (ninguém conectado) e qualquer sala muito velha (> 24h). É best-effort
+   * e roda em segundo plano ao criar uma sala — limpa as cascas que sobram quando
+   * alguém fecha a aba sem clicar em "Sair". Requer índice `.indexOn: updatedAt`.
+   */
+  private async sweepStaleRooms(): Promise<void> {
+    if (!db) return;
+    try {
+      const now = Date.now();
+      const STALE = 2 * 60 * 60 * 1000; // 2h sem atividade
+      const HARD = 24 * 60 * 60 * 1000; // 24h = morta de vez
+      const q = query(ref(db, 'rooms'), orderByChild('updatedAt'), endAt(now - STALE));
+      const snap = await get(q);
+      const val = snap.val();
+      if (!val) return;
+      const updates: Record<string, null> = {};
+      for (const [code, room] of Object.entries<any>(val)) {
+        const players = room?.players ? Object.keys(room.players).length : 0;
+        const age = now - (room?.updatedAt ?? 0);
+        if (players === 0 || age > HARD) updates[code] = null;
+      }
+      if (Object.keys(updates).length) await update(ref(db, 'rooms'), updates);
+    } catch {
+      /* sem permissão / offline: ignora */
+    }
+  }
+
   private subscribe(code: string) {
     if (!db) return;
     const roomRef = ref(db, `rooms/${code}`);
@@ -88,6 +116,7 @@ class FirebaseSyncService {
     this.currentCode = code;
     this.armDisconnect(code, playerId);
     this.subscribe(code);
+    void this.sweepStaleRooms(); // limpa cascas antigas em segundo plano
     return snapshotToRoom(room);
   }
 
