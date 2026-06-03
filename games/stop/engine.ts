@@ -18,6 +18,21 @@ const PTS_UNIQUE = 15; // ninguém repetiu: vale mais
 const PTS_REPEAT = 5; // alguém repetiu a mesma palavra: vale menos
 
 export type StopPhase = 'spin' | 'playing' | 'review' | 'scores' | 'gameOver';
+export type Verdict = 'valid' | 'tie' | 'annulled' | 'empty';
+
+export interface AnswerResult {
+  answer: string;
+  verdict: Verdict;
+  repeated: boolean;
+  pts: number;
+}
+
+export interface RoundLog {
+  round: number;
+  letter: string;
+  results: Record<string, Record<string, AnswerResult>>; // playerId -> categoria -> resultado
+  totals: Record<string, number>; // playerId -> pontos da rodada
+}
 
 export interface StopState {
   phase: StopPhase;
@@ -33,21 +48,25 @@ export interface StopState {
   stoppedBy: string | null;
   /** Online: índice da categoria em revisão/votação. */
   reviewIdx: number;
-  /** Online: votos de validade (categoria -> dono da resposta -> votante -> aprovou). */
-  votes: Record<string, Record<string, Record<string, boolean>>>;
+  /** Online: timestamp (ms) em que o timer da categoria atual acaba. */
+  voteEndsAt: number;
+  /** Online: marcações de INVÁLIDO (categoria -> dono -> votante -> marcou). Padrão = válido (verde). */
+  invalidVotes: Record<string, Record<string, Record<string, boolean>>>;
   /** Pontos acumulados na sessão (playerId -> total). */
   scores: Record<string, number>;
-  /** Pontos só desta rodada (calculado ao fechar a revisão). */
+  /** Pontos só da última rodada calculada. */
   roundScores: Record<string, number>;
+  /** Relatório detalhado por rodada (pro placar final). */
+  roundLog: RoundLog[];
 }
 
 export type StopAction =
   | { type: 'SPIN' }
   | { type: 'STOP' } // local (mesmo aparelho): vai direto pra revisão simples
-  | { type: 'CALL_STOP'; playerId: string; answers: Record<string, string> } // online: alguém chamou STOP
-  | { type: 'SUBMIT'; playerId: string; answers: Record<string, string> }
-  | { type: 'VOTE'; category: string; ownerId: string; voterId: string }
-  | { type: 'REVIEW_NEXT' }
+  | { type: 'CALL_STOP'; playerId: string; answers: Record<string, string>; endsAt?: number } // online: alguém chamou STOP
+  | { type: 'SUBMIT'; playerId: string; answers: Record<string, string>; endsAt?: number }
+  | { type: 'TOGGLE_INVALID'; category: string; ownerId: string; voterId: string }
+  | { type: 'REVIEW_NEXT'; endsAt?: number }
   | { type: 'NEXT' };
 
 function drawLetter(used: string[]): string {
@@ -70,45 +89,68 @@ export function initGame(config: GameConfig): StopState {
     answers: {},
     stoppedBy: null,
     reviewIdx: 0,
-    votes: {},
+    voteEndsAt: 0,
+    invalidVotes: {},
     scores,
     roundScores: {},
+    roundLog: [],
   };
 }
 
 /**
- * Uma resposta vale se NÃO for vazia e tiver a aprovação da MAIORIA dos outros
- * jogadores (pelo menos metade dos demais aprova; o dono não vota na própria).
+ * Veredito de uma resposta. Por padrão TODA resposta não-vazia começa "válida"
+ * (verde); cada outro jogador pode marcá-la como inválida (vermelho). No fim:
+ * - mais "vale" que "não vale" → válida
+ * - empate → meio ponto (metade arredondada pra baixo)
+ * - mais "não vale" → anulada
+ * O dono nunca vota na própria resposta.
  */
-export function isAnswerValid(state: StopState, cat: string, ownerId: string): boolean {
+export function answerVerdict(state: StopState, cat: string, ownerId: string): Verdict {
   const raw = (state.answers[ownerId]?.[cat] ?? '').trim();
-  if (!raw) return false;
+  if (!raw) return 'empty';
   const others = state.players.length - 1;
-  if (others <= 0) return true; // só 1 jogador: vale
-  const approvals = Object.keys(state.votes[cat]?.[ownerId] ?? {}).length;
-  return approvals * 2 >= others; // metade ou mais dos outros aprovou
+  if (others <= 0) return 'valid';
+  const invalid = Object.keys(state.invalidVotes[cat]?.[ownerId] ?? {}).length;
+  const valid = others - invalid;
+  if (valid > invalid) return 'valid';
+  if (valid === invalid) return 'tie';
+  return 'annulled';
 }
 
-/** Calcula os pontos desta rodada a partir das respostas + votação de maioria. */
-export function computeRoundScores(state: StopState): Record<string, number> {
-  const out: Record<string, number> = {};
-  for (const p of state.players) out[p.id] = 0;
+/** Calcula pontos + relatório detalhado da rodada atual. */
+export function computeRound(state: StopState): { scores: Record<string, number>; results: Record<string, Record<string, AnswerResult>> } {
+  const scores: Record<string, number> = {};
+  const results: Record<string, Record<string, AnswerResult>> = {};
+  for (const p of state.players) {
+    scores[p.id] = 0;
+    results[p.id] = {};
+  }
   for (const cat of state.categories) {
-    // só contam as respostas validadas pela maioria e não-vazias
-    const entries = state.players
-      .map((p) => ({ id: p.id, raw: (state.answers[p.id]?.[cat] ?? '').trim() }))
-      .filter((e) => isAnswerValid(state, cat, e.id));
+    const rows = state.players.map((p) => ({
+      id: p.id,
+      raw: (state.answers[p.id]?.[cat] ?? '').trim(),
+      verdict: answerVerdict(state, cat, p.id),
+    }));
+    // duplicatas: contam só as que pontuam (válida ou empate)
+    const counted = rows.filter((r) => r.verdict === 'valid' || r.verdict === 'tie');
     const counts: Record<string, number> = {};
-    for (const e of entries) {
-      const norm = e.raw.toLowerCase();
-      counts[norm] = (counts[norm] ?? 0) + 1;
+    for (const r of counted) {
+      const n = r.raw.toLowerCase();
+      counts[n] = (counts[n] ?? 0) + 1;
     }
-    for (const e of entries) {
-      const norm = e.raw.toLowerCase();
-      out[e.id] += counts[norm] === 1 ? PTS_UNIQUE : PTS_REPEAT;
+    for (const r of rows) {
+      let pts = 0;
+      let repeated = false;
+      if (r.verdict === 'valid' || r.verdict === 'tie') {
+        repeated = (counts[r.raw.toLowerCase()] ?? 0) > 1;
+        const base = repeated ? PTS_REPEAT : PTS_UNIQUE;
+        pts = r.verdict === 'tie' ? Math.floor(base / 2) : base;
+      }
+      scores[r.id] += pts;
+      results[r.id][cat] = { answer: r.raw, verdict: r.verdict, repeated, pts };
     }
   }
-  return out;
+  return { scores, results };
 }
 
 export function reducer(state: StopState, action: StopAction): StopState {
@@ -123,7 +165,8 @@ export function reducer(state: StopState, action: StopAction): StopState {
         answers: {},
         stoppedBy: null,
         reviewIdx: 0,
-        votes: {},
+        voteEndsAt: 0,
+        invalidVotes: {},
         roundScores: {},
       };
     }
@@ -133,30 +176,44 @@ export function reducer(state: StopState, action: StopAction): StopState {
     case 'CALL_STOP': {
       const answers = { ...state.answers, [action.playerId]: action.answers };
       const allIn = state.players.every((p) => answers[p.id] !== undefined);
-      return { ...state, answers, stoppedBy: action.playerId, phase: allIn ? 'review' : state.phase, reviewIdx: 0 };
+      return {
+        ...state,
+        answers,
+        stoppedBy: action.playerId,
+        phase: allIn ? 'review' : state.phase,
+        reviewIdx: 0,
+        voteEndsAt: allIn ? action.endsAt ?? 0 : state.voteEndsAt,
+      };
     }
     case 'SUBMIT': {
       const answers = { ...state.answers, [action.playerId]: action.answers };
       const allIn = state.players.every((p) => answers[p.id] !== undefined);
-      return { ...state, answers, phase: allIn ? 'review' : state.phase, reviewIdx: allIn ? 0 : state.reviewIdx };
+      return {
+        ...state,
+        answers,
+        phase: allIn ? 'review' : state.phase,
+        reviewIdx: allIn ? 0 : state.reviewIdx,
+        voteEndsAt: allIn ? action.endsAt ?? 0 : state.voteEndsAt,
+      };
     }
-    case 'VOTE': {
-      const cat = { ...(state.votes[action.category] ?? {}) };
+    case 'TOGGLE_INVALID': {
+      const cat = { ...(state.invalidVotes[action.category] ?? {}) };
       const owner = { ...(cat[action.ownerId] ?? {}) };
       if (owner[action.voterId]) delete owner[action.voterId];
       else owner[action.voterId] = true;
       cat[action.ownerId] = owner;
-      return { ...state, votes: { ...state.votes, [action.category]: cat } };
+      return { ...state, invalidVotes: { ...state.invalidVotes, [action.category]: cat } };
     }
     case 'REVIEW_NEXT': {
       if (state.reviewIdx + 1 < state.categories.length) {
-        return { ...state, reviewIdx: state.reviewIdx + 1 };
+        return { ...state, reviewIdx: state.reviewIdx + 1, voteEndsAt: action.endsAt ?? 0 };
       }
-      // fechou a última categoria -> calcula e acumula pontos
-      const roundScores = computeRoundScores(state);
+      // fechou a última categoria -> calcula, registra relatório e acumula
+      const { scores: roundScores, results } = computeRound(state);
       const scores = { ...state.scores };
       for (const [id, v] of Object.entries(roundScores)) scores[id] = (scores[id] ?? 0) + v;
-      return { ...state, phase: 'scores', roundScores, scores };
+      const log: RoundLog = { round: state.round, letter: state.letter, results, totals: roundScores };
+      return { ...state, phase: 'scores', roundScores, scores, roundLog: [...state.roundLog, log] };
     }
     case 'NEXT': {
       if (state.round >= state.totalRounds) return { ...state, phase: 'gameOver' };
@@ -168,7 +225,8 @@ export function reducer(state: StopState, action: StopAction): StopState {
         answers: {},
         stoppedBy: null,
         reviewIdx: 0,
-        votes: {},
+        voteEndsAt: 0,
+        invalidVotes: {},
         roundScores: {},
       };
     }

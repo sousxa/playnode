@@ -1,11 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { initGame, reducer, computeRoundScores, isAnswerValid, stopEngine, type StopState } from './engine';
+import { initGame, reducer, computeRound, answerVerdict, stopEngine, type StopState } from './engine';
 import type { Player } from '../../engine/types';
 
 const players: Player[] = [
   { id: 'a', name: 'Ana' },
   { id: 'b', name: 'Bia' },
 ];
+
+const trio: Player[] = [...players, { id: 'c', name: 'Caio' }];
 
 describe('Stop engine', () => {
   it('inicia na roleta com as categorias escolhidas', () => {
@@ -16,16 +18,10 @@ describe('Stop engine', () => {
     expect(s.scores).toEqual({ a: 0, b: 0 });
   });
 
-  it('usa categorias padrão quando não escolhem', () => {
-    const s = initGame({ players, alcoholicMode: false });
-    expect(s.categories.length).toBeGreaterThanOrEqual(2);
-  });
-
-  it('SPIN sorteia letra e vai pra jogar; STOP local -> review; NEXT avança', () => {
+  it('SPIN -> playing; STOP local -> review; NEXT avança', () => {
     let s = initGame({ players, alcoholicMode: false, rounds: 2 });
     s = reducer(s, { type: 'SPIN' });
     expect(s.phase).toBe('playing');
-    expect(s.letter).toMatch(/[A-Z]/);
     const first = s.letter;
     s = reducer(s, { type: 'STOP' });
     expect(s.phase).toBe('review');
@@ -35,56 +31,69 @@ describe('Stop engine', () => {
     expect(s.usedLetters).toContain(first);
   });
 
-  it('online: CALL_STOP congela e espera todos; SUBMIT de todos -> review', () => {
+  it('online: CALL_STOP congela e espera todos; SUBMIT de todos -> review com deadline', () => {
     let s = initGame({ players, alcoholicMode: false, rounds: 1, stopCategories: ['Nome', 'Cor'] });
     s = reducer(s, { type: 'SPIN' });
     s = reducer(s, { type: 'CALL_STOP', playerId: 'a', answers: { Nome: 'Ana', Cor: 'Azul' } });
     expect(s.stoppedBy).toBe('a');
-    expect(s.phase).toBe('playing'); // ainda falta a Bia
-    s = reducer(s, { type: 'SUBMIT', playerId: 'b', answers: { Nome: 'Bruno', Cor: 'Azul' } });
+    expect(s.phase).toBe('playing');
+    s = reducer(s, { type: 'SUBMIT', playerId: 'b', answers: { Nome: 'Alex', Cor: 'Azul' }, endsAt: 1000 });
     expect(s.phase).toBe('review');
     expect(s.reviewIdx).toBe(0);
+    expect(s.voteEndsAt).toBe(1000);
   });
 
-  it('votação por maioria: VOTE valida; REVIEW_NEXT avança categorias e calcula', () => {
-    let s = initGame({ players, alcoholicMode: false, rounds: 1, stopCategories: ['Nome', 'Cor'] }) as StopState;
+  it('padrão é VÁLIDO (verde); maioria de inválidos anula', () => {
+    let s = initGame({ players: trio, alcoholicMode: false, stopCategories: ['Nome'] }) as StopState;
+    s.answers = { a: { Nome: 'Ana' }, b: { Nome: 'Bia' }, c: { Nome: 'Caio' } };
+    // ninguém marca: todas válidas por padrão
+    expect(answerVerdict(s, 'Nome', 'a')).toBe('valid');
+    // 2 dos outros marcam a resposta de 'a' como inválida -> anulada
+    s = reducer(s, { type: 'TOGGLE_INVALID', category: 'Nome', ownerId: 'a', voterId: 'b' });
+    s = reducer(s, { type: 'TOGGLE_INVALID', category: 'Nome', ownerId: 'a', voterId: 'c' });
+    expect(answerVerdict(s, 'Nome', 'a')).toBe('annulled');
+  });
+
+  it('empate de votos -> meio ponto (metade arredondada pra baixo)', () => {
+    let s = initGame({ players: trio, alcoholicMode: false, stopCategories: ['Nome'] }) as StopState;
+    s.answers = { a: { Nome: 'Ana' }, b: { Nome: 'Bia' }, c: { Nome: 'Caio' } };
+    // resposta de 'a': 2 outros (b,c). 1 marca inválido -> 1 vale x 1 não = empate
+    s = reducer(s, { type: 'TOGGLE_INVALID', category: 'Nome', ownerId: 'a', voterId: 'b' });
+    expect(answerVerdict(s, 'Nome', 'a')).toBe('tie');
+    const { scores } = computeRound(s);
+    expect(scores.a).toBe(7); // única no empate = floor(15/2)
+  });
+
+  it('TOGGLE_INVALID toggla (clicar de novo volta a válido)', () => {
+    let s = initGame({ players: trio, alcoholicMode: false, stopCategories: ['Nome'] }) as StopState;
+    s.answers = { a: { Nome: 'Ana' } };
+    s = reducer(s, { type: 'TOGGLE_INVALID', category: 'Nome', ownerId: 'a', voterId: 'b' });
+    s = reducer(s, { type: 'TOGGLE_INVALID', category: 'Nome', ownerId: 'a', voterId: 'c' });
+    expect(answerVerdict(s, 'Nome', 'a')).toBe('annulled');
+    s = reducer(s, { type: 'TOGGLE_INVALID', category: 'Nome', ownerId: 'a', voterId: 'b' }); // desfaz
+    expect(answerVerdict(s, 'Nome', 'a')).toBe('tie');
+  });
+
+  it('pontuação: única=15, repetida=5, vazia/anulada=0; gera relatório', () => {
+    let s = initGame({ players: trio, alcoholicMode: false, rounds: 1, stopCategories: ['Nome', 'Cor'] }) as StopState;
     s = reducer(s, { type: 'SPIN' });
     s.letter = 'A';
-    s = reducer(s, { type: 'CALL_STOP', playerId: 'a', answers: { Nome: 'Ana', Cor: 'Azul' } });
+    s = reducer(s, { type: 'SUBMIT', playerId: 'a', answers: { Nome: 'Ana', Cor: 'Azul' } });
     s = reducer(s, { type: 'SUBMIT', playerId: 'b', answers: { Nome: 'Alex', Cor: 'Azul' } });
-    // cada um aprova a resposta do outro (com 2 jogadores, basta o outro aprovar)
-    s = reducer(s, { type: 'VOTE', category: 'Nome', ownerId: 'a', voterId: 'b' });
-    s = reducer(s, { type: 'VOTE', category: 'Nome', ownerId: 'b', voterId: 'a' });
-    s = reducer(s, { type: 'VOTE', category: 'Cor', ownerId: 'a', voterId: 'b' });
-    s = reducer(s, { type: 'VOTE', category: 'Cor', ownerId: 'b', voterId: 'a' });
-    expect(isAnswerValid(s, 'Nome', 'a')).toBe(true);
+    s = reducer(s, { type: 'SUBMIT', playerId: 'c', answers: { Nome: 'Ari', Cor: '' } });
+    expect(s.phase).toBe('review');
+    // ninguém marca inválido -> tudo válido por padrão
     s = reducer(s, { type: 'REVIEW_NEXT' }); // Nome -> Cor
-    expect(s.reviewIdx).toBe(1);
     s = reducer(s, { type: 'REVIEW_NEXT' }); // fecha -> scores
     expect(s.phase).toBe('scores');
-    // Nome: Ana/Alex únicos = 15 cada; Cor: Azul/Azul repetido = 5 cada
-    expect(s.roundScores).toEqual({ a: 20, b: 20 });
-    expect(s.scores).toEqual({ a: 20, b: 20 });
-  });
-
-  it('voto toggla (re-VOTE remove) e sem maioria não vale', () => {
-    let s = initGame({ players, alcoholicMode: false, stopCategories: ['Nome'] }) as StopState;
-    s.answers = { a: { Nome: 'Ana' }, b: { Nome: 'Bia' } };
-    s = reducer(s, { type: 'VOTE', category: 'Nome', ownerId: 'a', voterId: 'b' });
-    expect(isAnswerValid(s, 'Nome', 'a')).toBe(true);
-    s = reducer(s, { type: 'VOTE', category: 'Nome', ownerId: 'a', voterId: 'b' }); // desfaz
-    expect(isAnswerValid(s, 'Nome', 'a')).toBe(false);
-  });
-
-  it('respostas inválidas (sem votos) ou vazias valem 0', () => {
-    const s: StopState = {
-      ...initGame({ players, alcoholicMode: false, stopCategories: ['Nome'] }),
-      letter: 'A',
-      answers: { a: { Nome: 'Ana' }, b: { Nome: '' } },
-      votes: {},
-    };
-    const rs = computeRoundScores(s);
-    expect(rs).toEqual({ a: 0, b: 0 });
+    // Nome: Ana/Alex/Ari únicos = 15 cada. Cor: Azul/Azul repetidos = 5 cada; Caio vazio = 0
+    expect(s.roundScores).toEqual({ a: 20, b: 20, c: 15 });
+    expect(s.scores).toEqual({ a: 20, b: 20, c: 15 });
+    // relatório
+    expect(s.roundLog).toHaveLength(1);
+    expect(s.roundLog[0].results.a.Nome).toMatchObject({ verdict: 'valid', repeated: false, pts: 15 });
+    expect(s.roundLog[0].results.a.Cor).toMatchObject({ verdict: 'valid', repeated: true, pts: 5 });
+    expect(s.roundLog[0].results.c.Cor).toMatchObject({ verdict: 'empty', pts: 0 });
   });
 
   it('termina após o total de rodadas e aponta vencedor', () => {

@@ -111,12 +111,20 @@ class FirebaseSyncService {
     return snapshotToRoom(val);
   }
 
-  /** Sai da sala: cancela a auto-remoção e remove o jogador. */
+  /** Sai da sala: cancela a auto-remoção, remove o jogador e apaga a sala se ficou vazia. */
   async leaveRoom(code: string, playerId: string): Promise<void> {
     if (!db) return;
     const pRef = ref(db, `rooms/${code}/players/${playerId}`);
     try { await onDisconnect(pRef).cancel(); } catch {}
     await set(pRef, null);
+    // Se não sobrou ninguém, apaga a sala inteira (evita "cascas" vazias acumulando).
+    try {
+      const snap = await get(ref(db, `rooms/${code}/players`));
+      const remaining = snap.val();
+      if (!remaining || Object.keys(remaining).length === 0) {
+        await set(ref(db, `rooms/${code}`), null);
+      }
+    } catch {}
     this.clearRoom();
   }
 
@@ -180,10 +188,13 @@ class FirebaseSyncService {
     return () => off(r, 'value', handler);
   }
 
-  /** Envia uma reação/zoeira para a sala (tomate, cutucada, etc.). */
+  /** Envia uma reação/zoeira para a sala (tomate, cutucada, etc.). Efêmera: some sozinha. */
   sendReaction(code: string, type: string, fromId: string, fromName: string): void {
     if (!db) return;
-    push(ref(db, `rooms/${code}/reactions`), { type, fromId, fromName, ts: Date.now() });
+    const rRef = push(ref(db, `rooms/${code}/reactions`), { type, fromId, fromName, ts: Date.now() });
+    // Não deixa as reações acumularem no banco: remove após uns segundos (e se cair a conexão).
+    try { onDisconnect(rRef).remove(); } catch {}
+    setTimeout(() => { set(rRef, null).catch(() => {}); }, 6000);
   }
 
   /** Escuta reações novas da sala (ignora as antigas anteriores à inscrição). */
