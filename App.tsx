@@ -35,13 +35,13 @@ const App: React.FC = () => {
     localStorage.setItem('pnode_pid', newId);
     return newId;
   });
-  // Login anônimo: quando pronto, o uid do Firebase vira a identidade online.
+  // Login anônimo (Firebase): o uid vira a identidade online. Resolve em SEGUNDO
+  // PLANO — não bloqueia a tela; a entrada em sala online é que espera o uid.
   const [authUid, setAuthUid] = useState<string | null>(null);
-  const [authResolved, setAuthResolved] = useState<boolean>(!firebaseEnabled);
   useEffect(() => {
     if (!firebaseEnabled) return;
     let alive = true;
-    authReady.then((uid) => { if (alive) { setAuthUid(uid); setAuthResolved(true); } });
+    authReady.then((uid) => { if (alive) setAuthUid(uid); });
     return () => { alive = false; };
   }, []);
   // No online a identidade é o uid do Firebase; offline cai pro id local.
@@ -129,7 +129,14 @@ const App: React.FC = () => {
 
   const handleStartSession = async (name: string, code?: string, mode?: 'online' | 'local') => {
     const wantsOnline = (mode ?? 'online') === 'online';
-    const useOnline = wantsOnline && firebaseEnabled && !!authUid;
+    // Garante o uid do Firebase ANTES de abrir sala online (espera o login resolver).
+    let uid: string | null = authUid;
+    if (wantsOnline && firebaseEnabled && !uid) {
+      uid = await authReady;
+      if (uid) setAuthUid(uid);
+    }
+    const useOnline = wantsOnline && firebaseEnabled && !!uid;
+    const myId = useOnline ? (uid as string) : localId;
     const sync = useOnline ? firebaseSyncService : localStorageSyncService;
     syncRef.current = sync;
     setUserName(name);
@@ -138,20 +145,20 @@ const App: React.FC = () => {
 
     if (wantsOnline && !firebaseEnabled) {
       toast('Online indisponível (config Firebase faltando) — jogando no mesmo aparelho.');
-    } else if (wantsOnline && !authUid) {
+    } else if (wantsOnline && !uid) {
       toast('Não foi possível autenticar com o servidor — jogando no mesmo aparelho.');
     }
 
     try {
       if (code) {
-        const result: any = await sync.joinRoom(code.toUpperCase().trim(), name, playerId);
+        const result: any = await sync.joinRoom(code.toUpperCase().trim(), name, myId);
         setRoomCode(result.code);
-        setIsHost(result.hostId === playerId);
+        setIsHost(result.hostId === myId);
         setPlayers((result.players || []).map((p: any) => ({ id: p.id, name: p.name })));
         setHasRoomState(true);
         toast.success(`Entrou na sala ${result.code}!`);
       } else {
-        const result: any = await sync.createRoom(name, playerId);
+        const result: any = await sync.createRoom(name, myId);
         setRoomCode(result.code);
         setIsHost(true);
         setPlayers((result.players || []).map((p: any) => ({ id: p.id, name: p.name })));
@@ -226,14 +233,7 @@ const App: React.FC = () => {
 
   // ── Render ──
   let screen: React.ReactNode;
-  if (!authResolved) {
-    screen = (
-      <div className="page-wrapper flex flex-col items-center justify-center gap-4 text-center p-8">
-        <div className="text-5xl animate-bounce">🐱</div>
-        <p className="font-display font-bold text-text-secondary">Conectando ao servidor…</p>
-      </div>
-    );
-  } else if (!ageOk) {
+  if (!ageOk) {
     screen = <AgeGate onConfirm={confirmAge} />;
   } else if (!userName || !hasRoomState) {
     screen = <Home onJoin={handleStartSession} initialCode={initialRoomFromUrl || undefined} />;
@@ -277,9 +277,7 @@ const App: React.FC = () => {
     );
   }
 
-  const screenKey = !authResolved
-    ? 'splash'
-    : !ageOk
+  const screenKey = !ageOk
     ? 'age'
     : !userName || !hasRoomState
     ? 'home'
