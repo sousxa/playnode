@@ -4,6 +4,7 @@ import { EyeOff, Skull } from 'lucide-react';
 import Button from '../../components/Button';
 import GameHeader from '../shared/GameHeader';
 import GameOver from '../shared/GameOver';
+import SelectConfirm from '../shared/SelectConfirm';
 import type { GameConfig } from '../../engine/types';
 import { useSyncedReducer } from '../../hooks/useSyncedReducer';
 import { initGame, reducer, tally, type AmigosState } from './engine';
@@ -113,7 +114,19 @@ const AmigosDeMerda: React.FC<Props> = ({ config, onExit, onReportScores, onRank
       );
     }
     return wrap(
-      <VoteTurn voterName="Você" question={question.text} targets={state.players} progress={`${count}/${state.players.length} votaram`} online onVote={(targetId) => dispatch({ type: 'CAST_VOTE', targetId, voterId: playerId })} />,
+      <div className="space-y-4">
+        <div className="text-center space-y-2">
+          <span className="inline-flex items-center gap-1 font-display font-bold text-xs bg-danger/15 text-danger px-3 py-1.5 rounded-full"><Skull size={12} /> QUEM É?</span>
+          <h2 className="font-display font-extrabold text-xl text-text-primary overflow-wrap-anywhere leading-tight">{question.text}</h2>
+          <p className="font-sans text-xs text-text-muted">{count}/{state.players.length} votaram</p>
+        </div>
+        <SelectConfirm
+          variant="danger"
+          options={state.players.map((t) => ({ id: t.id, label: t.name }))}
+          confirmLabel="Confirmar voto 🗳️"
+          onConfirm={(targetId) => dispatch({ type: 'CAST_VOTE', targetId, voterId: playerId })}
+        />
+      </div>,
     );
   }
 

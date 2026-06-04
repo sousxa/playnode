@@ -67,18 +67,16 @@ class FirebaseSyncService {
     try {
       const now = Date.now();
       const STALE = 2 * 60 * 60 * 1000; // 2h sem atividade
-      const HARD = 24 * 60 * 60 * 1000; // 24h = morta de vez
       const q = query(ref(db, 'rooms'), orderByChild('updatedAt'), endAt(now - STALE));
       const snap = await get(q);
       const val = snap.val();
       if (!val) return;
-      const updates: Record<string, null> = {};
+      // As regras só permitem apagar salas VAZIAS (sem players). Apagar uma sala
+      // não-vazia no mesmo batch faria o update inteiro falhar — então filtramos.
       for (const [code, room] of Object.entries<any>(val)) {
         const players = room?.players ? Object.keys(room.players).length : 0;
-        const age = now - (room?.updatedAt ?? 0);
-        if (players === 0 || age > HARD) updates[code] = null;
+        if (players === 0) await set(ref(db, `rooms/${code}`), null).catch(() => {});
       }
-      if (Object.keys(updates).length) await update(ref(db, 'rooms'), updates);
     } catch {
       /* sem permissão / offline: ignora */
     }

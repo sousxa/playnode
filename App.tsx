@@ -51,6 +51,7 @@ const App: React.FC = () => {
   const [userName, setUserName] = useState('');
   const [roomCode, setRoomCode] = useState('');
   const [isHost, setIsHost] = useState(false);
+  const [hostId, setHostId] = useState('');
   // Lê o ?room=CODE da URL JÁ no primeiro render (QR/link de convite).
   // Tem que ser síncrono: se for via useEffect, a Home monta antes e não prefche o código.
   const [initialRoomFromUrl] = useState<string | null>(() => {
@@ -99,6 +100,7 @@ const App: React.FC = () => {
       }
       setRoomCode(room.code);
       setIsHost(room.hostId === playerId);
+      setHostId(room.hostId || '');
       setPlayers(ps.map((p: any) => ({ id: p.id, name: p.name })));
       setHasRoomState(true);
 
@@ -154,6 +156,7 @@ const App: React.FC = () => {
         const result: any = await sync.joinRoom(code.toUpperCase().trim(), name, myId);
         setRoomCode(result.code);
         setIsHost(result.hostId === myId);
+        setHostId(result.hostId || '');
         setPlayers((result.players || []).map((p: any) => ({ id: p.id, name: p.name })));
         setHasRoomState(true);
         toast.success(`Entrou na sala ${result.code}!`);
@@ -161,6 +164,7 @@ const App: React.FC = () => {
         const result: any = await sync.createRoom(name, myId);
         setRoomCode(result.code);
         setIsHost(true);
+        setHostId(myId);
         setPlayers((result.players || []).map((p: any) => ({ id: p.id, name: p.name })));
         setHasRoomState(true);
         toast.success(`Sala ${result.code} criada!`);
@@ -184,6 +188,7 @@ const App: React.FC = () => {
     setRoomCode('');
     setPlayers([]);
     setIsHost(false);
+    setHostId('');
     setActiveGame(null);
     setConfiguringGame(null);
     setShowRanking(false);
@@ -269,6 +274,8 @@ const App: React.FC = () => {
         roomCode={roomCode}
         isHost={isHost}
         players={players}
+        myId={playerId}
+        hostId={hostId}
         onlineMode={roomMode === 'online'}
         onSelectGame={selectGame}
         onAddPlayer={handleAddPlayer}
@@ -295,10 +302,10 @@ const App: React.FC = () => {
       <AnimatePresence mode="wait">
         <motion.div
           key={screenKey}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.2 }}
+          initial={{ opacity: 0, y: 16, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -16, scale: 0.98 }}
+          transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
           className="h-full"
         >
           {screen}

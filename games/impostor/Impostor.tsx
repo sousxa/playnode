@@ -6,6 +6,7 @@ import Button from '../../components/Button';
 import GameHeader from '../shared/GameHeader';
 import GameOver from '../shared/GameOver';
 import CoverScreen from '../shared/CoverScreen';
+import SelectConfirm from '../shared/SelectConfirm';
 import type { GameConfig } from '../../engine/types';
 import { useSyncedReducer } from '../../hooks/useSyncedReducer';
 import { initGame, reducer, getVoteTally, type ImpostorState } from './engine';
@@ -148,13 +149,11 @@ const Impostor: React.FC<Props> = ({ config, onExit, onReportScores, onRanking, 
       return wrap(
         <div className="space-y-4">
           <h2 className="font-display font-extrabold text-xl text-text-primary text-center">Quem é o impostor?</h2>
-          <div className="grid grid-cols-2 gap-3">
-            {suspects.map((s) => (
-              <button key={s.id} onClick={() => dispatch({ type: 'CAST_VOTE', suspectId: s.id })} className="font-display font-bold p-4 rounded-2xl bg-surface border border-line text-text-primary active:scale-95 hover:border-accent transition-all">
-                {s.name}
-              </button>
-            ))}
-          </div>
+          <SelectConfirm
+            options={suspects.map((s) => ({ id: s.id, label: s.name }))}
+            confirmLabel="Confirmar voto 🗳️"
+            onConfirm={(id) => dispatch({ type: 'CAST_VOTE', suspectId: id })}
+          />
         </div>,
       );
     }
@@ -172,13 +171,12 @@ const Impostor: React.FC<Props> = ({ config, onExit, onReportScores, onRanking, 
         <div className="text-5xl">🕵️</div>
         <h2 className="font-display font-extrabold text-2xl text-text-primary">Impostor foi pego!</h2>
         <p className="font-sans text-text-secondary">Última chance: adivinhe a palavra secreta para roubar a vitória.</p>
-        <div className="grid grid-cols-2 gap-3">
-          {state.guessOptions.map((w) => (
-            <button key={w} onClick={() => dispatch({ type: 'IMPOSTOR_GUESS', word: w })} className="font-display font-bold p-4 rounded-2xl bg-surface border border-line text-text-primary active:scale-95 hover:border-danger transition-all overflow-wrap-anywhere">
-              {w}
-            </button>
-          ))}
-        </div>
+        <SelectConfirm
+          variant="danger"
+          options={state.guessOptions.map((w) => ({ id: w, label: w }))}
+          confirmLabel="Chutar palavra 🎯"
+          onConfirm={(w) => dispatch({ type: 'IMPOSTOR_GUESS', word: w })}
+        />
       </div>,
     );
   }

@@ -10,6 +10,8 @@ interface LobbyProps {
   roomCode: string;
   isHost: boolean;
   players: { id: string; name: string }[];
+  myId?: string;
+  hostId?: string;
   onlineMode?: boolean;
   onSelectGame: (mode: GameMode) => void;
   onShowRanking?: () => void;
@@ -28,7 +30,7 @@ const GAMES = [
   { mode: GameMode.CIDADE_DORME, title: 'A Cidade Dorme', desc: 'Dedução: ache o assassino', Icon: Moon, color: 'text-accent', bg: 'bg-accent/15' },
 ];
 
-const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, onlineMode, onSelectGame, onShowRanking, onAddPlayer, onLeave }) => {
+const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, myId, hostId, onlineMode, onSelectGame, onShowRanking, onAddPlayer, onLeave }) => {
   const [copied, setCopied] = useState(false);
   const [infoMode, setInfoMode] = useState<GameMode | null>(null);
 
@@ -79,13 +81,14 @@ const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, onlineMode, on
         <h3 className="font-display font-bold text-text-secondary mb-2 ml-1">Jogadores ({players.length})</h3>
         <div className="flex flex-wrap gap-2">
           {players.map((p) => {
-            const isMe = p.id === localStorage.getItem('pnode_pid');
+            const isMe = p.id === myId;
+            const isHostP = p.id === hostId;
             return (
               <span
                 key={p.id}
                 className={`font-sans font-medium px-4 py-2 rounded-2xl border ${isMe ? 'bg-accent text-white border-accent' : 'bg-surface text-text-primary border-line'}`}
               >
-                {isMe ? '🙋 Você' : `👤 ${p.name}`}
+                {isHostP ? '👑 ' : isMe ? '🙋 ' : '👤 '}{isMe ? 'Você' : p.name}{isHostP && <span className="opacity-70 text-xs font-sans"> · host</span>}
               </span>
             );
           })}

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Flame } from 'lucide-react';
 import Button from '../../components/Button';
 import GameHeader from '../shared/GameHeader';
+import SelectConfirm from '../shared/SelectConfirm';
 import type { GameConfig } from '../../engine/types';
 import { useSyncedReducer } from '../../hooks/useSyncedReducer';
 import { initGame, reducer, tallyVotes, type DilemasState } from './engine';
@@ -95,7 +96,22 @@ const Dilemas: React.FC<Props> = ({ config, onExit, online, roomCode, playerId, 
       );
     }
     return wrap(
-      <VoteTurn voterName="Você" dilemma={dilemma} progress={`${count}/${state.players.length} votaram`} online onVote={(choice) => dispatch({ type: 'CAST_VOTE', choice, voterId: playerId })} />,
+      <div className="space-y-5">
+        <div className="text-center space-y-2">
+          <span className="inline-block font-display font-bold text-xs bg-danger/15 text-danger px-3 py-1.5 rounded-full">DILEMA 🔥</span>
+          <h2 className="font-display font-extrabold text-2xl text-text-primary overflow-wrap-anywhere leading-tight">{dilemma.scenario}</h2>
+          <p className="font-sans text-xs text-text-muted">{count}/{state.players.length} votaram</p>
+        </div>
+        <SelectConfirm
+          columns={1}
+          options={[
+            { id: 'A', label: <><span className="block font-sans text-xs opacity-70 mb-0.5">Opção A</span>{dilemma.optionA}</> },
+            { id: 'B', label: <><span className="block font-sans text-xs opacity-70 mb-0.5">Opção B</span>{dilemma.optionB}</> },
+          ]}
+          confirmLabel="Confirmar voto 🔥"
+          onConfirm={(choice) => dispatch({ type: 'CAST_VOTE', choice: choice as 'A' | 'B', voterId: playerId })}
+        />
+      </div>,
     );
   }
 

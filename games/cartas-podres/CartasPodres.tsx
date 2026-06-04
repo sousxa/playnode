@@ -5,6 +5,7 @@ import { Crown, Eye } from 'lucide-react';
 import Button from '../../components/Button';
 import GameHeader from '../shared/GameHeader';
 import GameOver from '../shared/GameOver';
+import SelectConfirm from '../shared/SelectConfirm';
 import type { GameConfig } from '../../engine/types';
 import { useSyncedReducer } from '../../hooks/useSyncedReducer';
 import { initGame, reducer, cartasEngine, type CartasState } from './engine';
@@ -105,13 +106,12 @@ const CartasPodres: React.FC<Props> = ({ config, onExit, onReportScores, onRanki
         <div className="space-y-4">
           <BlackCard text={state.black} />
           <p className="font-sans text-text-secondary text-sm text-center">Escolha sua carta:</p>
-          <div className="space-y-2">
-            {myHand.map((c) => (
-              <button key={c} onClick={() => dispatch({ type: 'SUBMIT', card: c, playerId: me })} className="w-full text-left p-4 rounded-2xl bg-surface border border-line text-text-primary font-display font-bold active:scale-[0.98] hover:border-accent transition-all overflow-wrap-anywhere">
-                {c}
-              </button>
-            ))}
-          </div>
+          <SelectConfirm
+            columns={1}
+            options={myHand.map((c) => ({ id: c, label: c }))}
+            confirmLabel="Enviar carta 📤"
+            onConfirm={(card) => dispatch({ type: 'SUBMIT', card, playerId: me })}
+          />
         </div>,
       );
     }
@@ -123,20 +123,32 @@ const CartasPodres: React.FC<Props> = ({ config, onExit, onReportScores, onRanki
   }
 
   if (state.phase === 'judge') {
-    if (online && !amJudge) return wrap(<Wait text={`${judge.name} (juiz) está escolhendo a melhor carta…`} />);
+    const opts = state.submissions.map((s, i) => ({ id: String(i), label: s.card }));
+    // Espectadores (e o juiz) veem TODAS as cartas; só o juiz escolhe.
+    if (online && !amJudge) {
+      return wrap(
+        <div className="space-y-4">
+          <span className="inline-flex items-center gap-1.5 font-display font-bold text-sm bg-warning/15 text-warning px-3 py-1.5 rounded-full">
+            <Crown size={14} /> {judge.name} está julgando…
+          </span>
+          <BlackCard text={state.black} />
+          <SelectConfirm columns={1} readOnly options={opts} hint="As cartas da galera — aguardando o juiz decidir 👀" />
+        </div>,
+      );
+    }
     return wrap(
       <div className="space-y-4">
         <span className="inline-flex items-center gap-1.5 font-display font-bold text-sm bg-warning/15 text-warning px-3 py-1.5 rounded-full">
           <Crown size={14} /> {judge.name}, escolha a melhor!
         </span>
         <BlackCard text={state.black} />
-        <div className="space-y-2">
-          {state.submissions.map((s, i) => (
-            <button key={i} onClick={() => dispatch({ type: 'JUDGE_PICK', index: i })} className="w-full text-left p-4 rounded-2xl bg-surface border border-line text-text-primary font-display font-bold active:scale-[0.98] hover:border-warning transition-all overflow-wrap-anywhere">
-              {s.card}
-            </button>
-          ))}
-        </div>
+        <SelectConfirm
+          columns={1}
+          variant="warning"
+          options={opts}
+          confirmLabel="Escolher essa 👑"
+          onConfirm={(i) => dispatch({ type: 'JUDGE_PICK', index: Number(i) })}
+        />
       </div>,
     );
   }

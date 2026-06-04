@@ -4,6 +4,7 @@ import { Moon, Sun, Eye } from 'lucide-react';
 import Button from '../../components/Button';
 import GameHeader from '../shared/GameHeader';
 import CoverScreen from '../shared/CoverScreen';
+import SelectConfirm from '../shared/SelectConfirm';
 import type { GameConfig } from '../../engine/types';
 import { useSyncedReducer } from '../../hooks/useSyncedReducer';
 import { initGame, reducer, aliveIds, type CidadeState, type Role } from './engine';
@@ -140,13 +141,13 @@ const CidadeDorme: React.FC<Props> = ({ config, onExit, online, roomCode, player
       return wrap(
         <div className="space-y-4">
           <h2 className="font-display font-extrabold text-xl text-text-primary text-center">Quem é suspeito?</h2>
-          <div className="grid grid-cols-2 gap-3">
-            {targets.map((t) => (
-              <button key={t.id} onClick={() => dispatch({ type: 'DAY_VOTE', target: t.id, voterId: me })} className="font-display font-bold p-4 rounded-2xl bg-surface border border-line text-text-primary active:scale-95 hover:border-danger transition-all">
-                {t.name}
-              </button>
-            ))}
-          </div>
+          <p className="font-sans text-xs text-text-muted text-center">{count}/{state.dayVoters.length} votaram</p>
+          <SelectConfirm
+            variant="danger"
+            options={targets.map((t) => ({ id: t.id, label: t.name }))}
+            confirmLabel="Confirmar voto 🗳️"
+            onConfirm={(target) => dispatch({ type: 'DAY_VOTE', target, voterId: me })}
+          />
         </div>,
       );
     }
@@ -232,13 +233,22 @@ const NightTurn: React.FC<{
   return (
     <div className="space-y-4">
       <h2 className="font-display font-extrabold text-xl text-text-primary text-center">{info.emoji} {NIGHT_PROMPT[role]}</h2>
-      <div className="grid grid-cols-2 gap-3">
-        {targets.map((t) => (
-          <button key={t.id} onClick={() => (role === 'detetive' ? setChecked(t.id) : onAct(t.id))} className="font-display font-bold p-4 rounded-2xl bg-surface border border-line text-text-primary active:scale-95 hover:border-accent transition-all">
-            {t.name}
-          </button>
-        ))}
-      </div>
+      {role === 'detetive' ? (
+        <div className="grid grid-cols-2 gap-3">
+          {targets.map((t) => (
+            <button key={t.id} onClick={() => setChecked(t.id)} className="font-display font-bold p-4 rounded-2xl bg-surface border border-line text-text-primary active:scale-95 hover:border-accent transition-all">
+              {t.name}
+            </button>
+          ))}
+        </div>
+      ) : (
+        <SelectConfirm
+          variant={role === 'assassino' ? 'danger' : 'primary'}
+          options={targets.map((t) => ({ id: t.id, label: t.name }))}
+          confirmLabel={role === 'assassino' ? 'Eliminar 🔪' : 'Confirmar 💉'}
+          onConfirm={(id) => onAct(id)}
+        />
+      )}
     </div>
   );
 };
