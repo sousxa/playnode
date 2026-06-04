@@ -50,6 +50,8 @@ export interface StopState {
   reviewIdx: number;
   /** Online: timestamp (ms) em que o timer da categoria atual acaba. */
   voteEndsAt: number;
+  /** Online: quem já apertou "pronto" na categoria atual (pra passar antes do tempo). */
+  reviewReady: Record<string, boolean>;
   /** Online: marcações de INVÁLIDO (categoria -> dono -> votante -> marcou). Padrão = válido (verde). */
   invalidVotes: Record<string, Record<string, Record<string, boolean>>>;
   /** Pontos acumulados na sessão (playerId -> total). */
@@ -66,6 +68,7 @@ export type StopAction =
   | { type: 'CALL_STOP'; playerId: string; answers: Record<string, string>; endsAt?: number } // online: alguém chamou STOP
   | { type: 'SUBMIT'; playerId: string; answers: Record<string, string>; endsAt?: number }
   | { type: 'TOGGLE_INVALID'; category: string; ownerId: string; voterId: string }
+  | { type: 'READY'; playerId: string }
   | { type: 'REVIEW_NEXT'; endsAt?: number }
   | { type: 'NEXT' };
 
@@ -90,11 +93,23 @@ export function initGame(config: GameConfig): StopState {
     stoppedBy: null,
     reviewIdx: 0,
     voteEndsAt: 0,
+    reviewReady: {},
     invalidVotes: {},
     scores,
     roundScores: {},
     roundLog: [],
   };
+}
+
+/** Jogadores que votam de verdade (cada aparelho). Locais entram "de carona" no host. */
+export function realVoters(state: StopState): string[] {
+  return state.players.filter((p) => !p.id.startsWith('local_')).map((p) => p.id);
+}
+
+/** Todos os aparelhos já apertaram "pronto" na categoria atual? */
+export function allReviewReady(state: StopState): boolean {
+  const voters = realVoters(state);
+  return voters.length > 0 && voters.every((id) => !!state.reviewReady[id]);
 }
 
 /**
@@ -166,6 +181,7 @@ export function reducer(state: StopState, action: StopAction): StopState {
         stoppedBy: null,
         reviewIdx: 0,
         voteEndsAt: 0,
+        reviewReady: {},
         invalidVotes: {},
         roundScores: {},
       };
@@ -204,9 +220,11 @@ export function reducer(state: StopState, action: StopAction): StopState {
       cat[action.ownerId] = owner;
       return { ...state, invalidVotes: { ...state.invalidVotes, [action.category]: cat } };
     }
+    case 'READY':
+      return { ...state, reviewReady: { ...state.reviewReady, [action.playerId]: true } };
     case 'REVIEW_NEXT': {
       if (state.reviewIdx + 1 < state.categories.length) {
-        return { ...state, reviewIdx: state.reviewIdx + 1, voteEndsAt: action.endsAt ?? 0 };
+        return { ...state, reviewIdx: state.reviewIdx + 1, voteEndsAt: action.endsAt ?? 0, reviewReady: {} };
       }
       // fechou a última categoria -> calcula, registra relatório e acumula
       const { scores: roundScores, results } = computeRound(state);
@@ -226,6 +244,7 @@ export function reducer(state: StopState, action: StopAction): StopState {
         stoppedBy: null,
         reviewIdx: 0,
         voteEndsAt: 0,
+        reviewReady: {},
         invalidVotes: {},
         roundScores: {},
       };

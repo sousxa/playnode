@@ -5,7 +5,7 @@ import Button from '../../components/Button';
 import GameHeader from '../shared/GameHeader';
 import type { GameConfig } from '../../engine/types';
 import { useSyncedReducer } from '../../hooks/useSyncedReducer';
-import { initGame, reducer, answerVerdict, type Verdict } from './engine';
+import { initGame, reducer, answerVerdict, realVoters, allReviewReady, type Verdict } from './engine';
 
 interface Props {
   config: GameConfig;
@@ -121,14 +121,15 @@ const Stop: React.FC<Props> = ({ config, onExit, onReportScores, onRanking, onli
     return () => clearInterval(id);
   }, [state?.phase]);
 
-  // ── HOST: passa de categoria quando o tempo acaba ──
+  // ── HOST: passa de categoria quando o tempo acaba OU quando todos já votaram ──
   useEffect(() => {
     if (!online || !isHost || state?.phase !== 'review') return;
-    if (state.voteEndsAt && now >= state.voteEndsAt) {
+    const timeUp = state.voteEndsAt && now >= state.voteEndsAt;
+    if (timeUp || allReviewReady(state)) {
       dispatch({ type: 'REVIEW_NEXT', endsAt: Date.now() + VOTE_MS });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [now, online, isHost, state?.phase, state?.reviewIdx, state?.voteEndsAt]);
+  }, [now, online, isHost, state?.phase, state?.reviewIdx, state?.voteEndsAt, state?.reviewReady]);
 
   // ── reporta o placar pro ranking da sala, uma vez, no fim ──
   useEffect(() => {
@@ -511,11 +512,24 @@ const Stop: React.FC<Props> = ({ config, onExit, onReportScores, onRanking, onli
               </motion.div>
             </AnimatePresence>
 
-            {isHost && (
-              <Button variant="ghost" onClick={() => dispatch({ type: 'REVIEW_NEXT', endsAt: Date.now() + VOTE_MS })}>
-                {state.reviewIdx >= state.categories.length - 1 ? 'Pular pra pontuação ⏭️' : 'Pular categoria ⏭️'}
-              </Button>
-            )}
+            {(() => {
+              const voters = realVoters(state);
+              const readyCount = voters.filter((id) => state.reviewReady[id]).length;
+              const iAmReady = !!state.reviewReady[me];
+              const last = state.reviewIdx >= state.categories.length - 1;
+              return (
+                <div className="space-y-2">
+                  <Button variant={iAmReady ? 'secondary' : 'success'} disabled={iAmReady} onClick={() => dispatch({ type: 'READY', playerId: me })}>
+                    {iAmReady ? `Aguardando os outros… ${readyCount}/${voters.length}` : `✅ Pronto, pode passar (${readyCount}/${voters.length})`}
+                  </Button>
+                  {isHost && (
+                    <Button variant="ghost" onClick={() => dispatch({ type: 'REVIEW_NEXT', endsAt: Date.now() + VOTE_MS })}>
+                      {last ? 'Forçar pontuação ⏭️' : 'Forçar próxima ⏭️'}
+                    </Button>
+                  )}
+                </div>
+              );
+            })()}
           </div>,
           true,
           `review-${state.reviewIdx}`,

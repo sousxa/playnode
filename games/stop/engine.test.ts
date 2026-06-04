@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { initGame, reducer, computeRound, answerVerdict, stopEngine, type StopState } from './engine';
+import { initGame, reducer, computeRound, answerVerdict, allReviewReady, stopEngine, type StopState } from './engine';
 import type { Player } from '../../engine/types';
 
 const players: Player[] = [
@@ -94,6 +94,16 @@ describe('Stop engine', () => {
     expect(s.roundLog[0].results.a.Nome).toMatchObject({ verdict: 'valid', repeated: false, pts: 15 });
     expect(s.roundLog[0].results.a.Cor).toMatchObject({ verdict: 'valid', repeated: true, pts: 5 });
     expect(s.roundLog[0].results.c.Cor).toMatchObject({ verdict: 'empty', pts: 0 });
+  });
+
+  it('READY: só passa quando todos os aparelhos estão prontos (locais não contam)', () => {
+    let s = initGame({ players: [...trio, { id: 'local_x', name: 'Convidado' }], alcoholicMode: false, stopCategories: ['Nome'] }) as StopState;
+    expect(allReviewReady(s)).toBe(false);
+    s = reducer(s, { type: 'READY', playerId: 'a' });
+    s = reducer(s, { type: 'READY', playerId: 'b' });
+    expect(allReviewReady(s)).toBe(false); // falta 'c' (local_x não conta)
+    s = reducer(s, { type: 'READY', playerId: 'c' });
+    expect(allReviewReady(s)).toBe(true);
   });
 
   it('termina após o total de rodadas e aponta vencedor', () => {
