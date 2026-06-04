@@ -137,6 +137,11 @@ const App: React.FC = () => {
       uid = await authReady;
       if (uid) setAuthUid(uid);
     }
+    // Entrar numa sala ONLINE sem ter conectado ao servidor daria "sala não
+    // encontrada" enganoso (cairia no localStorage). Avisa que é falta de conexão.
+    if (code && wantsOnline && firebaseEnabled && !uid) {
+      throw new Error('Sem conexão com o servidor agora 📡 — confira a internet e tente de novo.');
+    }
     const useOnline = wantsOnline && firebaseEnabled && !!uid;
     const myId = useOnline ? (uid as string) : localId;
     const sync = useOnline ? firebaseSyncService : localStorageSyncService;

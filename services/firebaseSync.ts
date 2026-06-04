@@ -31,8 +31,12 @@ export interface Room {
 type EventListener = (room: Room) => void;
 type ErrorListener = (message: string) => void;
 
+// Alfabeto SEM caracteres ambíguos (sem I, O, L, 0, 1) pra ninguém confundir ao digitar/ditar.
+const CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 function genCode(): string {
-  return Math.random().toString(36).substring(2, 6).toUpperCase();
+  let s = '';
+  for (let i = 0; i < 4; i++) s += CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)];
+  return s;
 }
 
 function snapshotToRoom(val: any): Room {
