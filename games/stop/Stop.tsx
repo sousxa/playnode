@@ -19,7 +19,6 @@ interface Props {
 }
 
 const ROUND_SECONDS = 90;
-const VOTE_MS = 30000; // 30s por categoria na votação
 const DISPLAY_LETTERS = 'ABCDEFGHIJLMNOPRSTUV'.split('');
 
 // estilo por veredito
@@ -33,6 +32,7 @@ const VERDICT: Record<Verdict, { cls: string; tag: string; label: string }> = {
 const Stop: React.FC<Props> = ({ config, onExit, onReportScores, onRanking, online, roomCode, playerId, isHost }) => {
   const { state, dispatch, reset } = useSyncedReducer(reducer, () => initGame(config), { online, roomCode, isHost });
   const me = playerId || '';
+  const VOTE_MS = (config.stopVoteSeconds ?? 30) * 1000; // tempo de votação por categoria
 
   const [myAnswers, setMyAnswers] = useState<Record<string, string>>({});
   const [secs, setSecs] = useState(ROUND_SECONDS);

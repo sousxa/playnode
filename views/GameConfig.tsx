@@ -14,6 +14,7 @@ export interface ConfigExtras {
   alcoholicMode: boolean;
   intensityLevel?: IntensityLevel;
   stopCategories?: string[];
+  stopVoteSeconds?: number;
 }
 
 interface GameConfigProps {
@@ -50,6 +51,7 @@ const GameConfig: React.FC<GameConfigProps> = ({ mode, playerCount, onBack, onSt
   const [alcoholic, setAlcoholic] = useState(false);
   const [intensity, setIntensity] = useState<IntensityLevel>('medio');
   const [stopCats, setStopCats] = useState<string[]>(STOP_CATEGORIES.slice(0, 6));
+  const [voteSeconds, setVoteSeconds] = useState(30);
   const toggleCat = (c: string) =>
     setStopCats((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
 
@@ -119,6 +121,25 @@ const GameConfig: React.FC<GameConfigProps> = ({ mode, playerCount, onBack, onSt
         </section>
       )}
 
+      {schema.stopCategories && (
+        <section className="space-y-2">
+          <h3 className="font-display font-bold text-text-secondary ml-1">
+            Tempo de votação <span className="font-sans font-normal text-text-muted text-sm">· por categoria (online)</span>
+          </h3>
+          <div className="flex gap-2">
+            {[15, 30, 45].map((s) => (
+              <button
+                key={s}
+                onClick={() => setVoteSeconds(s)}
+                className={`flex-1 py-3 rounded-2xl font-display font-bold text-sm border transition-colors ${voteSeconds === s ? 'bg-accent text-white border-accent' : 'bg-surface text-text-secondary border-line'}`}
+              >
+                {s}s
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
       {schema.rounds && (
         <Stepper label={schema.rounds.label} value={rounds} min={schema.rounds.min} max={schema.rounds.max} onChange={setRounds} />
       )}
@@ -144,7 +165,7 @@ const GameConfig: React.FC<GameConfigProps> = ({ mode, playerCount, onBack, onSt
 
       <Button
         disabled={schema.stopCategories && stopCats.length < 2}
-        onClick={() => onStart({ categoryId, rounds, impostorCount, alcoholicMode: alcoholic, intensityLevel: intensity, stopCategories: stopCats })}
+        onClick={() => onStart({ categoryId, rounds, impostorCount, alcoholicMode: alcoholic, intensityLevel: intensity, stopCategories: stopCats, stopVoteSeconds: voteSeconds })}
       >
         Começar! 🎬
       </Button>

@@ -26,6 +26,8 @@ export interface GameConfig {
   impostorCount?: number;
   /** Categorias escolhidas para o Stop. */
   stopCategories?: string[];
+  /** Segundos de votação por categoria no Stop (online). */
+  stopVoteSeconds?: number;
 }
 
 /**
