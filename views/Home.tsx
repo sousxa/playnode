@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Sparkles, Wifi, Smartphone } from 'lucide-react';
+import { Wifi, Smartphone } from 'lucide-react';
 import Button from '../components/Button';
 import ThemeToggle from '../components/ThemeToggle';
 
@@ -45,7 +45,7 @@ const Home: React.FC<HomeProps> = ({ onJoin, initialCode }) => {
 
       <div className="mb-8 text-center">
         <div className="w-20 h-20 rounded-3xl bg-accent flex items-center justify-center mx-auto mb-5 rotate-3" style={{ boxShadow: '0 6px 0 rgb(var(--color-accent-dark))' }}>
-          <Sparkles className="text-white" size={38} />
+          <span className="text-5xl leading-none" role="img" aria-label="gato">🐱</span>
         </div>
         <h1 className="font-display font-extrabold text-5xl tracking-tight">
           Cat<span className="text-gradient">Decks</span>
