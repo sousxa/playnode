@@ -197,7 +197,7 @@ const Stop: React.FC<Props> = ({ config, onExit, onReportScores, onRanking, onli
     <motion.div
       animate={spinningNow ? { rotate: [0, 6, -6, 0], scale: [1, 1.06, 1] } : { scale: 1 }}
       transition={{ repeat: spinningNow ? Infinity : 0, duration: 0.22 }}
-      className={`${big ? 'w-52 h-52 rounded-[3rem]' : 'w-44 h-44 rounded-[2.5rem]'} bg-gradient-to-br from-accent to-fun-pink flex items-center justify-center mx-auto`}
+      className={`${big ? 'w-52 h-52 rounded-[3rem]' : 'w-44 h-44 rounded-[2.5rem]'} bg-gradient-to-br from-accent to-accent-dark flex items-center justify-center mx-auto`}
       style={{ boxShadow: '0 10px 0 rgb(var(--color-accent-dark))' }}
     >
       <span className="font-display font-extrabold text-8xl text-white">{spinningNow ? display : state.letter || '🎰'}</span>

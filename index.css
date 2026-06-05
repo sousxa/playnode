@@ -3,38 +3,38 @@
 @tailwind utilities;
 
 /* ── Tokens de tema (formato canal RGB para suportar modificadores de opacidade do Tailwind) ── */
-/* PADRÃO: tema escuro */
+/* PADRÃO: tema escuro — PRETO FOSCO neutro (sem mais o roxo-noite) */
 :root {
-  --color-bg:              13 10 25;       /* #0D0A19 — roxo-noite */
-  --color-surface:         26 22 46;       /* #1A162E */
-  --color-surface-2:       36 30 62;       /* #241E3E */
-  --color-surface-alt:     36 30 62;       /* #241E3E */
-  --color-border:          52 44 82;       /* #342C52 */
-  --color-text-primary:    240 240 248;    /* #F0F0F8 */
-  --color-text-secondary:  166 160 196;    /* #A6A0C4 */
-  --color-text-muted:      110 104 140;    /* #6E688C */
-  --color-accent:          124 58 237;     /* #7C3AED roxo */
-  --color-accent-dark:     91 33 182;      /* #5B21B6 */
-  --color-success:         34 197 94;      /* #22C55E verde */
-  --color-success-dark:    22 163 74;      /* #16A34A */
-  --color-warning:         245 158 11;     /* #F59E0B âmbar */
-  --color-warning-dark:    180 83 9;       /* #B45309 */
-  --color-danger:          244 63 94;      /* #F43F5E rosa-vermelho */
-  --color-danger-dark:     190 24 60;      /* #BE123C */
+  --color-bg:              16 16 18;       /* #101012 — preto fosco */
+  --color-surface:         26 26 29;       /* #1A1A1D */
+  --color-surface-2:       38 38 42;       /* #26262A */
+  --color-surface-alt:     38 38 42;       /* #26262A */
+  --color-border:          48 48 54;       /* #303036 */
+  --color-text-primary:    245 245 247;    /* #F5F5F7 quase-branco */
+  --color-text-secondary:  161 161 170;    /* #A1A1AA cinza */
+  --color-text-muted:      113 113 122;    /* #71717A */
+  --color-accent:          139 92 246;     /* #8B5CF6 — único acento, mais clean */
+  --color-accent-dark:     109 64 217;     /* #6D40D9 */
+  --color-success:         34 197 94;      /* #22C55E verde (sinal de jogo) */
+  --color-success-dark:    22 163 74;
+  --color-warning:         245 158 11;     /* #F59E0B âmbar (sinal de jogo) */
+  --color-warning-dark:    180 83 9;
+  --color-danger:          244 63 94;      /* #F43F5E (sinal de jogo) */
+  --color-danger-dark:     190 24 60;
 }
 
-/* Tema claro */
+/* Tema claro — BRANCO clean */
 html.light {
-  --color-bg:              247 247 251;    /* #F7F7FB */
+  --color-bg:              250 250 252;    /* #FAFAFC */
   --color-surface:         255 255 255;    /* #FFFFFF */
-  --color-surface-2:       245 243 252;    /* #F5F3FC */
-  --color-surface-alt:     240 239 247;    /* #F0EFF7 */
-  --color-border:          228 226 240;    /* #E4E2F0 */
-  --color-text-primary:    33 28 54;       /* #211C36 */
-  --color-text-secondary:  107 102 134;    /* #6B6686 */
-  --color-text-muted:      163 158 186;    /* #A39EBA */
-  --color-accent:          124 58 237;     /* #7C3AED */
-  --color-accent-dark:     91 33 182;      /* #5B21B6 */
+  --color-surface-2:       244 244 246;    /* #F4F4F6 */
+  --color-surface-alt:     238 238 242;    /* #EEEEF2 */
+  --color-border:          228 228 234;    /* #E4E4EA */
+  --color-text-primary:    24 24 27;       /* #18181B quase-preto */
+  --color-text-secondary:  82 82 91;       /* #52525B */
+  --color-text-muted:      161 161 170;    /* #A1A1AA */
+  --color-accent:          124 58 237;     /* #7C3AED (acento, bom contraste no claro) */
+  --color-accent-dark:     91 33 182;
   --color-success:         34 197 94;
   --color-success-dark:    22 163 74;
   --color-warning:         245 158 11;
@@ -81,7 +81,7 @@ html.light {
 
 @layer utilities {
   .text-gradient {
-    background: linear-gradient(135deg, #7C3AED, #EC4899);
+    background: linear-gradient(135deg, #A78BFA, #7C3AED);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;

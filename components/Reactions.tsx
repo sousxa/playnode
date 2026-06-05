@@ -1,111 +1,130 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PartyPopper, X } from 'lucide-react';
 import { firebaseSyncService } from '../services/firebaseSync';
 
 const REACTIONS = [
-  { type: 'tomato', emoji: '🍅', label: 'Tomate' }, // splat + treme a tela
+  { type: 'tomato', emoji: '🍅', label: 'Tomate' }, // splat na tela + treme
   { type: 'laugh', emoji: '😂', label: 'Risada' },
   { type: 'clap', emoji: '👏', label: 'Palmas' },
   { type: 'skull', emoji: '💀', label: 'Morri' },
   { type: 'love', emoji: '❤️', label: 'Amei' },
-  { type: 'poke', emoji: '⚡', label: 'Cutucar' }, // vibra + treme a tela
+  { type: 'fire', emoji: '🔥', label: 'Fogo' },
+  { type: 'poke', emoji: '⚡', label: 'Cutucar' }, // vibra + treme
 ];
 
-interface ActiveReaction {
-  id: number;
-  type: string;
-  emoji: string;
-  fromName: string;
-  x: number;
-  y: number;
-}
+interface Floater { id: number; emoji: string; x: number; size: number; rot: number; dur: number; sway: number; }
+interface Splat { id: number; x: number; y: number; }
 
-interface Props {
-  roomCode: string;
-  playerId: string;
-  playerName: string;
-}
+interface Props { roomCode: string; playerId: string; playerName: string; }
 
-/** Faz a app inteira tremer (aplica a classe no #root). */
+const SHAKE_COOLDOWN = 1500; // ms — evita flood de tremor de tela
+const MAX_FLOATERS = 22;
+
 function shakeScreen() {
   const el = document.getElementById('root');
   if (!el) return;
   el.classList.remove('screen-shake');
-  // força reflow para reiniciar a animação se já estiver tremendo
   void el.offsetWidth;
   el.classList.add('screen-shake');
   window.setTimeout(() => el.classList.remove('screen-shake'), 520);
 }
 
-/** Sistema de "zoeira": reações que aparecem na tela de todos (tomate estoura + treme). */
 const Reactions: React.FC<Props> = ({ roomCode, playerId, playerName }) => {
   const [open, setOpen] = useState(false);
-  const [active, setActive] = useState<ActiveReaction[]>([]);
+  const [floaters, setFloaters] = useState<Floater[]>([]);
+  const [splats, setSplats] = useState<Splat[]>([]);
+  const [cooldown, setCooldown] = useState(false);
+  const lastShake = useRef(0);
+  const idc = useRef(0);
+
+  const maybeShake = (vibratePattern: number[]) => {
+    const now = Date.now();
+    if (now - lastShake.current < SHAKE_COOLDOWN) return; // rate-limit
+    lastShake.current = now;
+    shakeScreen();
+    try { navigator.vibrate?.(vibratePattern); } catch { /* ignore */ }
+  };
+
+  const spawnFloaters = (emoji: string, n: number) => {
+    const add: Floater[] = [];
+    for (let i = 0; i < n; i++) {
+      add.push({
+        id: ++idc.current,
+        emoji,
+        x: 6 + Math.random() * 84,
+        size: 34 + Math.random() * 26,
+        rot: (Math.random() - 0.5) * 80,
+        dur: 2 + Math.random() * 1.1,
+        sway: (Math.random() - 0.5) * 80,
+      });
+    }
+    setFloaters((f) => [...f, ...add].slice(-MAX_FLOATERS));
+    const maxDur = Math.max(...add.map((a) => a.dur)) * 1000 + 200;
+    const ids = add.map((a) => a.id);
+    window.setTimeout(() => setFloaters((f) => f.filter((x) => !ids.includes(x.id))), maxDur);
+  };
 
   useEffect(() => {
     const unsub = firebaseSyncService.onReaction(roomCode, (r) => {
-      const id = Date.now() + Math.random();
       const emoji = REACTIONS.find((x) => x.type === r.type)?.emoji ?? '🎉';
-      const isTomato = r.type === 'tomato';
-      const isPoke = r.type === 'poke';
-      setActive((a) => [
-        ...a,
-        { id, type: r.type, emoji, fromName: r.fromName, x: isTomato ? 12 + Math.random() * 70 : 8 + Math.random() * 78, y: 18 + Math.random() * 50 },
-      ]);
-      if (isTomato || isPoke) {
-        try { navigator.vibrate?.(isTomato ? [40, 30, 90] : [60, 40, 60]); } catch { /* ignore */ }
-        shakeScreen();
+      if (r.type === 'tomato') {
+        const id = ++idc.current;
+        const s: Splat = { id, x: 10 + Math.random() * 76, y: 16 + Math.random() * 56 };
+        setSplats((p) => [...p, s].slice(-5));
+        window.setTimeout(() => setSplats((p) => p.filter((x) => x.id !== id)), 1100);
+        maybeShake([40, 30, 90]);
+      } else if (r.type === 'poke') {
+        maybeShake([60, 40, 60]);
+        spawnFloaters('⚡', 3);
+      } else {
+        spawnFloaters(emoji, 2 + Math.floor(Math.random() * 2)); // 2-3 subindo
       }
-      setTimeout(() => setActive((a) => a.filter((x) => x.id !== id)), isTomato ? 1100 : 2600);
     });
     return unsub;
   }, [roomCode]);
 
   const send = (type: string) => {
+    if (cooldown) return;
+    setCooldown(true);
+    window.setTimeout(() => setCooldown(false), 550); // cooldown de envio
     firebaseSyncService.sendReaction(roomCode, type, playerId, playerName);
     setOpen(false);
   };
 
+  const vh = typeof window !== 'undefined' ? window.innerHeight : 700;
+
   return (
     <>
+      {/* camada de reações */}
       <div className="fixed inset-0 z-[60] pointer-events-none overflow-hidden">
-        {active.map((a) =>
-          a.type === 'tomato' ? (
-            // 🍅 ESTOURA na tela (splat) onde caiu
-            <div key={a.id} className="absolute" style={{ left: `${a.x}%`, top: `${a.y}%`, transform: 'translate(-50%,-50%)' }}>
-              <div className="relative flex items-center justify-center" style={{ animation: 'tomato-splat 1s ease-out forwards' }}>
-                <span
-                  className="absolute w-40 h-40 rounded-full"
-                  style={{ background: 'radial-gradient(circle, rgba(220,38,38,0.55) 0%, rgba(220,38,38,0.25) 45%, transparent 70%)' }}
-                />
-                <span className="text-7xl" style={{ filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.35))' }}>🍅</span>
-                <span className="absolute text-5xl" style={{ filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.3))' }}>💥</span>
-              </div>
-              <span className="block text-center text-[10px] font-sans text-white bg-danger/80 px-1.5 py-0.5 rounded-full mt-1 w-max mx-auto">{a.fromName}</span>
+        {floaters.map((f) => (
+          <motion.div
+            key={f.id}
+            initial={{ y: 40, x: 0, opacity: 0, scale: 0.5, rotate: 0 }}
+            animate={{ y: -vh * 0.62, x: f.sway, opacity: [0, 1, 1, 0], scale: 1, rotate: f.rot }}
+            transition={{ duration: f.dur, ease: 'easeOut' }}
+            style={{ left: `${f.x}%`, bottom: 80, fontSize: f.size }}
+            className="absolute"
+          >
+            <span style={{ filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.3))' }}>{f.emoji}</span>
+          </motion.div>
+        ))}
+
+        {/* 🍅 estoura na tela onde "bateu" */}
+        {splats.map((s) => (
+          <div key={s.id} className="absolute" style={{ left: `${s.x}%`, top: `${s.y}%`, transform: 'translate(-50%,-50%)' }}>
+            <div className="relative flex items-center justify-center" style={{ animation: 'tomato-splat 1s ease-out forwards' }}>
+              <span className="absolute w-44 h-44 rounded-full" style={{ background: 'radial-gradient(circle, rgba(220,38,38,0.6) 0%, rgba(220,38,38,0.3) 40%, rgba(220,38,38,0) 70%)' }} />
+              <span className="absolute w-52 h-52" style={{ background: 'radial-gradient(circle, rgba(220,38,38,0.25) 0%, rgba(220,38,38,0) 60%)', filter: 'blur(2px)' }} />
+              <span className="text-7xl" style={{ filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.35))' }}>🍅</span>
+              <span className="absolute text-5xl" style={{ filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.3))' }}>💥</span>
             </div>
-          ) : (
-            // demais reações flutuam subindo
-            <motion.div
-              key={a.id}
-              initial={{ y: 40, opacity: 0, scale: 0.5 }}
-              animate={{
-                y: -(typeof window !== 'undefined' ? window.innerHeight : 700) * 0.5,
-                opacity: [0, 1, 1, 0],
-                scale: 1.2,
-                rotate: a.type === 'poke' ? [0, -12, 12, 0] : 0,
-              }}
-              transition={{ duration: 2.4, ease: 'easeOut' }}
-              style={{ left: `${a.x}%`, bottom: 90 }}
-              className="absolute flex flex-col items-center"
-            >
-              <span className="text-5xl" style={{ filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.3))' }}>{a.emoji}</span>
-              <span className="text-[10px] font-sans text-text-secondary bg-surface/80 px-1.5 py-0.5 rounded-full mt-1">{a.fromName}</span>
-            </motion.div>
-          ),
-        )}
+          </div>
+        ))}
       </div>
 
+      {/* botão flutuante + paleta */}
       <div className="fixed right-4 bottom-4 z-[61] flex flex-col items-end gap-2">
         <AnimatePresence>
           {open && (
@@ -113,14 +132,15 @@ const Reactions: React.FC<Props> = ({ roomCode, playerId, playerName }) => {
               initial={{ opacity: 0, y: 10, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.9 }}
-              className="grid grid-cols-3 gap-2 p-2 rounded-3xl bg-surface border border-line shadow-soft"
+              className="grid grid-cols-4 gap-2 p-2 rounded-3xl bg-surface border border-line shadow-soft"
             >
               {REACTIONS.map((r) => (
                 <button
                   key={r.type}
                   onClick={() => send(r.type)}
+                  disabled={cooldown}
                   aria-label={r.label}
-                  className="w-12 h-12 rounded-2xl bg-surface-2 text-2xl active:scale-90 transition-transform"
+                  className="w-12 h-12 rounded-2xl bg-surface-2 text-2xl active:scale-90 transition-transform disabled:opacity-40"
                 >
                   {r.emoji}
                 </button>

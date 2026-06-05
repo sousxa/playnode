@@ -8,6 +8,7 @@ import GameConfig, { type ConfigExtras } from './views/GameConfig';
 import AgeGate from './components/AgeGate';
 import Ranking from './components/Ranking';
 import Reactions from './components/Reactions';
+import Particles from './components/Particles';
 import { GameMode } from './types';
 import type { GameConfig as EngineConfig } from './engine/types';
 import { localStorageSyncService } from './services/localStorageSync';
@@ -90,6 +91,14 @@ const App: React.FC = () => {
     const unsub = firebaseSyncService.onRanking(roomCode, (r) => setSessionScores(r));
     return unsub;
   }, [roomMode, roomCode]);
+
+  // Evita sair da sala sem querer: avisa antes de recarregar/fechar a aba.
+  useEffect(() => {
+    if (!hasRoomState) return;
+    const handler = (e: BeforeUnloadEvent) => { e.preventDefault(); e.returnValue = ''; };
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, [hasRoomState]);
 
   useEffect(() => {
     const onRoom = (room: any) => {
@@ -187,6 +196,7 @@ const App: React.FC = () => {
   };
 
   const handleLeave = () => {
+    if (!window.confirm('Sair da sala? Você vai perder seu lugar na partida.')) return;
     try { syncRef.current.leaveRoom(roomCode, playerId); } catch {}
     setUserName('');
     setHasRoomState(false);
@@ -304,6 +314,7 @@ const App: React.FC = () => {
 
   return (
     <>
+      <Particles />
       <AnimatePresence mode="wait">
         <motion.div
           key={screenKey}
