@@ -35,12 +35,8 @@ const Button: React.FC<ButtonProps> = ({
     'flex items-center justify-center gap-2 select-none disabled:cursor-not-allowed ' +
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 focus-visible:ring-offset-2 focus-visible:ring-offset-bg';
 
-  // Variantes não-sólidas (sem empurrão 3D)
-  if (variant === 'secondary' || variant === 'ghost') {
-    const flat =
-      variant === 'secondary'
-        ? 'bg-surface text-accent border-2 border-line'
-        : 'bg-transparent text-text-secondary';
+  // Ghost: realmente plano (links/ações discretas)
+  if (variant === 'ghost') {
     return (
       <motion.button
         type={type}
@@ -49,7 +45,27 @@ const Button: React.FC<ButtonProps> = ({
         aria-label={ariaLabel}
         whileTap={disabled ? {} : { scale: 0.97 }}
         transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-        className={`${base} ${flat} ${disabled ? 'opacity-50' : ''} ${className}`}
+        className={`${base} bg-transparent text-text-secondary ${disabled ? 'opacity-50' : ''} ${className}`}
+      >
+        {children}
+      </motion.button>
+    );
+  }
+
+  // Secondary: também ganha o empurrão 3D (borda inferior), só que em tom neutro.
+  if (variant === 'secondary') {
+    const sh = 'rgb(var(--color-border))';
+    return (
+      <motion.button
+        type={type}
+        onClick={disabled ? undefined : onClick}
+        disabled={disabled}
+        aria-label={ariaLabel}
+        style={disabled ? { boxShadow: 'none' } : { boxShadow: `0 5px 0 ${sh}` }}
+        whileTap={disabled ? {} : { y: 5, boxShadow: `0 0px 0 ${sh}` }}
+        whileHover={disabled ? {} : { y: -2, boxShadow: `0 7px 0 ${sh}` }}
+        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+        className={`${base} bg-surface text-accent border-2 border-line ${disabled ? 'opacity-50' : ''} ${className}`}
       >
         {children}
       </motion.button>
@@ -67,10 +83,10 @@ const Button: React.FC<ButtonProps> = ({
       style={
         disabled
           ? { backgroundColor: 'rgb(var(--color-surface-alt))', boxShadow: 'none', color: 'rgb(var(--color-text-muted))' }
-          : { backgroundColor: bg, boxShadow: `0 4px 0 ${shadow}`, color: text }
+          : { backgroundColor: bg, boxShadow: `0 6px 0 ${shadow}`, color: text }
       }
-      whileTap={disabled ? {} : { y: 4, boxShadow: `0 0px 0 ${shadow}` }}
-      whileHover={disabled ? {} : { y: -1, boxShadow: `0 5px 0 ${shadow}` }}
+      whileTap={disabled ? {} : { y: 6, boxShadow: `0 0px 0 ${shadow}` }}
+      whileHover={disabled ? {} : { y: -2, boxShadow: `0 8px 0 ${shadow}` }}
       transition={{ type: 'spring', stiffness: 500, damping: 30 }}
       className={`${base} ${className}`}
     >

@@ -38,7 +38,7 @@ const Home: React.FC<HomeProps> = ({ onJoin, initialCode }) => {
     'placeholder:text-text-muted outline-none focus:border-accent transition-colors disabled:opacity-60';
 
   return (
-    <div className="page-wrapper dot-pattern flex flex-col p-6 justify-center items-center">
+    <div className="page-wrapper flex flex-col p-6 justify-center items-center">
       <div className="absolute top-5 right-5">
         <ThemeToggle />
       </div>

@@ -35,13 +35,15 @@ const SelectConfirm: React.FC<Props> = ({ options, onConfirm, confirmLabel = 'Co
             <motion.button
               key={o.id}
               disabled={readOnly}
-              whileTap={readOnly ? undefined : { scale: 0.95 }}
+              style={readOnly ? undefined : { boxShadow: active ? '0 4px 0 rgb(var(--color-accent-dark))' : '0 4px 0 rgb(var(--color-border))' }}
+              whileTap={readOnly ? undefined : { y: 4, boxShadow: '0 0px 0 rgb(var(--color-border))' }}
+              transition={{ type: 'spring', stiffness: 500, damping: 30 }}
               onClick={() => setSel(o.id)}
               className={`relative font-display font-bold p-4 rounded-2xl border-2 text-left transition-colors overflow-wrap-anywhere ${
                 readOnly
                   ? 'bg-surface text-text-secondary border-line opacity-80'
                   : active
-                  ? 'bg-accent text-white border-accent shadow-soft'
+                  ? 'bg-accent text-white border-accent'
                   : 'bg-surface text-text-primary border-line'
               }`}
             >
