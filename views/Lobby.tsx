@@ -109,7 +109,8 @@ const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, myId, hostId, 
         <ChevronRight className="text-text-muted" size={20} />
       </button>
 
-      {isHost && <SingleDeviceMode isHost={isHost} onAddPlayer={onAddPlayer} online={onlineMode} />}
+      {/* No online a galera entra pelo link/QR; "adicionar jogador" só no mesmo aparelho. */}
+      {!onlineMode && <SingleDeviceMode isHost={isHost} onAddPlayer={onAddPlayer} online={onlineMode} />}
 
       <section className="space-y-3">
         <h3 className="font-display font-bold text-text-secondary ml-1">

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-interface P { x: number; y: number; vx: number; vy: number; r: number; a: number }
+interface P { x: number; y: number; vx: number; vy: number; px: number; py: number; r: number; a: number }
 
 /**
  * Fundo de partículas leve (canvas próprio, sem libs). Densidade média, drift
@@ -37,14 +37,14 @@ const Particles: React.FC = () => {
       canvas.width = w * dpr; canvas.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       const count = Math.max(24, Math.min(64, Math.floor((w * h) / 17000)));
-      parts = Array.from({ length: count }, () => ({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        vx: (Math.random() - 0.5) * 0.22,
-        vy: (Math.random() - 0.5) * 0.22,
-        r: Math.random() * 1.7 + 0.7,
-        a: Math.random() * 0.35 + 0.12,
-      }));
+      parts = Array.from({ length: count }, () => {
+        // drift base contínuo (nunca zera) — garante velocidade mínima visível
+        let vx = (Math.random() - 0.5) * 0.5;
+        let vy = (Math.random() - 0.5) * 0.5;
+        if (Math.abs(vx) < 0.12) vx = vx < 0 ? -0.12 : 0.12;
+        if (Math.abs(vy) < 0.12) vy = vy < 0 ? -0.12 : 0.12;
+        return { x: Math.random() * w, y: Math.random() * h, vx, vy, px: 0, py: 0, r: Math.random() * 1.7 + 0.7, a: Math.random() * 0.35 + 0.12 };
+      });
     };
 
     const tick = () => {
@@ -53,12 +53,13 @@ const Particles: React.FC = () => {
       for (let i = 0; i < parts.length; i++) {
         const p = parts[i];
         const dx = p.x - pointer.x, dy = p.y - pointer.y, d2 = dx * dx + dy * dy;
-        if (d2 < 14000) {
-          const d = Math.sqrt(d2) || 1, f = ((14000 - d2) / 14000) * 0.5;
-          p.vx += (dx / d) * f; p.vy += (dy / d) * f;
+        if (d2 < 16000) {
+          const d = Math.sqrt(d2) || 1, f = ((16000 - d2) / 16000) * 1.6;
+          p.px += (dx / d) * f; p.py += (dy / d) * f; // empurrão transitório do toque
         }
-        p.x += p.vx; p.y += p.vy;
-        p.vx *= 0.96; p.vy *= 0.96;
+        // drift base (constante) + empurrão (decai). Assim nunca para de se mexer.
+        p.x += p.vx + p.px; p.y += p.vy + p.py;
+        p.px *= 0.9; p.py *= 0.9;
         if (p.x < -10) p.x = w + 10; else if (p.x > w + 10) p.x = -10;
         if (p.y < -10) p.y = h + 10; else if (p.y > h + 10) p.y = -10;
         // linhas tênues entre vizinhas
