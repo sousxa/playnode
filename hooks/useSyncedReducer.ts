@@ -17,7 +17,7 @@ export function useSyncedReducer<S, A>(
   reducer: (s: S, a: A) => S,
   init: () => S,
   { online, roomCode, isHost }: SyncOpts,
-): { state: S | null; dispatch: (a: A) => void; reset: () => void } {
+): { state: S | null; dispatch: (a: A) => void; reset: () => void; resetRound: () => void } {
   const [state, setState] = useState<S | null>(() => (online ? null : init()));
   const ref = useRef<S | null>(state);
   ref.current = state;
@@ -64,18 +64,34 @@ export function useSyncedReducer<S, A>(
     }
   };
 
-  const reset = () => {
-    const initial = init();
+  // Aplica um estado novo (reinício) localmente e, se online, transmite. Só o host
+  // pode reiniciar no online.
+  const applyReset = (next: S) => {
     if (online && roomCode) {
-      if (!isHost) return; // só o host reinicia a partida online
-      ref.current = initial;
-      setState(initial);
-      firebaseSyncService.updateGameState(roomCode, initial);
+      if (!isHost) return;
+      ref.current = next;
+      setState(next);
+      firebaseSyncService.updateGameState(roomCode, next);
     } else {
-      ref.current = initial;
-      setState(initial);
+      ref.current = next;
+      setState(next);
     }
   };
 
-  return { state, dispatch, reset };
+  // Reinicia a PARTIDA do zero (zera pontos e tudo).
+  const reset = () => applyReset(init());
+
+  // Reinicia só a RODADA: estado fresco de uma partida nova, mas preservando os
+  // pontos acumulados (campo `scores`, quando o jogo tiver). Serve pra "destravar"
+  // sem perder o placar quando uma rodada bugou no meio.
+  const resetRound = () => {
+    const fresh = init() as any;
+    const prev = ref.current as any;
+    if (prev && fresh && typeof fresh.scores === 'object' && fresh.scores && typeof prev.scores === 'object') {
+      fresh.scores = { ...fresh.scores, ...prev.scores };
+    }
+    applyReset(fresh as S);
+  };
+
+  return { state, dispatch, reset, resetRound };
 }

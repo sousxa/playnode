@@ -20,7 +20,7 @@ interface Props {
 }
 
 const QuemSouEu: React.FC<Props> = ({ config, onExit, onReportScores, onRanking, online, roomCode, playerId, isHost }) => {
-  const { state: raw, dispatch, reset } = useSyncedReducer(reducer, () => initGame(config), { online, roomCode, isHost });
+  const { state: raw, dispatch, reset, resetRound } = useSyncedReducer(reducer, () => initGame(config), { online, roomCode, isHost });
 
   useEffect(() => {
     if (raw?.phase === 'gameOver') onReportScores?.(raw.scores);
@@ -29,7 +29,7 @@ const QuemSouEu: React.FC<Props> = ({ config, onExit, onReportScores, onRanking,
 
   const wrap = (children: React.ReactNode, header = true) => (
     <div className="page-wrapper flex flex-col p-5">
-      {header && raw && <GameHeader title="Quem Sou Eu?" onExit={!online || isHost ? onExit : undefined} onForceRestart={online && isHost ? reset : undefined} />}
+      {header && raw && <GameHeader title="Quem Sou Eu?" onExit={!online || isHost ? onExit : undefined} onRestartRound={online && isHost ? resetRound : undefined} onRestartGame={online && isHost ? reset : undefined} />}
       <div className="flex-1 flex flex-col w-full max-w-md mx-auto">
         <AnimatePresence mode="wait">
           <motion.div

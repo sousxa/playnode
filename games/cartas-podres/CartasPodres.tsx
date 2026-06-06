@@ -82,7 +82,7 @@ const HandPicker: React.FC<{ black: string; pick: number; hand: string[]; onSubm
 };
 
 const CartasPodres: React.FC<Props> = ({ config, onExit, onReportScores, onRanking, online, roomCode, playerId, isHost }) => {
-  const { state, dispatch, reset } = useSyncedReducer(reducer, () => initGame(config), { online, roomCode, isHost });
+  const { state, dispatch, reset, resetRound } = useSyncedReducer(reducer, () => initGame(config), { online, roomCode, isHost });
   const me = playerId || '';
 
   useEffect(() => {
@@ -96,7 +96,7 @@ const CartasPodres: React.FC<Props> = ({ config, onExit, onReportScores, onRanki
 
   const wrap = (children: React.ReactNode, header = true) => (
     <div className="page-wrapper flex flex-col p-5">
-      {header && state && <GameHeader title="Cartas Podres" round={state.round} totalRounds={state.totalRounds} onExit={!online || isHost ? onExit : undefined} onForceRestart={online && isHost ? reset : undefined} />}
+      {header && state && <GameHeader title="Cartas Podres" round={state.round} totalRounds={state.totalRounds} onExit={!online || isHost ? onExit : undefined} onRestartRound={online && isHost ? resetRound : undefined} onRestartGame={online && isHost ? reset : undefined} />}
       <div className="flex-1 flex flex-col w-full max-w-md mx-auto">
         <AnimatePresence mode="wait">
           <motion.div
