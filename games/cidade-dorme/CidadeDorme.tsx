@@ -7,6 +7,7 @@ import CoverScreen from '../shared/CoverScreen';
 import SelectConfirm from '../shared/SelectConfirm';
 import type { GameConfig } from '../../engine/types';
 import { useSyncedReducer } from '../../hooks/useSyncedReducer';
+import { shuffle } from '../../engine/utils';
 import { initGame, reducer, aliveIds, type CidadeState, type Role } from './engine';
 
 interface Props {
@@ -99,7 +100,9 @@ const CidadeDorme: React.FC<Props> = ({ config, onExit, online, roomCode, player
     const actor = state.players.find((p) => state.roles[p.id] === role && state.alive[p.id])!;
     const targets = aliveIds(state).filter((id) => (role === 'medico' ? true : id !== actor.id)).map((id) => ({ id, name: name(id) }));
     if (online && actor.id !== me) {
-      return wrap(<Wait text="A cidade dorme… 🌙 alguém está agindo na surdina." icon={<Moon className="text-accent mx-auto" size={40} />} />);
+      // Disfarce: quem não está agindo resolve um mini-puzzle, pra todas as telas
+      // parecerem ocupadas e não entregar quem tem papel real.
+      return wrap(<NightPuzzle />);
     }
     return wrap(
       <NightTurn
@@ -280,6 +283,49 @@ const DayVote: React.FC<{
           </button>
         ))}
       </div>
+    </div>
+  );
+};
+
+/** Mini-puzzle de disfarce: toque os números em ordem. Sem efeito no jogo —
+ * só pra todas as telas parecerem ocupadas à noite (esconde quem tem papel). */
+const NightPuzzle: React.FC = () => {
+  const N = 6;
+  const [cells, setCells] = useState<number[]>(() => shuffle(Array.from({ length: N }, (_, i) => i + 1)));
+  const [next, setNext] = useState(1);
+  const [done, setDone] = useState(0);
+  const [wrong, setWrong] = useState(false);
+
+  const tap = (num: number) => {
+    if (num !== next) { setWrong(true); setNext(1); window.setTimeout(() => setWrong(false), 300); return; }
+    if (num >= N) { setDone((d) => d + 1); setCells(shuffle(Array.from({ length: N }, (_, i) => i + 1))); setNext(1); }
+    else setNext(num + 1);
+  };
+
+  return (
+    <div className="flex-1 flex flex-col justify-center text-center space-y-5">
+      <Moon className="text-accent mx-auto" size={40} />
+      <div>
+        <p className="font-display font-bold text-lg text-text-primary">A cidade dorme… 🌙</p>
+        <p className="font-sans text-sm text-text-muted">Disfarça! Toque os números em ordem · {next}/{N}</p>
+      </div>
+      <div className="grid grid-cols-3 gap-3 max-w-xs mx-auto w-full">
+        {cells.map((num, i) => {
+          const taken = num < next;
+          return (
+            <button
+              key={i}
+              onClick={() => tap(num)}
+              className={`aspect-square rounded-2xl font-display font-extrabold text-2xl border-2 transition-colors active:scale-95 ${
+                taken ? 'bg-accent text-white border-accent' : wrong ? 'bg-surface text-text-primary border-danger' : 'bg-surface text-text-primary border-line'
+              }`}
+            >
+              {num}
+            </button>
+          );
+        })}
+      </div>
+      {done > 0 && <p className="font-sans text-xs text-success">✓ {done} resolvido(s) — ninguém desconfia 😏</p>}
     </div>
   );
 };
