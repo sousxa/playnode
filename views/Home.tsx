@@ -1,8 +1,9 @@
 
 import React, { useState } from 'react';
-import { Wifi, Smartphone } from 'lucide-react';
+import { Wifi, Smartphone, RotateCcw, X } from 'lucide-react';
 import Button from '../components/Button';
 import ThemeToggle from '../components/ThemeToggle';
+import { getRecentRooms, removeRecentRoom } from '../services/recentRooms';
 
 export type RoomMode = 'online' | 'local';
 
@@ -18,6 +19,22 @@ const Home: React.FC<HomeProps> = ({ onJoin, initialCode }) => {
   const [mode, setMode] = useState<RoomMode>('online');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [recents, setRecents] = useState(() => getRecentRooms());
+
+  const rejoin = async (code: string, savedName: string) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await onJoin(savedName, code, 'online');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Não foi possível voltar pra essa sala');
+      removeRecentRoom(code);
+      setRecents(getRecentRooms());
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const forgetRecent = (code: string) => { removeRecentRoom(code); setRecents(getRecentRooms()); };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,6 +140,36 @@ const Home: React.FC<HomeProps> = ({ onJoin, initialCode }) => {
             >
               🔑 Entrar com código
             </Button>
+
+            {recents.length > 0 && (
+              <div className="pt-2 space-y-2">
+                <p className="font-sans text-xs text-text-muted uppercase tracking-wide ml-1">Salas recentes</p>
+                {recents.map((r) => (
+                  <div key={r.code} className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => rejoin(r.code, r.name)}
+                      disabled={isLoading}
+                      className="flex-1 flex items-center gap-3 p-3 rounded-2xl bg-surface border border-line text-left active:scale-[0.98] transition-transform disabled:opacity-50"
+                    >
+                      <RotateCcw size={18} className="text-accent shrink-0" />
+                      <span className="min-w-0">
+                        <span className="block font-display font-bold text-text-primary leading-none">{r.code}</span>
+                        <span className="block font-sans text-xs text-text-muted truncate">como {r.name}</span>
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => forgetRecent(r.code)}
+                      aria-label="Esquecer sala"
+                      className="w-9 h-9 rounded-xl bg-surface border border-line text-text-muted flex items-center justify-center active:scale-90 transition-transform"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </form>

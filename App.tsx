@@ -12,6 +12,7 @@ import type { GameConfig as EngineConfig } from './engine/types';
 import { localStorageSyncService } from './services/localStorageSync';
 import { firebaseSyncService } from './services/firebaseSync';
 import { firebaseEnabled, authReady } from './services/firebase';
+import { addRecentRoom } from './services/recentRooms';
 
 // Jogos que já têm partida ONLINE sincronizada.
 const ONLINE_GAMES = new Set<GameMode>([
@@ -175,6 +176,7 @@ const App: React.FC = () => {
         setHostId(result.hostId || '');
         setPlayers((result.players || []).map((p: any) => ({ id: p.id, name: p.name })));
         setHasRoomState(true);
+        if (useOnline) addRecentRoom(result.code, name);
         toast.success(`Entrou na sala ${result.code}!`);
       } else {
         const result: any = await sync.createRoom(name, myId);
@@ -183,6 +185,7 @@ const App: React.FC = () => {
         setHostId(myId);
         setPlayers((result.players || []).map((p: any) => ({ id: p.id, name: p.name })));
         setHasRoomState(true);
+        if (useOnline) addRecentRoom(result.code, name);
         toast.success(`Sala ${result.code} criada!`);
       }
     } catch (error) {
