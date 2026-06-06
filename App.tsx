@@ -8,7 +8,6 @@ import GameConfig, { type ConfigExtras } from './views/GameConfig';
 import AgeGate from './components/AgeGate';
 import Ranking from './components/Ranking';
 import Reactions from './components/Reactions';
-import Particles from './components/Particles';
 import { GameMode } from './types';
 import type { GameConfig as EngineConfig } from './engine/types';
 import { localStorageSyncService } from './services/localStorageSync';
@@ -314,7 +313,6 @@ const App: React.FC = () => {
 
   return (
     <>
-      <Particles />
       <AnimatePresence mode="wait">
         <motion.div
           key={screenKey}

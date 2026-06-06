@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { VenetianMask, Drama, Flame, Link2, Check, ChevronRight, Wifi, Skull, HeartCrack, Trophy, Layers, Timer, Moon, LogOut } from 'lucide-react';
 import SingleDeviceMode from '../components/SingleDeviceMode';
 import ThemeToggle from '../components/ThemeToggle';
@@ -95,9 +96,13 @@ const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, myId, hostId, 
         </div>
       </section>
 
-      <button
+      <motion.button
         onClick={onShowRanking}
-        className="w-full flex items-center gap-3 p-4 rounded-3xl bg-accent/10 border border-accent/30 text-left active:scale-[0.98] transition-transform"
+        style={{ boxShadow: '0 5px 0 rgb(var(--color-accent) / 0.25)' }}
+        whileTap={{ y: 5, boxShadow: '0 0px 0 rgb(var(--color-accent) / 0.25)' }}
+        whileHover={{ y: -2, boxShadow: '0 7px 0 rgb(var(--color-accent) / 0.25)' }}
+        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+        className="w-full flex items-center gap-3 p-4 rounded-3xl bg-accent/10 border-2 border-accent/30 text-left"
       >
         <div className="w-10 h-10 rounded-2xl bg-accent/15 text-accent flex items-center justify-center">
           <Trophy size={20} />
@@ -107,7 +112,7 @@ const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, myId, hostId, 
           <p className="font-sans text-xs text-text-muted">Pontos somados de todos os jogos</p>
         </div>
         <ChevronRight className="text-text-muted" size={20} />
-      </button>
+      </motion.button>
 
       {/* No online a galera entra pelo link/QR; "adicionar jogador" só no mesmo aparelho. */}
       {!onlineMode && <SingleDeviceMode isHost={isHost} onAddPlayer={onAddPlayer} online={onlineMode} />}
@@ -117,10 +122,14 @@ const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, myId, hostId, 
           Jogos {!isHost && <span className="font-sans font-normal text-text-muted text-sm">· só o host inicia</span>}
         </h3>
         {GAMES.map(({ mode, title, desc, Icon, color, bg }) => (
-          <button
+          <motion.button
             key={mode}
             onClick={() => setInfoMode(mode)}
-            className="w-full p-4 bg-surface border border-line rounded-3xl text-left flex items-center gap-4 active:scale-[0.98] hover:border-accent transition-all"
+            style={{ boxShadow: '0 5px 0 rgb(var(--color-border))' }}
+            whileTap={{ y: 5, boxShadow: '0 0px 0 rgb(var(--color-border))' }}
+            whileHover={{ y: -2, boxShadow: '0 7px 0 rgb(var(--color-border))' }}
+            transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+            className="w-full p-4 bg-surface border-2 border-line rounded-3xl text-left flex items-center gap-4"
           >
             <div className={`w-14 h-14 shrink-0 rounded-2xl ${bg} ${color} flex items-center justify-center`}>
               <Icon size={26} />
@@ -130,7 +139,7 @@ const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, myId, hostId, 
               <p className="font-sans text-text-muted text-sm">{desc}</p>
             </div>
             <ChevronRight className="text-text-muted ml-auto" size={20} />
-          </button>
+          </motion.button>
         ))}
       </section>
 
