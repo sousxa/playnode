@@ -7,6 +7,7 @@ import GameOver from '../shared/GameOver';
 import SelectConfirm from '../shared/SelectConfirm';
 import type { GameConfig } from '../../engine/types';
 import { useSyncedReducer } from '../../hooks/useSyncedReducer';
+import { markSeen } from '../../services/contentMemory';
 import { initGame, reducer, tally, type AmigosState } from './engine';
 
 interface Props {
@@ -24,7 +25,7 @@ const AmigosDeMerda: React.FC<Props> = ({ config, onExit, onReportScores, onRank
   const { state, dispatch, reset, resetRound } = useSyncedReducer(reducer, () => initGame(config), { online, roomCode, isHost });
 
   useEffect(() => {
-    if (state?.phase === 'gameOver') onReportScores?.(state.scores);
+    if (state?.phase === 'gameOver') { onReportScores?.(state.scores); markSeen('amigos', state.questions.map((q) => q.id)); }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state?.phase]);
 

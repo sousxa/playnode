@@ -1,6 +1,7 @@
 import type { GameConfig, GameEngine, Player } from '../../engine/types';
 import { amigosContent, type MostLikelyItem } from '../../content';
 import { shuffle } from '../../engine/utils';
+import { getSeen } from '../../services/contentMemory';
 
 export type AmigosPhase = 'voting' | 'results' | 'gameOver';
 
@@ -23,7 +24,11 @@ export type AmigosAction =
 function pickQuestions(config: GameConfig): MostLikelyItem[] {
   const pool = amigosContent.questions.filter((q) => config.alcoholicMode || !q.alcoholic);
   const count = Math.min(config.rounds ?? 6, pool.length);
-  return shuffle(pool).slice(0, count);
+  // Prioriza perguntas não vistas em partidas recentes; completa com as vistas se faltar.
+  const seen = getSeen('amigos');
+  const fresh = shuffle(pool.filter((q) => !seen.includes(q.id)));
+  const rest = shuffle(pool.filter((q) => seen.includes(q.id)));
+  return [...fresh, ...rest].slice(0, count);
 }
 
 export function initGame(config: GameConfig): AmigosState {

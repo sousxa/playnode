@@ -2,6 +2,7 @@ import type { GameConfig, GameEngine, Player } from '../../engine/types';
 import { impostorContent } from '../../content';
 import { IMPOSTOR_WEAK } from '../metadata';
 import { shuffle, pickRandom, sampleN } from '../../engine/utils';
+import { getSeen } from '../../services/contentMemory';
 
 export type ImpostorPhase = 'distribute' | 'clues' | 'voting' | 'guess' | 'reveal' | 'gameOver';
 
@@ -30,6 +31,8 @@ export interface ImpostorState {
   scores: Record<string, number>;
   impostorCount: number;
   usedWords: string[];
+  /** Palavras vistas em partidas recentes (anti-repetição entre jogos). */
+  seen: string[];
 }
 
 export type ImpostorAction =
@@ -60,14 +63,20 @@ function buildPool(categoryId: string) {
   return impostorContent.categories.filter((c) => !IMPOSTOR_WEAK.includes(c.id));
 }
 
-function setupRound(players: Player[], impostorCount: number, categoryId: string, usedWords: string[]) {
+function setupRound(players: Player[], impostorCount: number, categoryId: string, usedWords: string[], seen: string[] = []) {
   const base = buildPool(categoryId);
+  // 1) tira as palavras já usadas NESTA partida
   const avail = base
     .map((c) => ({ ...c, items: c.items.filter((i) => !usedWords.includes(i.word)) }))
     .filter((c) => c.items.length > 0);
   const src = avail.length > 0 ? avail : base;
+  // 2) entre as restantes, prefere as não vistas em partidas recentes
+  const fresh = src
+    .map((c) => ({ ...c, items: c.items.filter((i) => !seen.includes(i.word)) }))
+    .filter((c) => c.items.length > 0);
+  const pickSrc = fresh.length > 0 ? fresh : src;
 
-  const category = pickRandom(src);
+  const category = pickRandom(pickSrc);
   const item = pickRandom(category.items);
   const genericHint = pickRandom(item.hints);
 
@@ -82,7 +91,7 @@ function setupRound(players: Player[], impostorCount: number, categoryId: string
 
   // Iscas: outras palavras da mesma categoria (ou do pool)
   const decoyPool = category.items.map((i) => i.word).filter((w) => w !== item.word);
-  const fallbackPool = src.flatMap((c) => c.items.map((i) => i.word)).filter((w) => w !== item.word);
+  const fallbackPool = pickSrc.flatMap((c) => c.items.map((i) => i.word)).filter((w) => w !== item.word);
   const decoys = sampleN(decoyPool.length >= 3 ? decoyPool : fallbackPool, 3);
   const guessOptions = shuffle([item.word, ...decoys]);
 
@@ -106,7 +115,8 @@ export function initGame(config: GameConfig): ImpostorState {
   const categoryId = config.categoryId ?? 'all';
   const impostorCount = config.impostorCount ?? (players.length >= 7 ? 2 : 1);
   const totalRounds = config.rounds ?? 3;
-  const round = setupRound(players, impostorCount, categoryId, []);
+  const seen = getSeen('impostor');
+  const round = setupRound(players, impostorCount, categoryId, [], seen);
   return {
     ...round,
     players,
@@ -116,6 +126,7 @@ export function initGame(config: GameConfig): ImpostorState {
     scores: Object.fromEntries(players.map((p) => [p.id, 0])),
     impostorCount,
     usedWords: [round.word],
+    seen,
   };
 }
 
@@ -179,7 +190,7 @@ export function reducer(state: ImpostorState, action: ImpostorAction): ImpostorS
 
     case 'NEXT_ROUND': {
       if (state.round >= state.totalRounds) return { ...state, phase: 'gameOver' };
-      const next = setupRound(state.players, state.impostorCount, state.categoryId, state.usedWords);
+      const next = setupRound(state.players, state.impostorCount, state.categoryId, state.usedWords, state.seen);
       return { ...state, ...next, usedWords: [...state.usedWords, next.word], round: state.round + 1 };
     }
 

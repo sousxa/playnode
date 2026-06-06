@@ -9,6 +9,7 @@ import CoverScreen from '../shared/CoverScreen';
 import SelectConfirm from '../shared/SelectConfirm';
 import type { GameConfig } from '../../engine/types';
 import { useSyncedReducer } from '../../hooks/useSyncedReducer';
+import { markSeen } from '../../services/contentMemory';
 import { initGame, reducer, getVoteTally, type ImpostorState } from './engine';
 
 interface Props {
@@ -61,7 +62,7 @@ const Impostor: React.FC<Props> = ({ config, onExit, onReportScores, onRanking, 
   }, [state?.phase, state?.caught, state?.stolen]);
 
   useEffect(() => {
-    if (state?.phase === 'gameOver') onReportScores?.(state.scores);
+    if (state?.phase === 'gameOver') { onReportScores?.(state.scores); markSeen('impostor', state.usedWords); }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state?.phase]);
 
