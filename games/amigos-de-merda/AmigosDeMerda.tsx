@@ -30,7 +30,7 @@ const AmigosDeMerda: React.FC<Props> = ({ config, onExit, onReportScores, onRank
 
   const wrap = (children: React.ReactNode, header = true) => (
     <div className="page-wrapper flex flex-col p-5">
-      {header && state && <GameHeader title="Amigos de Merda" round={state.currentIdx + 1} totalRounds={state.questions.length} onExit={onExit} />}
+      {header && state && <GameHeader title="Amigos de Merda" round={state.currentIdx + 1} totalRounds={state.questions.length} onExit={!online || isHost ? onExit : undefined} />}
       <div className="flex-1 flex flex-col w-full max-w-md mx-auto">
         <AnimatePresence mode="wait">
           <motion.div
@@ -61,6 +61,7 @@ const AmigosDeMerda: React.FC<Props> = ({ config, onExit, onReportScores, onRank
         onPlayAgain={reset}
         onExit={onExit}
         onRanking={onRanking}
+        canControl={!online || isHost}
       />,
     );
   }

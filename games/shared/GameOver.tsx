@@ -10,10 +10,12 @@ interface GameOverProps {
   onPlayAgain: () => void;
   onExit: () => void;
   onRanking?: () => void;
+  /** Online: só o host joga de novo / volta ao menu (false esconde esses botões). */
+  canControl?: boolean;
 }
 
 /** Tela final reutilizável: ranking opcional por pontos + jogar de novo. */
-const GameOver: React.FC<GameOverProps> = ({ title = 'Fim de jogo!', players, scores, onPlayAgain, onExit, onRanking }) => {
+const GameOver: React.FC<GameOverProps> = ({ title = 'Fim de jogo!', players, scores, onPlayAgain, onExit, onRanking, canControl = true }) => {
   const ranked = scores
     ? [...players].sort((a, b) => (scores[b.id] ?? 0) - (scores[a.id] ?? 0))
     : players;
@@ -39,9 +41,13 @@ const GameOver: React.FC<GameOverProps> = ({ title = 'Fim de jogo!', players, sc
       )}
 
       <div className="space-y-3">
-        <Button variant="success" onClick={onPlayAgain}>🔄 Jogar de novo</Button>
+        {canControl && <Button variant="success" onClick={onPlayAgain}>🔄 Jogar de novo</Button>}
         {onRanking && <Button variant="secondary" onClick={onRanking}>🏆 Ranking da sala</Button>}
-        <Button variant="ghost" onClick={onExit}>Voltar ao menu</Button>
+        {canControl ? (
+          <Button variant="ghost" onClick={onExit}>Voltar ao menu</Button>
+        ) : (
+          <p className="font-sans text-sm text-text-muted">Aguardando o host…</p>
+        )}
       </div>
     </motion.div>
   );

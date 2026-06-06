@@ -29,7 +29,7 @@ const QuemSouEu: React.FC<Props> = ({ config, onExit, onReportScores, onRanking,
 
   const wrap = (children: React.ReactNode, header = true) => (
     <div className="page-wrapper flex flex-col p-5">
-      {header && raw && <GameHeader title="Quem Sou Eu?" onExit={onExit} />}
+      {header && raw && <GameHeader title="Quem Sou Eu?" onExit={!online || isHost ? onExit : undefined} />}
       <div className="flex-1 flex flex-col w-full max-w-md mx-auto">
         <AnimatePresence mode="wait">
           <motion.div
@@ -50,7 +50,7 @@ const QuemSouEu: React.FC<Props> = ({ config, onExit, onReportScores, onRanking,
   if (!raw) return wrap(<p className="text-center font-sans text-text-secondary">Conectando à partida…</p>, false);
 
   if (raw.phase === 'gameOver') {
-    return wrap(<GameOver title="Acabou!" players={raw.players} scores={raw.scores} onPlayAgain={reset} onExit={onExit} onRanking={onRanking} />);
+    return wrap(<GameOver title="Acabou!" players={raw.players} scores={raw.scores} onPlayAgain={reset} onExit={onExit} onRanking={onRanking} canControl={!online || isHost} />);
   }
 
   const current = raw.players[raw.turnIdx];

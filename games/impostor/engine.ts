@@ -36,9 +36,20 @@ export type ImpostorAction =
   | { type: 'NEXT_DISTRIBUTE' }
   | { type: 'BEGIN_CLUES' }
   | { type: 'START_VOTING' }
-  | { type: 'CAST_VOTE'; suspectId: string }
+  | { type: 'CAST_VOTE'; suspectId: string; voterId?: string }
+  | { type: 'FINISH_VOTING' } // host força a apuração (caso alguém não vote / saiu)
   | { type: 'IMPOSTOR_GUESS'; word: string }
   | { type: 'NEXT_ROUND' };
+
+/** Apura a votação atual e decide pego/escapou (reaproveitado pelo CAST_VOTE e FINISH_VOTING). */
+function tallyVotes(state: ImpostorState): ImpostorState {
+  const scores = { ...state.scores };
+  awardCivilians(state, scores);
+  const caught = civiliansCaughtImpostor(state);
+  if (caught) return { ...state, scores, caught: true, phase: 'guess' };
+  for (const id of state.impostorIds) scores[id] = (scores[id] ?? 0) + 2;
+  return { ...state, scores, caught: false, phase: 'reveal' };
+}
 
 function buildPool(categoryId: string) {
   if (categoryId && categoryId !== 'all') {
@@ -142,24 +153,22 @@ export function reducer(state: ImpostorState, action: ImpostorAction): ImpostorS
       return { ...state, phase: 'voting', voterIdx: 0, votes: {} };
 
     case 'CAST_VOTE': {
-      const voter = state.players[state.voterIdx];
-      const votes = { ...state.votes, [voter.id]: action.suspectId };
-      const nextIdx = state.voterIdx + 1;
-      if (nextIdx < state.players.length) return { ...state, votes, voterIdx: nextIdx };
-
-      // último voto: apura
-      const next = { ...state, votes };
-      const scores = { ...state.scores };
-      awardCivilians(next, scores);
-      const caught = civiliansCaughtImpostor(next);
-      if (caught) {
-        // impostor foi pego → tem uma chance de adivinhar a palavra pra roubar
-        return { ...next, scores, caught: true, phase: 'guess' };
+      // online: vem com voterId (todos votam ao mesmo tempo). local: usa a ordem.
+      const voterId = action.voterId ?? state.players[state.voterIdx].id;
+      if (state.votes[voterId] !== undefined) return state; // já votou (ignora repetido)
+      const votes = { ...state.votes, [voterId]: action.suspectId };
+      const allVoted = state.players.every((p) => votes[p.id] !== undefined);
+      if (!allVoted) {
+        // local avança o turno; online só registra e espera os outros
+        return { ...state, votes, voterIdx: action.voterId ? state.voterIdx : state.voterIdx + 1 };
       }
-      // impostor escapou → +2 cada
-      for (const id of state.impostorIds) scores[id] = (scores[id] ?? 0) + 2;
-      return { ...next, scores, caught: false, phase: 'reveal' };
+
+      // todos votaram: apura
+      return tallyVotes({ ...state, votes });
     }
+
+    case 'FINISH_VOTING':
+      return state.phase === 'voting' ? tallyVotes(state) : state;
 
     case 'IMPOSTOR_GUESS': {
       const stolen = action.word === state.word;

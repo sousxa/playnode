@@ -245,7 +245,11 @@ const App: React.FC = () => {
   };
 
   const exitGame = () => {
-    if (roomMode === 'online') syncRef.current.endGame(roomCode);
+    // Online: só o host volta ao menu (encerra a partida pra todos). Os outros seguem o host.
+    if (roomMode === 'online') {
+      if (!isHost) { toast('Só o host pode voltar ao menu.'); return; }
+      syncRef.current.endGame(roomCode);
+    }
     setActiveGame(null);
   };
 

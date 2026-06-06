@@ -20,7 +20,7 @@ const VerdadeOuDesafio: React.FC<Props> = ({ config, onExit, online, roomCode, p
 
   const wrap = (children: React.ReactNode, header = true) => (
     <div className="page-wrapper flex flex-col p-5">
-      {header && state && <GameHeader title="Verdade ou Desafio" round={state.turnsPlayed + 1} totalRounds={state.totalTurns} onExit={onExit} />}
+      {header && state && <GameHeader title="Verdade ou Desafio" round={state.turnsPlayed + 1} totalRounds={state.totalTurns} onExit={!online || isHost ? onExit : undefined} />}
       <div className="flex-1 flex flex-col w-full max-w-md mx-auto">
         <AnimatePresence mode="wait">
           <motion.div

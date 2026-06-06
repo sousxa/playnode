@@ -67,7 +67,7 @@ const Impostor: React.FC<Props> = ({ config, onExit, onReportScores, onRanking, 
 
   const wrap = (children: React.ReactNode, header = true) => (
     <div className="page-wrapper flex flex-col p-5">
-      {header && state && <GameHeader title="O Impostor" round={state.round} totalRounds={state.totalRounds} onExit={onExit} />}
+      {header && state && <GameHeader title="O Impostor" round={state.round} totalRounds={state.totalRounds} onExit={!online || isHost ? onExit : undefined} />}
       <div className="flex-1 flex flex-col w-full max-w-md mx-auto">
         <AnimatePresence mode="wait">
           <motion.div
@@ -142,21 +142,34 @@ const Impostor: React.FC<Props> = ({ config, onExit, onReportScores, onRanking, 
 
   // ── voting ──
   if (state.phase === 'voting') {
-    const voter = state.players[state.voterIdx];
-    const suspects = state.players.filter((p) => p.id !== voter.id);
     if (online) {
-      if (voter.id !== me) return wrap(<Wait text={`Aguardando ${voter.name} votar… (${state.voterIdx + 1}/${state.players.length})`} />);
+      // TODOS votam ao mesmo tempo (mais robusto que um por vez).
+      const iVoted = state.votes[me] !== undefined;
+      const count = Object.keys(state.votes).length;
+      if (iVoted) return wrap(
+        <div className="flex-1 flex flex-col justify-center gap-4">
+          <Wait text={`Voto registrado! Aguardando os outros… (${count}/${state.players.length})`} />
+          {isHost && <Button variant="ghost" onClick={() => dispatch({ type: 'FINISH_VOTING' })}>Encerrar votação ⏭️</Button>}
+        </div>,
+      );
+      const suspects = state.players.filter((p) => p.id !== me);
       return wrap(
         <div className="space-y-4">
           <h2 className="font-display font-extrabold text-xl text-text-primary text-center">Quem é o impostor?</h2>
+          <p className="font-sans text-xs text-text-muted text-center">{count}/{state.players.length} votaram</p>
           <SelectConfirm
             options={suspects.map((s) => ({ id: s.id, label: s.name }))}
             confirmLabel="Confirmar voto 🗳️"
-            onConfirm={(id) => dispatch({ type: 'CAST_VOTE', suspectId: id })}
+            onConfirm={(id) => dispatch({ type: 'CAST_VOTE', suspectId: id, voterId: me })}
           />
+          {isHost && count > 0 && (
+            <Button variant="ghost" onClick={() => dispatch({ type: 'FINISH_VOTING' })}>Encerrar votação ⏭️</Button>
+          )}
         </div>,
       );
     }
+    const voter = state.players[state.voterIdx];
+    const suspects = state.players.filter((p) => p.id !== voter.id);
     return wrap(
       <VotingTurn key={voter.id} voterName={voter.name} suspects={suspects} progress={`${state.voterIdx + 1}/${state.players.length}`} onVote={(id) => dispatch({ type: 'CAST_VOTE', suspectId: id })} />,
     );
@@ -217,7 +230,7 @@ const Impostor: React.FC<Props> = ({ config, onExit, onReportScores, onRanking, 
   }
 
   // ── gameOver ──
-  return wrap(<GameOver title="Fim de jogo!" players={state.players} scores={state.scores} onPlayAgain={reset} onExit={onExit} onRanking={onRanking} />);
+  return wrap(<GameOver title="Fim de jogo!" players={state.players} scores={state.scores} onPlayAgain={reset} onExit={onExit} onRanking={onRanking} canControl={!online || isHost} />);
 };
 
 const VotingTurn: React.FC<{

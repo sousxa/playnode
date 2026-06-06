@@ -95,7 +95,7 @@ const CartasPodres: React.FC<Props> = ({ config, onExit, onReportScores, onRanki
 
   const wrap = (children: React.ReactNode, header = true) => (
     <div className="page-wrapper flex flex-col p-5">
-      {header && state && <GameHeader title="Cartas Podres" round={state.round} totalRounds={state.totalRounds} onExit={onExit} />}
+      {header && state && <GameHeader title="Cartas Podres" round={state.round} totalRounds={state.totalRounds} onExit={!online || isHost ? onExit : undefined} />}
       <div className="flex-1 flex flex-col w-full max-w-md mx-auto">
         <AnimatePresence mode="wait">
           <motion.div
@@ -119,7 +119,7 @@ const CartasPodres: React.FC<Props> = ({ config, onExit, onReportScores, onRanki
   const amJudge = me === judge.id;
 
   if (state.phase === 'gameOver') {
-    return wrap(<GameOver title="Fim de jogo!" players={state.players} scores={state.scores} onPlayAgain={reset} onExit={onExit} onRanking={onRanking} />);
+    return wrap(<GameOver title="Fim de jogo!" players={state.players} scores={state.scores} onPlayAgain={reset} onExit={onExit} onRanking={onRanking} canControl={!online || isHost} />);
   }
 
   if (state.phase === 'judgeReveal') {
