@@ -28,6 +28,8 @@ export interface GameConfig {
   stopCategories?: string[];
   /** Segundos de votação por categoria no Stop (online). */
   stopVoteSeconds?: number;
+  /** Modo do Quem Sou Eu: 'classic' (um por vez) ou 'roda' (todos com personagem, vai passando). */
+  whoAmIMode?: 'classic' | 'roda';
 }
 
 /**

@@ -4,17 +4,30 @@ import { shuffle } from '../../engine/utils';
 import { getSeen, markSeen } from '../../services/contentMemory';
 
 export type WhoAmIPhase = 'playing' | 'gameOver';
+export type WhoAmIMode = 'classic' | 'roda';
 
 export interface WhoAmIState {
   phase: WhoAmIPhase;
+  mode: WhoAmIMode;
   players: Player[];
   /** playerId -> personagem. O dono NÃO deve ver o próprio. */
   assignments: Record<string, string>;
   turnIdx: number;
+  /** (roda) ids de quem já acertou o próprio personagem. */
+  solved: string[];
   scores: Record<string, number>;
 }
 
 export type WhoAmIAction = { type: 'RESOLVE'; correct: boolean };
+
+/** (roda) Próximo jogador ainda não resolvido a partir de `fromIdx` (exclusivo). -1 se todos resolveram. */
+function nextUnsolved(players: Player[], fromIdx: number, solved: string[]): number {
+  for (let step = 1; step <= players.length; step++) {
+    const idx = (fromIdx + step) % players.length;
+    if (!solved.includes(players[idx].id)) return idx;
+  }
+  return -1;
+}
 
 function assignCharacters(players: Player[], categoryId: string): Record<string, string> {
   // Filtra pela categoria escolhida, ou junta todas no "Misturar"
@@ -38,9 +51,11 @@ function assignCharacters(players: Player[], categoryId: string): Record<string,
 export function initGame(config: GameConfig): WhoAmIState {
   return {
     phase: 'playing',
+    mode: config.whoAmIMode ?? 'classic',
     players: config.players,
     assignments: assignCharacters(config.players, config.categoryId ?? 'all'),
     turnIdx: 0,
+    solved: [],
     scores: Object.fromEntries(config.players.map((p) => [p.id, 0])),
   };
 }
@@ -50,6 +65,24 @@ export function reducer(state: WhoAmIState, action: WhoAmIAction): WhoAmIState {
     case 'RESOLVE': {
       const current = state.players[state.turnIdx];
       const scores = { ...state.scores };
+
+      // ── Modo RODA: todos têm personagem; a vez gira e cada um fica no seu até acertar.
+      if (state.mode === 'roda') {
+        let solved = state.solved;
+        if (action.correct && !solved.includes(current.id)) {
+          // Quanto mais gente ainda travada (você incluso), mais vale acertar agora.
+          const unsolvedCount = state.players.length - solved.length;
+          scores[current.id] = (scores[current.id] ?? 0) + unsolvedCount;
+          solved = [...solved, current.id];
+        }
+        if (solved.length >= state.players.length) {
+          return { ...state, scores, solved, phase: 'gameOver' };
+        }
+        const next = nextUnsolved(state.players, state.turnIdx, solved);
+        return { ...state, scores, solved, turnIdx: next };
+      }
+
+      // ── Modo CLÁSSICO: um por vez, cada um joga uma vez e o jogo acaba.
       if (action.correct) scores[current.id] = (scores[current.id] ?? 0) + 1;
       const next = state.turnIdx + 1;
       if (next >= state.players.length) {

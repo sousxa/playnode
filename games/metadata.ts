@@ -41,6 +41,8 @@ export interface GameConfigSchema {
   intensity?: boolean;
   /** Multi-seleção das categorias do Stop. */
   stopCategories?: boolean;
+  /** Modos do Quem Sou Eu (seletor segmentado). */
+  whoAmIModes?: { id: 'classic' | 'roda'; label: string; desc: string }[];
 }
 
 export const GAME_CONFIG_SCHEMA: Record<string, GameConfigSchema> = {
@@ -51,6 +53,10 @@ export const GAME_CONFIG_SCHEMA: Record<string, GameConfigSchema> = {
   },
   [GameMode.QUEM_SOU_EU]: {
     categories: whoAmICategories,
+    whoAmIModes: [
+      { id: 'classic', label: 'Um por vez', desc: 'Cada um resolve o seu na sua vez, depois passa.' },
+      { id: 'roda', label: 'Roda', desc: 'Todos têm personagem ao mesmo tempo; a vez gira e você fica no seu até acertar.' },
+    ],
   },
   [GameMode.DILEMAS]: {
     rounds: { min: 3, max: 12, default: 6, label: 'Dilemas' },
@@ -113,7 +119,7 @@ export const GAME_INFO: Record<string, GameInfo> = {
       'Cada um recebe um personagem secreto (sem ver o próprio).',
       'Na sua vez, vire o aparelho para a galera ver e dê pistas.',
       'Você faz perguntas de "sim ou não" para adivinhar quem é.',
-      'Acertou? Ponto pra você! Senão, passa a vez.',
+      'Modo "Um por vez": cada um resolve o seu na vez. Modo "Roda": todos têm personagem, a vez gira e você fica no seu até acertar (quem acerta com mais gente travada pontua mais).',
     ],
   },
   [GameMode.DILEMAS]: {

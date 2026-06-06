@@ -15,6 +15,7 @@ export interface ConfigExtras {
   intensityLevel?: IntensityLevel;
   stopCategories?: string[];
   stopVoteSeconds?: number;
+  whoAmIMode?: 'classic' | 'roda';
 }
 
 interface GameConfigProps {
@@ -52,6 +53,7 @@ const GameConfig: React.FC<GameConfigProps> = ({ mode, playerCount, onBack, onSt
   const [intensity, setIntensity] = useState<IntensityLevel>('medio');
   const [stopCats, setStopCats] = useState<string[]>(STOP_CATEGORIES.slice(0, 6));
   const [voteSeconds, setVoteSeconds] = useState(30);
+  const [whoMode, setWhoMode] = useState<'classic' | 'roda'>('classic');
   const toggleCat = (c: string) =>
     setStopCats((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
 
@@ -74,6 +76,29 @@ const GameConfig: React.FC<GameConfigProps> = ({ mode, playerCount, onBack, onSt
             {schema.categories.map((c) => (
               <CatChip key={c.id} active={categoryId === c.id} onClick={() => setCategoryId(c.id)} icon={c.icon} label={c.label} />
             ))}
+          </div>
+        </section>
+      )}
+
+      {schema.whoAmIModes && (
+        <section className="space-y-2">
+          <h3 className="font-display font-bold text-text-secondary ml-1">Modo de jogo</h3>
+          <div className="space-y-2">
+            {schema.whoAmIModes.map((m) => {
+              const active = whoMode === m.id;
+              return (
+                <button
+                  key={m.id}
+                  onClick={() => setWhoMode(m.id)}
+                  className={`w-full text-left p-4 rounded-3xl border-2 transition-all ${active ? 'bg-accent/10 border-accent' : 'bg-surface border-line'}`}
+                >
+                  <p className={`font-display font-bold ${active ? 'text-accent' : 'text-text-primary'}`}>
+                    {active ? '✓ ' : ''}{m.label}
+                  </p>
+                  <p className="font-sans text-xs text-text-muted mt-0.5">{m.desc}</p>
+                </button>
+              );
+            })}
           </div>
         </section>
       )}
@@ -161,7 +186,7 @@ const GameConfig: React.FC<GameConfigProps> = ({ mode, playerCount, onBack, onSt
 
       <Button
         disabled={schema.stopCategories && stopCats.length < 2}
-        onClick={() => onStart({ categoryId, rounds, impostorCount, alcoholicMode: alcoholic, intensityLevel: intensity, stopCategories: stopCats, stopVoteSeconds: voteSeconds })}
+        onClick={() => onStart({ categoryId, rounds, impostorCount, alcoholicMode: alcoholic, intensityLevel: intensity, stopCategories: stopCats, stopVoteSeconds: voteSeconds, whoAmIMode: whoMode })}
       >
         Começar! 🎬
       </Button>

@@ -262,6 +262,7 @@ const App: React.FC = () => {
       intensityLevel: extras.intensityLevel,
       stopCategories: extras.stopCategories,
       stopVoteSeconds: extras.stopVoteSeconds,
+      whoAmIMode: extras.whoAmIMode,
     };
     if (roomMode === 'online') {
       // host transmite o início; os outros entram via onRoom (status PLAYING).
