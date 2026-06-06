@@ -88,6 +88,10 @@ class FirebaseSyncService {
 
   private subscribe(code: string) {
     if (!db) return;
+    // Cancela o listener anterior antes de abrir outro — senão listeners de salas
+    // antigas vão se acumulando e disparando onRoom em paralelo (thrash de estado,
+    // "volta sozinho pra Home", e o host saindo arrastava estado de salas mortas).
+    if (this.unsub) { this.unsub(); this.unsub = null; }
     const roomRef = ref(db, `rooms/${code}`);
     const handler = onValue(roomRef, (snap) => {
       const val = snap.val();
