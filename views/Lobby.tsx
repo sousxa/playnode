@@ -18,6 +18,8 @@ interface LobbyProps {
   onShowRanking?: () => void;
   onAddPlayer: (name: string) => void;
   onLeave: () => void;
+  onMakeHost?: (id: string) => void;
+  onKick?: (id: string, name: string) => void;
 }
 
 const GAMES = [
@@ -30,9 +32,11 @@ const GAMES = [
   { mode: GameMode.CIDADE_DORME, title: 'A Cidade Dorme', desc: 'Dedução: ache o assassino', Icon: Moon, color: 'text-accent', bg: 'bg-accent/15' },
 ];
 
-const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, myId, hostId, onlineMode, onSelectGame, onShowRanking, onAddPlayer, onLeave }) => {
+const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, myId, hostId, onlineMode, onSelectGame, onShowRanking, onAddPlayer, onLeave, onMakeHost, onKick }) => {
   const [copied, setCopied] = useState(false);
   const [infoMode, setInfoMode] = useState<GameMode | null>(null);
+  const [actionPlayer, setActionPlayer] = useState<{ id: string; name: string } | null>(null);
+  const canManage = !!isHost && !!onlineMode;
 
   const inviteUrl = `${window.location.origin}${window.location.pathname}?room=${roomCode}`;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(inviteUrl)}`;
@@ -83,13 +87,15 @@ const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, myId, hostId, 
           {players.map((p) => {
             const isMe = p.id === myId;
             const isHostP = p.id === hostId;
-            return (
-              <span
-                key={p.id}
-                className={`font-sans font-medium px-4 py-2 rounded-2xl border ${isMe ? 'bg-accent text-white border-accent' : 'bg-surface text-text-primary border-line'}`}
-              >
-                {isHostP ? '👑 ' : isMe ? '🙋 ' : '👤 '}{isMe ? 'Você' : p.name}{isHostP && <span className="opacity-70 text-xs font-sans"> · host</span>}
-              </span>
+            const manage = canManage && !isMe; // host pode gerenciar os outros
+            const cls = `font-sans font-medium px-4 py-2 rounded-2xl border ${isMe ? 'bg-accent text-white border-accent' : 'bg-surface text-text-primary border-line'}`;
+            const label = <>{isHostP ? '👑 ' : isMe ? '🙋 ' : '👤 '}{isMe ? 'Você' : p.name}{isHostP && <span className="opacity-70 text-xs font-sans"> · host</span>}</>;
+            return manage ? (
+              <button key={p.id} onClick={() => setActionPlayer(p)} className={`${cls} active:scale-95 transition-transform`}>
+                {label} <span className="opacity-50">⋯</span>
+              </button>
+            ) : (
+              <span key={p.id} className={cls}>{label}</span>
             );
           })}
         </div>
@@ -155,6 +161,28 @@ const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, myId, hostId, 
         onClose={() => setInfoMode(null)}
         onPlay={(m) => { setInfoMode(null); onSelectGame(m); }}
       />
+
+      {/* Ações do host num jogador */}
+      {actionPlayer && (
+        <div className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center bg-black/60 p-4" onClick={() => setActionPlayer(null)}>
+          <div className="w-full max-w-sm bg-surface border border-line rounded-3xl p-5 space-y-3" onClick={(e) => e.stopPropagation()}>
+            <p className="font-display font-bold text-lg text-text-primary text-center">{actionPlayer.name}</p>
+            <button
+              onClick={() => { onMakeHost?.(actionPlayer.id); setActionPlayer(null); }}
+              className="w-full p-3 rounded-2xl bg-accent/10 border border-accent/30 text-accent font-display font-bold active:scale-[0.98] transition-transform"
+            >
+              👑 Tornar host
+            </button>
+            <button
+              onClick={() => { onKick?.(actionPlayer.id, actionPlayer.name); setActionPlayer(null); }}
+              className="w-full p-3 rounded-2xl bg-danger/10 border border-danger/30 text-danger font-display font-bold active:scale-[0.98] transition-transform"
+            >
+              🚫 Expulsar da sala
+            </button>
+            <button onClick={() => setActionPlayer(null)} className="w-full p-3 font-display font-bold text-text-muted">Cancelar</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

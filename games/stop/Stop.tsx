@@ -142,7 +142,7 @@ const Stop: React.FC<Props> = ({ config, onExit, onReportScores, onRanking, onli
 
   const wrap = (children: React.ReactNode, header = true, phaseKey = '') => (
     <div className="page-wrapper flex flex-col p-5">
-      {header && state && <GameHeader title="Stop!" round={state.round} totalRounds={state.totalRounds} onExit={!online || isHost ? onExit : undefined} />}
+      {header && state && <GameHeader title="Stop!" round={state.round} totalRounds={state.totalRounds} onExit={!online || isHost ? onExit : undefined} onForceRestart={online && isHost ? reset : undefined} />}
       <div className="flex-1 flex flex-col w-full max-w-md mx-auto">
         <AnimatePresence mode="wait">
           <motion.div

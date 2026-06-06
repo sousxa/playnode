@@ -67,7 +67,7 @@ const Impostor: React.FC<Props> = ({ config, onExit, onReportScores, onRanking, 
 
   const wrap = (children: React.ReactNode, header = true) => (
     <div className="page-wrapper flex flex-col p-5">
-      {header && state && <GameHeader title="O Impostor" round={state.round} totalRounds={state.totalRounds} onExit={!online || isHost ? onExit : undefined} />}
+      {header && state && <GameHeader title="O Impostor" round={state.round} totalRounds={state.totalRounds} onExit={!online || isHost ? onExit : undefined} onForceRestart={online && isHost ? reset : undefined} />}
       <div className="flex-1 flex flex-col w-full max-w-md mx-auto">
         <AnimatePresence mode="wait">
           <motion.div

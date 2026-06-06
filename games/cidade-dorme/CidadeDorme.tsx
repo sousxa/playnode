@@ -45,7 +45,7 @@ const CidadeDorme: React.FC<Props> = ({ config, onExit, online, roomCode, player
 
   const wrap = (children: React.ReactNode, header = true) => (
     <div className="page-wrapper flex flex-col p-5">
-      {header && state && <GameHeader title="A Cidade Dorme" round={state.dayNumber} totalRounds={state.dayNumber} onExit={!online || isHost ? onExit : undefined} />}
+      {header && state && <GameHeader title="A Cidade Dorme" round={state.dayNumber} totalRounds={state.dayNumber} onExit={!online || isHost ? onExit : undefined} onForceRestart={online && isHost ? reset : undefined} />}
       <div className="flex-1 flex flex-col w-full max-w-md mx-auto">
         <AnimatePresence mode="wait">
           <motion.div

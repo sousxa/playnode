@@ -49,6 +49,7 @@ const App: React.FC = () => {
   playerIdRef.current = playerId;
 
   const [userName, setUserName] = useState('');
+  const hasRoomRef = useRef(false);
   const [roomCode, setRoomCode] = useState('');
   const [isHost, setIsHost] = useState(false);
   const [hostId, setHostId] = useState('');
@@ -60,6 +61,7 @@ const App: React.FC = () => {
     return r ? r.toUpperCase() : null;
   });
   const [hasRoomState, setHasRoomState] = useState(false);
+  hasRoomRef.current = hasRoomState;
   const [players, setPlayers] = useState<{ id: string; name: string }[]>([]);
   const [roomMode, setRoomMode] = useState<'online' | 'local'>('online');
 
@@ -103,6 +105,13 @@ const App: React.FC = () => {
     const onRoom = (room: any) => {
       const ps = room.players || [];
       const myId = playerIdRef.current; // sempre o id atual da sessão (sem stale closure)
+      // Fui expulso/removido: não estou mais na lista mas tinha uma sala aberta.
+      if (hasRoomRef.current && ps.length > 0 && !ps.some((p: any) => p.id === myId)) {
+        toast('Você saiu da sala.');
+        setUserName(''); setHasRoomState(false); setRoomCode(''); setPlayers([]);
+        setIsHost(false); setHostId(''); setActiveGame(null); setConfiguringGame(null); setShowRanking(false);
+        return;
+      }
       // Migração de host: se o host saiu e eu sou o 1º da fila, assumo a sala.
       if (room.code && ps.length > 0 && !ps.some((p: any) => p.id === room.hostId) && ps[0].id === myId) {
         syncRef.current.claimHost(room.code, myId);
@@ -198,6 +207,21 @@ const App: React.FC = () => {
   const handleAddPlayer = (name: string) => {
     const id = `local_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
     syncRef.current.addLocalPlayer(roomCode, id, name);
+  };
+
+  // Host: passar o host pra outra pessoa.
+  const handleMakeHost = (id: string) => {
+    if (roomMode !== 'online' || !isHost || id === playerId) return;
+    syncRef.current.claimHost(roomCode, id);
+    toast.success('Host transferido!');
+  };
+
+  // Host: expulsar alguém da sala.
+  const handleKick = (id: string, name: string) => {
+    if (roomMode !== 'online' || !isHost || id === playerId) return;
+    if (!window.confirm(`Expulsar ${name} da sala?`)) return;
+    syncRef.current.removeLocalPlayer(roomCode, id);
+    toast(`${name} foi removido(a).`);
   };
 
   const handleLeave = () => {
@@ -296,6 +320,8 @@ const App: React.FC = () => {
         onlineMode={roomMode === 'online'}
         onSelectGame={selectGame}
         onAddPlayer={handleAddPlayer}
+        onMakeHost={handleMakeHost}
+        onKick={handleKick}
         onShowRanking={() => setShowRanking(true)}
         onLeave={handleLeave}
       />
