@@ -5,7 +5,6 @@ import Home from './views/Home';
 import Lobby from './views/Lobby';
 import GameRoom from './views/GameRoom';
 import GameConfig, { type ConfigExtras } from './views/GameConfig';
-import AgeGate from './components/AgeGate';
 import Ranking from './components/Ranking';
 import Reactions from './components/Reactions';
 import { GameMode } from './types';
@@ -14,12 +13,9 @@ import { localStorageSyncService } from './services/localStorageSync';
 import { firebaseSyncService } from './services/firebaseSync';
 import { firebaseEnabled, authReady } from './services/firebase';
 
-const AGE_KEY = 'catdecks-age-ok';
-
-// Jogos que já têm partida ONLINE sincronizada (os demais: só "mesmo aparelho" por enquanto).
-// Todos os 8 jogos jogáveis online.
+// Jogos que já têm partida ONLINE sincronizada.
 const ONLINE_GAMES = new Set<GameMode>([
-  GameMode.DILEMAS, GameMode.AMIGOS_DE_MERDA, GameMode.QUEM_SOU_EU, GameMode.IMPOSTOR,
+  GameMode.AMIGOS_DE_MERDA, GameMode.QUEM_SOU_EU, GameMode.IMPOSTOR,
   GameMode.STOP, GameMode.CARTAS_PODRES, GameMode.CIDADE_DORME, GameMode.VERDADE_OU_DESAFIO,
 ]);
 
@@ -44,10 +40,13 @@ const App: React.FC = () => {
     authReady.then((uid) => { if (alive) setAuthUid(uid); });
     return () => { alive = false; };
   }, []);
-  // No online a identidade é o uid do Firebase; offline cai pro id local.
-  const playerId = authUid ?? localId;
+  // Identidade DA SESSÃO: definida ao entrar/criar (online = uid; local = id local).
+  // É estável — não troca quando o login anônimo resolve no meio (evita o host
+  // "perder" o status no modo mesmo aparelho). Default = id local.
+  const [playerId, setPlayerId] = useState(localId);
+  const playerIdRef = useRef(playerId);
+  playerIdRef.current = playerId;
 
-  const [ageOk, setAgeOk] = useState(() => localStorage.getItem(AGE_KEY) === '1');
   const [userName, setUserName] = useState('');
   const [roomCode, setRoomCode] = useState('');
   const [isHost, setIsHost] = useState(false);
@@ -102,12 +101,13 @@ const App: React.FC = () => {
   useEffect(() => {
     const onRoom = (room: any) => {
       const ps = room.players || [];
+      const myId = playerIdRef.current; // sempre o id atual da sessão (sem stale closure)
       // Migração de host: se o host saiu e eu sou o 1º da fila, assumo a sala.
-      if (room.code && ps.length > 0 && !ps.some((p: any) => p.id === room.hostId) && ps[0].id === playerId) {
-        syncRef.current.claimHost(room.code, playerId);
+      if (room.code && ps.length > 0 && !ps.some((p: any) => p.id === room.hostId) && ps[0].id === myId) {
+        syncRef.current.claimHost(room.code, myId);
       }
       setRoomCode(room.code);
-      setIsHost(room.hostId === playerId);
+      setIsHost(room.hostId === myId);
       setHostId(room.hostId || '');
       setPlayers(ps.map((p: any) => ({ id: p.id, name: p.name })));
       setHasRoomState(true);
@@ -135,7 +135,8 @@ const App: React.FC = () => {
       localStorageSyncService.destroy();
       firebaseSyncService.destroy();
     };
-  }, [playerId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleStartSession = async (name: string, code?: string, mode?: 'online' | 'local') => {
     const wantsOnline = (mode ?? 'online') === 'online';
@@ -152,6 +153,8 @@ const App: React.FC = () => {
     }
     const useOnline = wantsOnline && firebaseEnabled && !!uid;
     const myId = useOnline ? (uid as string) : localId;
+    playerIdRef.current = myId; // identidade estável da sessão (já vale antes do setState)
+    setPlayerId(myId);
     const sync = useOnline ? firebaseSyncService : localStorageSyncService;
     syncRef.current = sync;
     setUserName(name);
@@ -246,16 +249,9 @@ const App: React.FC = () => {
     setActiveGame(null);
   };
 
-  const confirmAge = () => {
-    localStorage.setItem(AGE_KEY, '1');
-    setAgeOk(true);
-  };
-
   // ── Render ──
   let screen: React.ReactNode;
-  if (!ageOk) {
-    screen = <AgeGate onConfirm={confirmAge} />;
-  } else if (!userName || !hasRoomState) {
+  if (!userName || !hasRoomState) {
     screen = <Home onJoin={handleStartSession} initialCode={initialRoomFromUrl || undefined} />;
   } else if (showRanking) {
     screen = <Ranking players={players} scores={sessionScores} onClose={() => setShowRanking(false)} />;
@@ -299,9 +295,7 @@ const App: React.FC = () => {
     );
   }
 
-  const screenKey = !ageOk
-    ? 'age'
-    : !userName || !hasRoomState
+  const screenKey = !userName || !hasRoomState
     ? 'home'
     : showRanking
     ? 'ranking'

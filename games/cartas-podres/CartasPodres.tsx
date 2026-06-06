@@ -8,7 +8,7 @@ import GameOver from '../shared/GameOver';
 import SelectConfirm from '../shared/SelectConfirm';
 import type { GameConfig } from '../../engine/types';
 import { useSyncedReducer } from '../../hooks/useSyncedReducer';
-import { initGame, reducer, cartasEngine, type CartasState } from './engine';
+import { initGame, reducer, cartasEngine } from './engine';
 
 interface Props {
   config: GameConfig;
@@ -21,9 +21,22 @@ interface Props {
   isHost?: boolean;
 }
 
-const BlackCard: React.FC<{ text: string }> = ({ text }) => (
+/** Preenche as lacunas (____) da carta preta com as cartas escolhidas (em destaque). */
+function fillSentence(text: string, cards: string[]): React.ReactNode {
+  const parts = text.split(/_{2,}/);
+  const nodes: React.ReactNode[] = [];
+  let ci = 0;
+  parts.forEach((part, idx) => {
+    if (part) nodes.push(<span key={`p${idx}`}>{part}</span>);
+    if (idx < parts.length - 1) nodes.push(<b key={`c${idx}`} className="text-accent">{cards[ci++] ?? '____'}</b>);
+  });
+  while (ci < cards.length) nodes.push(<b key={`x${ci}`} className="text-accent"> {cards[ci++]}</b>);
+  return nodes;
+}
+
+const BlackCard: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <div className="bg-text-primary text-bg rounded-3xl p-6 shadow-soft">
-    <p className="font-display font-bold text-xl leading-snug overflow-wrap-anywhere">{text}</p>
+    <p className="font-display font-bold text-xl leading-snug overflow-wrap-anywhere">{children}</p>
   </div>
 );
 
@@ -35,6 +48,37 @@ const Wait: React.FC<{ text: string }> = ({ text }) => (
     <p className="font-sans text-text-secondary">{text}</p>
   </div>
 );
+
+/** Escolhe `pick` cartas (na ordem), mostra a frase montando ao vivo e envia. */
+const HandPicker: React.FC<{ black: string; pick: number; hand: string[]; onSubmit: (cards: string[]) => void }> = ({ black, pick, hand, onSubmit }) => {
+  const [sel, setSel] = useState<string[]>([]);
+  const toggle = (c: string) => setSel((s) => (s.includes(c) ? s.filter((x) => x !== c) : s.length < pick ? [...s, c] : s));
+  return (
+    <div className="space-y-4">
+      <BlackCard>{fillSentence(black, sel)}</BlackCard>
+      <p className="font-sans text-text-secondary text-sm text-center">
+        {pick > 1 ? `Escolha ${pick} cartas (na ordem)` : 'Escolha sua carta'} · {sel.length}/{pick}
+      </p>
+      <div className="space-y-2">
+        {hand.map((c) => {
+          const i = sel.indexOf(c);
+          const active = i >= 0;
+          return (
+            <motion.button
+              key={c}
+              onClick={() => toggle(c)}
+              whileTap={{ scale: 0.97 }}
+              className={`w-full text-left p-4 rounded-2xl border-2 font-display font-bold overflow-wrap-anywhere transition-colors ${active ? 'bg-accent text-white border-accent' : 'bg-surface text-text-primary border-line'}`}
+            >
+              {pick > 1 && active && <span className="mr-2 opacity-80">{i + 1}.</span>}{c}
+            </motion.button>
+          );
+        })}
+      </div>
+      <Button disabled={sel.length !== pick} onClick={() => onSubmit(sel)}>{pick > 1 ? 'Enviar cartas 📤' : 'Enviar carta 📤'}</Button>
+    </div>
+  );
+};
 
 const CartasPodres: React.FC<Props> = ({ config, onExit, onReportScores, onRanking, online, roomCode, playerId, isHost }) => {
   const { state, dispatch, reset } = useSyncedReducer(reducer, () => initGame(config), { online, roomCode, isHost });
@@ -84,8 +128,8 @@ const CartasPodres: React.FC<Props> = ({ config, onExit, onReportScores, onRanki
         <span className="inline-flex items-center gap-1.5 font-display font-bold text-sm bg-warning/15 text-warning px-3 py-1.5 rounded-full">
           <Crown size={14} /> Juiz: {judge.name}{amJudge && ' (você)'}
         </span>
-        <BlackCard text={state.black} />
-        <p className="font-sans text-text-secondary text-sm">Os outros escolhem a carta mais engraçada da mão.</p>
+        <BlackCard>{state.black}</BlackCard>
+        <p className="font-sans text-text-secondary text-sm">{state.pick > 1 ? 'Esta pede 2 cartas! ' : ''}Os outros completam a frase mais podre.</p>
         {(!online || isHost) ? (
           <Button onClick={() => dispatch({ type: 'BEGIN' })}>Começar a rodada 👉</Button>
         ) : (
@@ -100,39 +144,27 @@ const CartasPodres: React.FC<Props> = ({ config, onExit, onReportScores, onRanki
       const submittedCount = state.submissions.length;
       if (amJudge) return wrap(<Wait text={`Você é o juiz 👑 — aguardando as cartas… (${submittedCount}/${state.submitOrder.length})`} />);
       const iSubmitted = state.submissions.some((s) => s.playerId === me);
-      if (iSubmitted) return wrap(<Wait text={`Carta enviada! Aguardando os outros… (${submittedCount}/${state.submitOrder.length})`} />);
+      if (iSubmitted) return wrap(<Wait text={`Enviado! Aguardando os outros… (${submittedCount}/${state.submitOrder.length})`} />);
       const myHand = cartasEngine.getPlayerView(state, me).hands[me] || [];
-      return wrap(
-        <div className="space-y-4">
-          <BlackCard text={state.black} />
-          <p className="font-sans text-text-secondary text-sm text-center">Escolha sua carta:</p>
-          <SelectConfirm
-            columns={1}
-            options={myHand.map((c) => ({ id: c, label: c }))}
-            confirmLabel="Enviar carta 📤"
-            onConfirm={(card) => dispatch({ type: 'SUBMIT', card, playerId: me })}
-          />
-        </div>,
-      );
+      return wrap(<HandPicker black={state.black} pick={state.pick} hand={myHand} onSubmit={(cards) => dispatch({ type: 'SUBMIT', cards, playerId: me })} />);
     }
     const pid = state.submitOrder[state.submitIdx];
     const player = state.players.find((p) => p.id === pid)!;
     return wrap(
-      <SubmitTurn key={pid} playerName={player.name} black={state.black} hand={state.hands[pid]} progress={`${state.submitIdx + 1}/${state.submitOrder.length}`} onSubmit={(card) => dispatch({ type: 'SUBMIT', card })} />,
+      <SubmitTurn key={pid} playerName={player.name} black={state.black} pick={state.pick} hand={state.hands[pid]} progress={`${state.submitIdx + 1}/${state.submitOrder.length}`} onSubmit={(cards) => dispatch({ type: 'SUBMIT', cards })} />,
     );
   }
 
   if (state.phase === 'judge') {
-    const opts = state.submissions.map((s, i) => ({ id: String(i), label: s.card }));
-    // Espectadores (e o juiz) veem TODAS as cartas; só o juiz escolhe.
+    const opts = state.submissions.map((s, i) => ({ id: String(i), label: <span>{fillSentence(state.black, s.cards)}</span> }));
     if (online && !amJudge) {
       return wrap(
         <div className="space-y-4">
           <span className="inline-flex items-center gap-1.5 font-display font-bold text-sm bg-warning/15 text-warning px-3 py-1.5 rounded-full">
             <Crown size={14} /> {judge.name} está julgando…
           </span>
-          <BlackCard text={state.black} />
-          <SelectConfirm columns={1} readOnly options={opts} hint="As cartas da galera — aguardando o juiz decidir 👀" />
+          <BlackCard>{state.black}</BlackCard>
+          <SelectConfirm columns={1} readOnly options={opts} hint="As respostas da galera — aguardando o juiz decidir 👀" />
         </div>,
       );
     }
@@ -141,7 +173,7 @@ const CartasPodres: React.FC<Props> = ({ config, onExit, onReportScores, onRanki
         <span className="inline-flex items-center gap-1.5 font-display font-bold text-sm bg-warning/15 text-warning px-3 py-1.5 rounded-full">
           <Crown size={14} /> {judge.name}, escolha a melhor!
         </span>
-        <BlackCard text={state.black} />
+        <BlackCard>{state.black}</BlackCard>
         <SelectConfirm
           columns={1}
           variant="warning"
@@ -159,9 +191,8 @@ const CartasPodres: React.FC<Props> = ({ config, onExit, onReportScores, onRanki
   return wrap(
     <div className="space-y-5 text-center">
       <h2 className="font-display font-extrabold text-2xl text-success">🏆 {winner?.name} venceu a rodada!</h2>
-      <BlackCard text={state.black} />
       <div className="bg-surface border-2 border-success/40 rounded-3xl p-5">
-        <p className="font-display font-bold text-lg text-text-primary overflow-wrap-anywhere">{state.winnerCard}</p>
+        <p className="font-display font-bold text-lg text-text-primary overflow-wrap-anywhere">{fillSentence(state.black, state.winnerCards ?? [])}</p>
       </div>
       {(!online || isHost) ? (
         <Button onClick={() => dispatch({ type: 'NEXT_ROUND' })}>{isLast ? 'Ver resultado 🏆' : 'Próxima rodada 👉'}</Button>
@@ -175,10 +206,11 @@ const CartasPodres: React.FC<Props> = ({ config, onExit, onReportScores, onRanki
 const SubmitTurn: React.FC<{
   playerName: string;
   black: string;
+  pick: number;
   hand: string[];
   progress: string;
-  onSubmit: (card: string) => void;
-}> = ({ playerName, black, hand, progress, onSubmit }) => {
+  onSubmit: (cards: string[]) => void;
+}> = ({ playerName, black, pick, hand, progress, onSubmit }) => {
   const [revealed, setRevealed] = useState(false);
   if (!revealed) {
     return (
@@ -190,19 +222,7 @@ const SubmitTurn: React.FC<{
       </button>
     );
   }
-  return (
-    <div className="space-y-4">
-      <BlackCard text={black} />
-      <p className="font-sans text-text-secondary text-sm text-center">{playerName}, escolha sua carta:</p>
-      <div className="space-y-2">
-        {hand.map((c) => (
-          <button key={c} onClick={() => onSubmit(c)} className="w-full text-left p-4 rounded-2xl bg-surface border border-line text-text-primary font-display font-bold active:scale-[0.98] hover:border-accent transition-all overflow-wrap-anywhere">
-            {c}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
+  return <HandPicker black={black} pick={pick} hand={hand} onSubmit={(cards) => { setRevealed(false); onSubmit(cards); }} />;
 };
 
 export default CartasPodres;
