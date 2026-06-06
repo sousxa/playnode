@@ -64,6 +64,7 @@ const App: React.FC = () => {
   const [hasRoomState, setHasRoomState] = useState(false);
   hasRoomRef.current = hasRoomState;
   const [players, setPlayers] = useState<{ id: string; name: string }[]>([]);
+  const [kickVote, setKickVote] = useState<any | null>(null);
   const [roomMode, setRoomMode] = useState<'online' | 'local'>('online');
 
   const [configuringGame, setConfiguringGame] = useState<GameMode | null>(null);
@@ -129,6 +130,29 @@ const App: React.FC = () => {
           setActiveGame((prev) => prev || { mode: room.gameMode, config: room.config });
         } else if (room.status === 'LOBBY') {
           setActiveGame((prev) => (prev ? null : prev));
+        }
+
+        // Votação de expulsão (vote-kick).
+        const kv = room.kickVote || null;
+        setKickVote(kv);
+        if (kv) {
+          const targetPresent = ps.some((p: any) => p.id === kv.targetId);
+          if (!targetPresent) {
+            firebaseSyncService.cancelKickVote(room.code); // alvo já saiu
+          } else {
+            const eligible = ps.filter((p: any) => p.id !== kv.targetId);
+            const yes = eligible.filter((p: any) => kv.votes && kv.votes[p.id]).length;
+            const need = Math.floor(eligible.length / 2) + 1;
+            if (yes >= need) {
+              // Executor determinístico (1º jogador que não é o alvo) aplica a expulsão.
+              const executor = ps.find((p: any) => p.id !== kv.targetId);
+              if (executor && executor.id === myId) {
+                firebaseSyncService.removeLocalPlayer(room.code, kv.targetId);
+                firebaseSyncService.cancelKickVote(room.code);
+                toast(`${kv.targetName} foi expulso(a) pela maioria. 👋`);
+              }
+            }
+          }
         }
       }
     };
@@ -223,6 +247,21 @@ const App: React.FC = () => {
     if (!window.confirm(`Expulsar ${name} da sala?`)) return;
     syncRef.current.removeLocalPlayer(roomCode, id);
     toast(`${name} foi removido(a).`);
+  };
+
+  // Qualquer jogador inicia uma votação pra expulsar alguém (a galera decide na maioria).
+  const handleStartKickVote = (id: string, name: string) => {
+    if (roomMode !== 'online' || id === playerId) return;
+    firebaseSyncService.startKickVote(roomCode, { id, name }, { id: playerId, name: userName });
+    toast(`Votação pra expulsar ${name} começou.`);
+  };
+  const handleVoteKick = () => {
+    if (roomMode !== 'online') return;
+    firebaseSyncService.voteKick(roomCode, playerId);
+  };
+  const handleCancelKickVote = () => {
+    if (roomMode !== 'online') return;
+    firebaseSyncService.cancelKickVote(roomCode);
   };
 
   const handleLeave = () => {
@@ -324,6 +363,10 @@ const App: React.FC = () => {
         onAddPlayer={handleAddPlayer}
         onMakeHost={handleMakeHost}
         onKick={handleKick}
+        kickVote={kickVote}
+        onStartKickVote={handleStartKickVote}
+        onVoteKick={handleVoteKick}
+        onCancelKickVote={handleCancelKickVote}
         onShowRanking={() => setShowRanking(true)}
         onLeave={handleLeave}
       />

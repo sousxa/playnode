@@ -17,6 +17,15 @@ export interface RoomPlayer {
   hasActedThisTurn: boolean;
 }
 
+export interface KickVote {
+  targetId: string;
+  targetName: string;
+  byId: string;
+  byName: string;
+  votes: Record<string, true>; // voterId -> votou sim
+  createdAt: number;
+}
+
 export interface Room {
   code: string;
   hostId: string;
@@ -24,6 +33,7 @@ export interface Room {
   status: 'LOBBY' | 'PLAYING' | 'FINISHED';
   gameMode: GameMode | null;
   gameState: any;
+  kickVote?: KickVote | null;
   createdAt: number;
   updatedAt: number;
 }
@@ -183,6 +193,30 @@ class FirebaseSyncService {
   removeLocalPlayer(code: string, playerId: string): void {
     if (!db) return;
     set(ref(db, `rooms/${code}/players/${playerId}`), null);
+  }
+
+  /** Inicia uma votação pra expulsar alguém (quem inicia já vota sim). */
+  startKickVote(code: string, target: { id: string; name: string }, by: { id: string; name: string }): void {
+    if (!db) return;
+    const vote: KickVote = {
+      targetId: target.id, targetName: target.name,
+      byId: by.id, byName: by.name,
+      votes: { [by.id]: true },
+      createdAt: Date.now(),
+    };
+    set(ref(db, `rooms/${code}/kickVote`), vote);
+  }
+
+  /** Registra o voto "sim" de um jogador na votação ativa. */
+  voteKick(code: string, voterId: string): void {
+    if (!db) return;
+    set(ref(db, `rooms/${code}/kickVote/votes/${voterId}`), true);
+  }
+
+  /** Encerra/cancela a votação de expulsão. */
+  cancelKickVote(code: string): void {
+    if (!db) return;
+    set(ref(db, `rooms/${code}/kickVote`), null);
   }
 
   /** Host inicia uma partida online: marca PLAYING + jogo + config (estado é criado pelo host depois). */

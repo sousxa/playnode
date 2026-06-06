@@ -20,6 +20,11 @@ interface LobbyProps {
   onLeave: () => void;
   onMakeHost?: (id: string) => void;
   onKick?: (id: string, name: string) => void;
+  /** Votação de expulsão ativa (ou null). */
+  kickVote?: { targetId: string; targetName: string; byId: string; byName: string; votes?: Record<string, true> } | null;
+  onStartKickVote?: (id: string, name: string) => void;
+  onVoteKick?: () => void;
+  onCancelKickVote?: () => void;
 }
 
 const GAMES = [
@@ -33,11 +38,21 @@ const GAMES = [
   { mode: GameMode.UNO_NO_MERCY, title: 'Uno No Mercy', desc: 'Uno brutal: +10 e eliminação', Icon: Spade, color: 'text-danger', bg: 'bg-danger/15' },
 ];
 
-const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, myId, hostId, onlineMode, onSelectGame, onShowRanking, onAddPlayer, onLeave, onMakeHost, onKick }) => {
+const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, myId, hostId, onlineMode, onSelectGame, onShowRanking, onAddPlayer, onLeave, onMakeHost, onKick, kickVote, onStartKickVote, onVoteKick, onCancelKickVote }) => {
   const [copied, setCopied] = useState(false);
   const [infoMode, setInfoMode] = useState<GameMode | null>(null);
   const [actionPlayer, setActionPlayer] = useState<{ id: string; name: string } | null>(null);
   const canManage = !!isHost && !!onlineMode;
+  // No online, qualquer um pode tocar num outro jogador (pra iniciar votação de expulsão).
+  const canInteract = !!onlineMode && players.length >= 3;
+
+  // Estado da votação de expulsão (vote-kick).
+  const kv = kickVote || null;
+  const eligible = kv ? players.filter((p) => p.id !== kv.targetId) : [];
+  const yesVotes = kv ? eligible.filter((p) => kv.votes && kv.votes[p.id]).length : 0;
+  const needVotes = kv ? Math.floor(eligible.length / 2) + 1 : 0;
+  const iAmTarget = !!kv && kv.targetId === myId;
+  const iVoted = !!kv && !!kv.votes && !!myId && !!kv.votes[myId];
 
   const inviteUrl = `${window.location.origin}${window.location.pathname}?room=${roomCode}`;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(inviteUrl)}`;
@@ -88,10 +103,11 @@ const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, myId, hostId, 
           {players.map((p) => {
             const isMe = p.id === myId;
             const isHostP = p.id === hostId;
-            const manage = canManage && !isMe; // host pode gerenciar os outros
+            // Host gerencia (host/kick direto); qualquer um pode tocar pra iniciar votação.
+            const tappable = !isMe && (canManage || canInteract);
             const cls = `font-sans font-medium px-4 py-2 rounded-2xl border ${isMe ? 'bg-accent text-white border-accent' : 'bg-surface text-text-primary border-line'}`;
             const label = <>{isHostP ? '👑 ' : isMe ? '🙋 ' : '👤 '}{isMe ? 'Você' : p.name}{isHostP && <span className="opacity-70 text-xs font-sans"> · host</span>}</>;
-            return manage ? (
+            return tappable ? (
               <button key={p.id} onClick={() => setActionPlayer(p)} className={`${cls} active:scale-95 transition-transform`}>
                 {label} <span className="opacity-50">⋯</span>
               </button>
@@ -101,6 +117,36 @@ const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, myId, hostId, 
           })}
         </div>
       </section>
+
+      {/* Banner da votação de expulsão */}
+      {kv && (
+        <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }}
+          className="p-4 rounded-3xl bg-danger/10 border-2 border-danger/40 space-y-3">
+          <div className="flex items-center justify-between">
+            <p className="font-display font-bold text-text-primary">
+              {iAmTarget ? '😬 Estão votando pra te expulsar!' : <>Expulsar <span className="text-danger">{kv.targetName}</span>?</>}
+            </p>
+            <span className="font-display font-extrabold text-danger bg-danger/15 px-2.5 py-0.5 rounded-full text-sm">{yesVotes}/{needVotes}</span>
+          </div>
+          <p className="font-sans text-xs text-text-muted">Iniciada por {kv.byName}. Precisa de {needVotes} voto(s) da galera.</p>
+          {!iAmTarget && (
+            iVoted ? (
+              <p className="font-display font-bold text-success text-sm">✓ Você já votou. Aguardando os outros…</p>
+            ) : (
+              <button onClick={onVoteKick}
+                className="w-full p-3 rounded-2xl bg-danger text-white font-display font-bold active:scale-[0.98] transition-transform">
+                🚫 Votar pra expulsar
+              </button>
+            )
+          )}
+          {(isHost || kv.byId === myId) && (
+            <button onClick={onCancelKickVote}
+              className="w-full p-2.5 rounded-2xl bg-surface border border-line text-text-muted font-display font-bold text-sm active:scale-[0.98] transition-transform">
+              Cancelar votação
+            </button>
+          )}
+        </motion.div>
+      )}
 
       <motion.button
         onClick={onShowRanking}
@@ -168,18 +214,30 @@ const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, myId, hostId, 
         <div className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center bg-black/60 p-4" onClick={() => setActionPlayer(null)}>
           <div className="w-full max-w-sm bg-surface border border-line rounded-3xl p-5 space-y-3" onClick={(e) => e.stopPropagation()}>
             <p className="font-display font-bold text-lg text-text-primary text-center">{actionPlayer.name}</p>
-            <button
-              onClick={() => { onMakeHost?.(actionPlayer.id); setActionPlayer(null); }}
-              className="w-full p-3 rounded-2xl bg-accent/10 border border-accent/30 text-accent font-display font-bold active:scale-[0.98] transition-transform"
-            >
-              👑 Tornar host
-            </button>
-            <button
-              onClick={() => { onKick?.(actionPlayer.id, actionPlayer.name); setActionPlayer(null); }}
-              className="w-full p-3 rounded-2xl bg-danger/10 border border-danger/30 text-danger font-display font-bold active:scale-[0.98] transition-transform"
-            >
-              🚫 Expulsar da sala
-            </button>
+            {canManage && (
+              <>
+                <button
+                  onClick={() => { onMakeHost?.(actionPlayer.id); setActionPlayer(null); }}
+                  className="w-full p-3 rounded-2xl bg-accent/10 border border-accent/30 text-accent font-display font-bold active:scale-[0.98] transition-transform"
+                >
+                  👑 Tornar host
+                </button>
+                <button
+                  onClick={() => { onKick?.(actionPlayer.id, actionPlayer.name); setActionPlayer(null); }}
+                  className="w-full p-3 rounded-2xl bg-danger/10 border border-danger/30 text-danger font-display font-bold active:scale-[0.98] transition-transform"
+                >
+                  🚫 Expulsar na hora (host)
+                </button>
+              </>
+            )}
+            {!kv && !canManage && (
+              <button
+                onClick={() => { onStartKickVote?.(actionPlayer.id, actionPlayer.name); setActionPlayer(null); }}
+                className="w-full p-3 rounded-2xl bg-warning/10 border border-warning/30 text-warning font-display font-bold active:scale-[0.98] transition-transform"
+              >
+                🗳️ Iniciar votação pra expulsar
+              </button>
+            )}
             <button onClick={() => setActionPlayer(null)} className="w-full p-3 font-display font-bold text-text-muted">Cancelar</button>
           </div>
         </div>
