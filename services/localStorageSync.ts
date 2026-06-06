@@ -28,7 +28,7 @@ class LocalStorageSyncService {
   private currentRoom: Room | null = null;
   private roomListeners: Set<EventListener> = new Set();
   private errorListeners: Set<ErrorListener> = new Set();
-  private pollInterval: NodeJS.Timer | null = null;
+  private pollInterval: ReturnType<typeof setInterval> | null = null;
   private pollIntervalTime = 500; // Poll a cada 500ms
   private lastUpdateTimestamp = 0;
 

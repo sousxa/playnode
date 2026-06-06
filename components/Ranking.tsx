@@ -14,7 +14,7 @@ const MEDALS = ['🥇', '🥈', '🥉'];
 /** Ranking acumulado da sala (entre todos os jogos jogados). */
 const Ranking: React.FC<RankingProps> = ({ players, scores, onClose }) => {
   const ranked = [...players].sort((a, b) => (scores[b.id] ?? 0) - (scores[a.id] ?? 0));
-  const hasScores = Object.values(scores).some((v) => v > 0);
+  const hasScores = Object.values(scores).some((v) => Number(v) > 0);
 
   return (
     <div className="page-wrapper flex flex-col p-5">
