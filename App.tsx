@@ -18,6 +18,7 @@ import { addRecentRoom } from './services/recentRooms';
 const ONLINE_GAMES = new Set<GameMode>([
   GameMode.AMIGOS_DE_MERDA, GameMode.QUEM_SOU_EU, GameMode.IMPOSTOR,
   GameMode.STOP, GameMode.CARTAS_PODRES, GameMode.CIDADE_DORME, GameMode.VERDADE_OU_DESAFIO,
+  GameMode.UNO_NO_MERCY,
 ]);
 
 // Serviços de sincronização com a mesma API (escolhidos por modo).

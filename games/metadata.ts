@@ -79,6 +79,7 @@ export const GAME_CONFIG_SCHEMA: Record<string, GameConfigSchema> = {
     stopCategories: true,
   },
   [GameMode.CIDADE_DORME]: {},
+  [GameMode.UNO_NO_MERCY]: {},
 };
 
 export const GAME_TITLES: Record<string, string> = {
@@ -90,6 +91,7 @@ export const GAME_TITLES: Record<string, string> = {
   [GameMode.CARTAS_PODRES]: 'Cartas Podres',
   [GameMode.STOP]: 'Stop!',
   [GameMode.CIDADE_DORME]: 'A Cidade Dorme',
+  [GameMode.UNO_NO_MERCY]: 'Uno No Mercy',
 };
 
 export interface GameInfo {
@@ -186,6 +188,17 @@ export const GAME_INFO: Record<string, GameInfo> = {
       'À noite, o assassino escolhe uma vítima, o médico salva alguém e o detetive investiga.',
       'De dia, a cidade discute e vota em quem eliminar.',
       'A cidade vence se pegar o assassino; o assassino vence se sobrar.',
+    ],
+  },
+  [GameMode.UNO_NO_MERCY]: {
+    emoji: '🃏',
+    tagline: 'O Uno sem dó: +10, descartar cor e eliminação aos 25.',
+    players: '2+ jogadores',
+    howTo: [
+      'Combine cor, número ou tipo com a carta do topo — ou jogue um coringa.',
+      'Cartas de compra EMPILHAM: quem não devolver leva o total na cara.',
+      'Cartas brutais: +6, +10, "Descartar cor" (joga fora toda uma cor) e "Pular todos".',
+      'Regra da misericórdia: chegou a 25 cartas, você é ELIMINADO. Vence quem zerar a mão.',
     ],
   },
 };

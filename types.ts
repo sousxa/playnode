@@ -7,7 +7,8 @@ export enum GameMode {
   VERDADE_OU_DESAFIO = 'VERDADE_OU_DESAFIO',
   CARTAS_PODRES = 'CARTAS_PODRES',
   STOP = 'STOP',
-  CIDADE_DORME = 'CIDADE_DORME'
+  CIDADE_DORME = 'CIDADE_DORME',
+  UNO_NO_MERCY = 'UNO_NO_MERCY'
 }
 
 export interface Player {

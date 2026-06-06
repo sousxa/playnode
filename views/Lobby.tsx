@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { VenetianMask, Drama, Link2, Check, ChevronRight, Wifi, Skull, HeartCrack, Trophy, Layers, Timer, Moon, LogOut } from 'lucide-react';
+import { VenetianMask, Drama, Link2, Check, ChevronRight, Wifi, Skull, HeartCrack, Trophy, Layers, Timer, Moon, LogOut, Spade } from 'lucide-react';
 import SingleDeviceMode from '../components/SingleDeviceMode';
 import ThemeToggle from '../components/ThemeToggle';
 import GameInfoSheet from '../components/GameInfoSheet';
@@ -30,6 +30,7 @@ const GAMES = [
   { mode: GameMode.CARTAS_PODRES, title: 'Cartas Podres', desc: 'Complete a frase mais podre', Icon: Layers, color: 'text-accent', bg: 'bg-accent/15' },
   { mode: GameMode.STOP, title: 'Stop! / Adedonha', desc: 'Letra, categorias e correria', Icon: Timer, color: 'text-success', bg: 'bg-success/15' },
   { mode: GameMode.CIDADE_DORME, title: 'A Cidade Dorme', desc: 'Dedução: ache o assassino', Icon: Moon, color: 'text-accent', bg: 'bg-accent/15' },
+  { mode: GameMode.UNO_NO_MERCY, title: 'Uno No Mercy', desc: 'Uno brutal: +10 e eliminação', Icon: Spade, color: 'text-danger', bg: 'bg-danger/15' },
 ];
 
 const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, myId, hostId, onlineMode, onSelectGame, onShowRanking, onAddPlayer, onLeave, onMakeHost, onKick }) => {

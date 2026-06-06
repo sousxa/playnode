@@ -9,6 +9,7 @@ import VerdadeOuDesafio from '../games/verdade-ou-desafio/VerdadeOuDesafio';
 import CartasPodres from '../games/cartas-podres/CartasPodres';
 import Stop from '../games/stop/Stop';
 import CidadeDorme from '../games/cidade-dorme/CidadeDorme';
+import UnoNoMercy from '../games/uno-no-mercy/UnoNoMercy';
 
 interface GameRoomProps {
   mode: GameMode;
@@ -46,6 +47,8 @@ const GameRoom: React.FC<GameRoomProps> = ({ mode, config, onExit, onReportScore
       return <Stop config={config} onExit={onExit} {...scoreProps} {...onlineProps} />;
     case GameMode.CIDADE_DORME:
       return <CidadeDorme config={config} onExit={onExit} {...onlineProps} />;
+    case GameMode.UNO_NO_MERCY:
+      return <UnoNoMercy config={config} onExit={onExit} {...scoreProps} {...onlineProps} />;
     default:
       return null;
   }
