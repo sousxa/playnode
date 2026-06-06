@@ -68,16 +68,12 @@ const GameConfig: React.FC<GameConfigProps> = ({ mode, playerCount, onBack, onSt
       {schema.categories && (
         <section className="space-y-2">
           <h3 className="font-display font-bold text-text-secondary ml-1">Categoria</h3>
-          <div className="relative">
-            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 pr-8">
-              <CatChip active={categoryId === 'all'} onClick={() => setCategoryId('all')} icon="🎲" label="Misturar" />
-              {schema.categories.map((c) => (
-                <CatChip key={c.id} active={categoryId === c.id} onClick={() => setCategoryId(c.id)} icon={c.icon} label={c.label} />
-              ))}
-            </div>
-            <div className="pointer-events-none absolute right-0 top-0 bottom-1 w-12 bg-gradient-to-l from-bg to-transparent flex items-center justify-end">
-              <ChevronRight className="text-accent" size={20} />
-            </div>
+          {/* Grade que mostra TODAS as categorias de uma vez (sem scroll escondido). */}
+          <div className="flex flex-wrap gap-2">
+            <CatChip active={categoryId === 'all'} onClick={() => setCategoryId('all')} icon="🎲" label="Misturar" />
+            {schema.categories.map((c) => (
+              <CatChip key={c.id} active={categoryId === c.id} onClick={() => setCategoryId(c.id)} icon={c.icon} label={c.label} />
+            ))}
           </div>
         </section>
       )}

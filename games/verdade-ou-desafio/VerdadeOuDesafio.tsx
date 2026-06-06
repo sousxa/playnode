@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from '../../components/Button';
 import GameHeader from '../shared/GameHeader';
 import type { GameConfig } from '../../engine/types';
 import { useSyncedReducer } from '../../hooks/useSyncedReducer';
+import { markSeen } from '../../services/contentMemory';
 import { initGame, reducer, type TODState } from './engine';
 
 interface Props {
@@ -17,6 +18,12 @@ interface Props {
 
 const VerdadeOuDesafio: React.FC<Props> = ({ config, onExit, online, roomCode, playerId, isHost }) => {
   const { state, dispatch, reset } = useSyncedReducer(reducer, () => initGame(config), { online, roomCode, isHost });
+
+  // No fim da partida, registra o que saiu pra não repetir nas próximas.
+  useEffect(() => {
+    if (state?.phase === 'gameOver' && state.usedIds.length) markSeen('tod', state.usedIds);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state?.phase]);
 
   const wrap = (children: React.ReactNode, header = true) => (
     <div className="page-wrapper flex flex-col p-5">

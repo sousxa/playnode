@@ -1,6 +1,7 @@
 import type { GameConfig, GameEngine, Player } from '../../engine/types';
 import { whoAmIContent } from '../../content';
 import { shuffle } from '../../engine/utils';
+import { getSeen, markSeen } from '../../services/contentMemory';
 
 export type WhoAmIPhase = 'playing' | 'gameOver';
 
@@ -22,7 +23,13 @@ function assignCharacters(players: Player[], categoryId: string): Record<string,
       ? whoAmIContent.categories.filter((c) => c.id === categoryId)
       : whoAmIContent.categories;
   const pool = (cats.length ? cats : whoAmIContent.categories).flatMap((c) => c.items.map((i) => i.name));
-  const picked = shuffle(pool).slice(0, players.length);
+  // evita repetir personagens das últimas partidas (entre jogos)
+  const key = 'whoami_' + categoryId;
+  const seen = getSeen(key);
+  let avail = pool.filter((n) => !seen.includes(n));
+  if (avail.length < players.length) avail = pool; // recicla se faltar
+  const picked = shuffle(avail).slice(0, players.length);
+  markSeen(key, picked);
   const map: Record<string, string> = {};
   players.forEach((p, i) => { map[p.id] = picked[i] ?? `Personagem ${i + 1}`; });
   return map;

@@ -1,6 +1,7 @@
 import type { GameConfig, GameEngine, Player } from '../../engine/types';
 import { truthDareContent, type TruthDareItem, type Intensity } from '../../content';
 import { shuffle } from '../../engine/utils';
+import { getSeen } from '../../services/contentMemory';
 
 export type TODPhase = 'choose' | 'card' | 'gameOver';
 export type CardKind = 'truth' | 'dare';
@@ -14,6 +15,8 @@ export interface TODState {
   truths: TruthDareItem[];
   dares: TruthDareItem[];
   usedIds: string[];
+  /** Ids que saíram em partidas recentes (viés pra não repetir entre jogos). */
+  seen: string[];
   current: { kind: CardKind; text: string } | null;
   turnsPlayed: number;
   totalTurns: number;
@@ -38,15 +41,17 @@ export function initGame(config: GameConfig): TODState {
     truths: shuffle(filterPool(truthDareContent.truths, config)),
     dares: shuffle(filterPool(truthDareContent.dares, config)),
     usedIds: [],
+    seen: getSeen('tod'),
     current: null,
     turnsPlayed: 0,
     totalTurns: config.rounds ?? 10,
   };
 }
 
-function draw(pool: TruthDareItem[], usedIds: string[]): TruthDareItem | null {
-  const avail = pool.filter((i) => !usedIds.includes(i.id));
-  const src = avail.length > 0 ? avail : pool; // recicla se esgotar
+function draw(pool: TruthDareItem[], usedIds: string[], seen: string[]): TruthDareItem | null {
+  const avail = pool.filter((i) => !usedIds.includes(i.id)); // não repete na partida
+  const fresh = avail.filter((i) => !seen.includes(i.id));   // prefere não-vistos entre partidas
+  const src = fresh.length > 0 ? fresh : avail.length > 0 ? avail : pool;
   return src.length ? src[Math.floor(Math.random() * src.length)] : null;
 }
 
@@ -54,7 +59,7 @@ export function reducer(state: TODState, action: TODAction): TODState {
   switch (action.type) {
     case 'CHOOSE': {
       const pool = action.kind === 'truth' ? state.truths : state.dares;
-      const card = draw(pool, state.usedIds);
+      const card = draw(pool, state.usedIds, state.seen);
       if (!card) return state;
       return {
         ...state,

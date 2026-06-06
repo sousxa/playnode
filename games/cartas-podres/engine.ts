@@ -1,6 +1,7 @@
 import type { GameConfig, GameEngine, Player } from '../../engine/types';
 import { cartasContent } from '../../content';
 import { shuffle } from '../../engine/utils';
+import { getSeen } from '../../services/contentMemory';
 
 const HAND_SIZE = 6;
 
@@ -23,6 +24,8 @@ export interface CartasState {
   submissions: Submission[];
   whiteDeck: string[];
   usedBlack: string[];
+  /** Pretas vistas em partidas recentes (viés anti-repetição entre jogos). */
+  seenBlack: string[];
   winnerId: string | null;
   winnerCards: string[] | null;
   round: number;
@@ -40,11 +43,12 @@ function nonJudge(players: Player[], judgeIdx: number): string[] {
   return players.filter((_, i) => i !== judgeIdx).map((p) => p.id);
 }
 
-/** Sorteia uma carta preta não usada (1 ou 2 lacunas). Reembaralha se esgotar. */
-function drawBlack(used: string[]): { text: string; pick: number } {
+/** Sorteia uma carta preta não usada (1 ou 2 lacunas), evitando as vistas entre partidas. */
+function drawBlack(used: string[], seen: string[] = []): { text: string; pick: number } {
   const all = cartasContent.blackCards.filter((b) => (b.pick ?? 1) <= 2);
   const pool = all.filter((b) => !used.includes(b.text));
-  const src = pool.length ? pool : all;
+  const fresh = pool.filter((b) => !seen.includes(b.text));
+  const src = fresh.length ? fresh : pool.length ? pool : all;
   const c = src[Math.floor(Math.random() * src.length)];
   return { text: c.text, pick: c.pick ?? 1 };
 }
@@ -69,7 +73,8 @@ export function initGame(config: GameConfig): CartasState {
   let deck = shuffle(cartasContent.whiteCards.map((w) => w.text));
   const hands: Record<string, string[]> = {};
   for (const p of players) { hands[p.id] = deck.splice(0, HAND_SIZE); }
-  const b = drawBlack([]);
+  const seenBlack = getSeen('cartas');
+  const b = drawBlack([], seenBlack);
   return {
     phase: 'judgeReveal',
     players,
@@ -82,6 +87,7 @@ export function initGame(config: GameConfig): CartasState {
     submissions: [],
     whiteDeck: deck,
     usedBlack: [b.text],
+    seenBlack,
     winnerId: null,
     winnerCards: null,
     round: 1,
@@ -122,7 +128,7 @@ export function reducer(state: CartasState, action: CartasAction): CartasState {
     case 'NEXT_ROUND': {
       if (state.round >= state.totalRounds) return { ...state, phase: 'gameOver' };
       const judgeIdx = (state.judgeIdx + 1) % state.players.length;
-      const b = drawBlack(state.usedBlack);
+      const b = drawBlack(state.usedBlack, state.seenBlack);
       return {
         ...state,
         judgeIdx,

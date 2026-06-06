@@ -8,6 +8,7 @@ import GameOver from '../shared/GameOver';
 import SelectConfirm from '../shared/SelectConfirm';
 import type { GameConfig } from '../../engine/types';
 import { useSyncedReducer } from '../../hooks/useSyncedReducer';
+import { markSeen } from '../../services/contentMemory';
 import { initGame, reducer, cartasEngine } from './engine';
 
 interface Props {
@@ -89,7 +90,7 @@ const CartasPodres: React.FC<Props> = ({ config, onExit, onReportScores, onRanki
   }, [state?.phase]);
 
   useEffect(() => {
-    if (state?.phase === 'gameOver') onReportScores?.(state.scores);
+    if (state?.phase === 'gameOver') { onReportScores?.(state.scores); markSeen('cartas', state.usedBlack); }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state?.phase]);
 
