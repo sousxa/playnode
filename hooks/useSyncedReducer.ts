@@ -48,10 +48,17 @@ export function useSyncedReducer<S, A>(
   const dispatch = (a: A) => {
     if (online && roomCode) {
       if (!ref.current) return;
-      const next = reducer(ref.current, a);
-      ref.current = next;
-      setState(next);
-      firebaseSyncService.updateGameState(roomCode, next);
+      const before = ref.current;
+      // Otimista: a UI responde na hora.
+      const optimistic = reducer(before, a);
+      ref.current = optimistic;
+      setState(optimistic);
+      // Atômico no servidor: aplica a ação SEMPRE sobre o estado mais recente
+      // (não sobrescreve o estado inteiro). Evita perder votos quando 2+ pessoas
+      // agem ao mesmo tempo — antes, um set() apagava o do outro e travava a votação.
+      firebaseSyncService.transactGameState(roomCode, (cur: S | null) =>
+        reducer(cur ? ({ ...init(), ...cur } as S) : before, a),
+      );
     } else {
       setState((s) => reducer(s as S, a));
     }

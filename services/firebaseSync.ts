@@ -205,6 +205,19 @@ class FirebaseSyncService {
     set(ref(db, `rooms/${code}/gameState`), JSON.parse(JSON.stringify(gameState)));
   }
 
+  /**
+   * Aplica uma ação ao estado de forma ATÔMICA: `getNext` recebe o estado atual
+   * do servidor (ou null) e devolve o novo. Se dois clientes agirem ao mesmo
+   * tempo, o Firebase re-executa com o valor atualizado (não perde votos).
+   */
+  transactGameState(code: string, getNext: (cur: any) => any): void {
+    if (!db) return;
+    runTransaction(ref(db, `rooms/${code}/gameState`), (cur: any) => {
+      const next = getNext(cur);
+      return next == null ? next : JSON.parse(JSON.stringify(next)); // sanitiza undefined
+    });
+  }
+
   /** Soma pontos ao ranking acumulado da sala (atômico). */
   addToRanking(code: string, scores: Record<string, number>): void {
     if (!db) return;
