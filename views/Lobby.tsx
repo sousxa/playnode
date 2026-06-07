@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { VenetianMask, Drama, Link2, Check, ChevronRight, Wifi, Skull, HeartCrack, Trophy, Layers, Timer, Moon, LogOut, Spade } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { VenetianMask, Drama, Link2, Check, ChevronRight, ChevronDown, QrCode, Wifi, Skull, HeartCrack, Trophy, Layers, Timer, Moon, LogOut, Spade } from 'lucide-react';
 import SingleDeviceMode from '../components/SingleDeviceMode';
 import ThemeToggle from '../components/ThemeToggle';
 import GameInfoSheet from '../components/GameInfoSheet';
@@ -40,6 +40,7 @@ const GAMES = [
 
 const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, myId, hostId, onlineMode, onSelectGame, onShowRanking, onAddPlayer, onLeave, onMakeHost, onKick, kickVote, onStartKickVote, onVoteKick, onCancelKickVote }) => {
   const [copied, setCopied] = useState(false);
+  const [qrOpen, setQrOpen] = useState(true);
   const [infoMode, setInfoMode] = useState<GameMode | null>(null);
   const [actionPlayer, setActionPlayer] = useState<{ id: string; name: string } | null>(null);
   const canManage = !!isHost && !!onlineMode;
@@ -55,7 +56,7 @@ const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, myId, hostId, 
   const iVoted = !!kv && !!kv.votes && !!myId && !!kv.votes[myId];
 
   const inviteUrl = `${window.location.origin}${window.location.pathname}?room=${roomCode}`;
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(inviteUrl)}`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=0&data=${encodeURIComponent(inviteUrl)}`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(inviteUrl);
@@ -84,17 +85,42 @@ const Lobby: React.FC<LobbyProps> = ({ roomCode, isHost, players, myId, hostId, 
         </div>
       )}
 
-      <div className="flex flex-col items-center gap-3">
-        <div className="bg-white p-2.5 rounded-3xl shadow-lg">
-          <img src={qrUrl} alt="QR Code" className="w-28 h-28 rounded-xl" />
-        </div>
+      <div className="rounded-3xl bg-surface border border-line overflow-hidden">
         <button
-          onClick={handleCopy}
-          className={`font-display font-bold text-sm px-4 py-2 rounded-2xl border transition-colors flex items-center gap-2 ${copied ? 'bg-success text-white border-success' : 'bg-surface text-accent border-line'}`}
+          onClick={() => setQrOpen((o) => !o)}
+          className="w-full flex items-center justify-between gap-3 p-4 active:scale-[0.99] transition-transform"
         >
-          {copied ? <Check size={16} /> : <Link2 size={16} />}
-          {copied ? 'Copiado!' : 'Copiar convite'}
+          <span className="flex items-center gap-2.5">
+            <span className="w-9 h-9 rounded-2xl bg-accent/15 text-accent flex items-center justify-center"><QrCode size={18} /></span>
+            <span className="font-display font-bold text-text-primary">QR Code da sala</span>
+          </span>
+          <ChevronDown size={20} className={`text-text-muted transition-transform duration-300 ${qrOpen ? 'rotate-180' : ''}`} />
         </button>
+        <AnimatePresence initial={false}>
+          {qrOpen && (
+            <motion.div
+              key="qr"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.28, ease: 'easeInOut' }}
+              className="overflow-hidden"
+            >
+              <div className="flex flex-col items-center gap-4 px-4 pb-5">
+                <div className="bg-white p-3 rounded-3xl shadow-lg">
+                  <img src={qrUrl} alt="QR Code" className="w-56 h-56 rounded-xl" />
+                </div>
+                <button
+                  onClick={handleCopy}
+                  className={`font-display font-bold text-sm px-4 py-2.5 rounded-2xl border transition-colors flex items-center gap-2 ${copied ? 'bg-success text-white border-success' : 'bg-surface-2 text-accent border-line'}`}
+                >
+                  {copied ? <Check size={16} /> : <Link2 size={16} />}
+                  {copied ? 'Copiado!' : 'Copiar convite'}
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <section>
