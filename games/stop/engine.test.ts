@@ -43,6 +43,26 @@ describe('Stop engine', () => {
     expect(s.voteEndsAt).toBe(1000);
   });
 
+  it('FORCE_REVIEW (host) avança mesmo sem todos enviarem; faltantes ficam vazios', () => {
+    let s = initGame({ players, alcoholicMode: false, rounds: 1, stopCategories: ['Nome', 'Cor'] });
+    s = reducer(s, { type: 'SPIN' });
+    s = reducer(s, { type: 'CALL_STOP', playerId: 'a', answers: { Nome: 'Ana', Cor: 'Azul' } });
+    expect(s.phase).toBe('playing'); // 'b' ainda não enviou
+    // rede de segurança do host:
+    s = reducer(s, { type: 'FORCE_REVIEW', endsAt: 2000 });
+    expect(s.phase).toBe('review');
+    expect(s.voteEndsAt).toBe(2000);
+    expect(answerVerdict(s, 'Nome', 'b')).toBe('empty'); // quem não enviou: vazio
+  });
+
+  it('FORCE_REVIEW só age se houve STOP e ainda está jogando', () => {
+    let s = initGame({ players, alcoholicMode: false, rounds: 1, stopCategories: ['Nome'] });
+    s = reducer(s, { type: 'SPIN' });
+    const before = s;
+    s = reducer(s, { type: 'FORCE_REVIEW', endsAt: 2000 }); // sem STOP -> ignora
+    expect(s).toBe(before);
+  });
+
   it('padrão é VÁLIDO (verde); maioria de inválidos anula', () => {
     let s = initGame({ players: trio, alcoholicMode: false, stopCategories: ['Nome'] }) as StopState;
     s.answers = { a: { Nome: 'Ana' }, b: { Nome: 'Bia' }, c: { Nome: 'Caio' } };

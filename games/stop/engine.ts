@@ -69,6 +69,7 @@ export type StopAction =
   | { type: 'SUBMIT'; playerId: string; answers: Record<string, string>; endsAt?: number }
   | { type: 'TOGGLE_INVALID'; category: string; ownerId: string; voterId: string }
   | { type: 'READY'; playerId: string }
+  | { type: 'FORCE_REVIEW'; endsAt?: number } // host força a revisão (rede de segurança do STOP)
   | { type: 'REVIEW_NEXT'; endsAt?: number }
   | { type: 'NEXT' };
 
@@ -211,6 +212,13 @@ export function reducer(state: StopState, action: StopAction): StopState {
         reviewIdx: allIn ? 0 : state.reviewIdx,
         voteEndsAt: allIn ? action.endsAt ?? 0 : state.voteEndsAt,
       };
+    }
+    case 'FORCE_REVIEW': {
+      // Avança pra revisão mesmo que nem todos tenham enviado (quem não enviou
+      // entra com folha vazia). Evita travar quando um aparelho está em segundo
+      // plano e não auto-envia o STOP.
+      if (state.phase !== 'playing' || !state.stoppedBy) return state;
+      return { ...state, phase: 'review', reviewIdx: 0, voteEndsAt: action.endsAt ?? 0, reviewReady: {} };
     }
     case 'TOGGLE_INVALID': {
       const cat = { ...(state.invalidVotes[action.category] ?? {}) };

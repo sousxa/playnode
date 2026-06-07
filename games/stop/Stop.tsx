@@ -44,6 +44,7 @@ const Stop: React.FC<Props> = ({ config, onExit, onReportScores, onRanking, onli
   const submittedRef = useRef(false);
   const reportedRef = useRef(false);
   const prevStopped = useRef<string | null>(null);
+  const forcedReviewRef = useRef(false);
   const answersRef = useRef(myAnswers);
   answersRef.current = myAnswers;
 
@@ -100,6 +101,19 @@ const Stop: React.FC<Props> = ({ config, onExit, onReportScores, onRanking, onli
     if (state.stoppedBy && !submittedRef.current && !state.answers[me]) submitOnline();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state?.stoppedBy, state?.phase]);
+
+  // ── REDE DE SEGURANÇA: o host força a revisão ~2,5s após o STOP, mesmo que
+  // algum aparelho (tela bloqueada / aba em 2º plano) não tenha auto-enviado.
+  // Evita o jogo travar "esperando" alguém — antes precisava dar STOP de novo.
+  useEffect(() => {
+    if (!online || !isHost) return;
+    if (!state?.stoppedBy) { forcedReviewRef.current = false; return; }
+    if (state.phase !== 'playing' || forcedReviewRef.current) return;
+    forcedReviewRef.current = true;
+    const t = setTimeout(() => dispatch({ type: 'FORCE_REVIEW', endsAt: Date.now() + VOTE_MS }), 2500);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state?.stoppedBy, state?.phase, online, isHost]);
 
   // ── animação de STOP (quando alguém aperta) ──
   useEffect(() => {
